@@ -22,12 +22,12 @@
 #include "breeze_deploy/core/breeze_deploy_tensor.h"
 #include "breeze_deploy/core/breeze_deploy_mat.h"
 #include "breeze_deploy/core/breeze_deploy_time.h"
+#include "breeze_deploy/core/breeze_deploy_logger.h"
 
 namespace breeze_deploy {
 namespace models {
 using namespace breeze_deploy::function;
 using namespace breeze_deploy::backend;
-
 class BreezeDeployModel {
  public:
   BreezeDeployModel();
@@ -36,6 +36,8 @@ class BreezeDeployModel {
   virtual bool Predict(const cv::Mat &input_mat);
 
  protected:
+  std::string model_name_ = "BreezeDeployModel";
+
   std::vector<std::shared_ptr<BreezeDeployPreprocessFunction>> preprocess_function_vector_{};
   virtual bool Preprocess(const cv::Mat &input_mat);
 

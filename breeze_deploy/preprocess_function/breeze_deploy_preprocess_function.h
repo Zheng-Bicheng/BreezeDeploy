@@ -17,6 +17,7 @@
 
 #include <iostream>
 #include "breeze_deploy/core/breeze_deploy_mat.h"
+#include "breeze_deploy/core/breeze_deploy_logger.h"
 
 namespace breeze_deploy {
 namespace function {

@@ -14,6 +14,7 @@
 
 #include "breeze_deploy/models/breeze_deploy_model.h"
 #include "breeze_deploy/backends/onnx_backend/onnx_backend.h"
+
 namespace breeze_deploy {
 namespace models {
 BreezeDeployModel::BreezeDeployModel() = default;
@@ -24,12 +25,15 @@ bool BreezeDeployModel::Initialize(const BreezeDeployBackendOption &breeze_deplo
   return result;
 }
 bool BreezeDeployModel::Preprocess(const cv::Mat &input_mat) {
+  BREEZE_DEPLOY_MODEL_LOGGER_UN_SUPPORT_API
   return false;
 }
 bool BreezeDeployModel::Infer() {
+  BREEZE_DEPLOY_MODEL_LOGGER_UN_SUPPORT_API
   return false;
 }
 bool BreezeDeployModel::Postprocess() {
+  BREEZE_DEPLOY_MODEL_LOGGER_UN_SUPPORT_API
   return false;
 }
 bool BreezeDeployModel::Predict(const cv::Mat &input_mat) {

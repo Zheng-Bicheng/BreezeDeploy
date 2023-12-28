@@ -19,6 +19,7 @@ breeze_deploy::function::Resize::Resize(int width, int height)
 breeze_deploy::function::Resize::~Resize() = default;
 bool breeze_deploy::function::Resize::Run(BreezeDeployMat &tensor) {
   if (width_ == 0 || height_ == 0) {
+	BREEZE_DEPLOY_LOGGER_ERROR("width_ == 0 || height_ == 0")
 	return false;
   }
 

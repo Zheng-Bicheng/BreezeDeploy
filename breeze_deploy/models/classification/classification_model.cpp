@@ -20,7 +20,7 @@ bool ClassificationModel::SetLabel(const std::string &label_file_path) {
   label_vector_.clear();
   std::ifstream input_file(label_file_path);
   if (!input_file.is_open()) {
-	std::cerr << "无法打开文件: " << label_file_path << std::endl;
+	BREEZE_DEPLOY_LOGGER_ERROR("Could not open file: {}.", label_file_path)
 	return false;
   }
   std::string line;
@@ -28,7 +28,7 @@ bool ClassificationModel::SetLabel(const std::string &label_file_path) {
 	label_vector_.push_back(line);
   }
   input_file.close();
-  return false;
+  return true;
 }
 const std::vector<ClassificationResult> &ClassificationModel::GetClassificationResult() {
   return classification_result_vector_;

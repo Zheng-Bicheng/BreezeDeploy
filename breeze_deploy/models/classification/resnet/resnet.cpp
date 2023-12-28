@@ -32,12 +32,14 @@ Resnet::Resnet() {
 Resnet::~Resnet() = default;
 bool Resnet::Preprocess(const cv::Mat &input_mat) {
   if (input_mat.empty()) {
+	BREEZE_DEPLOY_LOGGER_ERROR("input_mat is empty.")
 	return false;
   }
 
   BreezeDeployMat breeze_deploy_mat(input_mat);
   for (const auto &preprocess_function : preprocess_function_vector_) {
 	if (!preprocess_function->Run(breeze_deploy_mat)) {
+	  BREEZE_DEPLOY_LOGGER_ERROR("Failed to run preprocess_function.")
 	  return false;
 	}
   }
