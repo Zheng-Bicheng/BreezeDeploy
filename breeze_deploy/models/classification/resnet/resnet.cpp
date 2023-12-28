@@ -30,24 +30,6 @@ Resnet::Resnet() {
   output_tensor_vector_.resize(1);
 }
 Resnet::~Resnet() = default;
-bool Resnet::Predict(const cv::Mat &input_mat) {
-  int run_index = 10000;
-  spend_time_.Start();
-  for (int i = 0; i < run_index; ++i) {
-	if (!Preprocess(input_mat)) {
-	  return false;
-	}
-  }
-  spend_time_.End();
-  spend_time_.PrintInfo("Preprocess", 1.0f / (float)run_index);
-  if (!Infer()) {
-	return false;
-  }
-  if (!Postprocess()) {
-	return false;
-  }
-  return true;
-}
 bool Resnet::Preprocess(const cv::Mat &input_mat) {
   if (input_mat.empty()) {
 	return false;
@@ -74,7 +56,17 @@ bool Resnet::Postprocess() {
   auto max_element = std::max_element(output_tensor_data, output_tensor_data + output_tensor_size);
   auto max_element_index = max_element - output_tensor_data;
   auto confidence = Softmax::Run(*max_element, output_tensor_data, output_tensor_size);
-  std::cout << "max index is " << max_element_index << ";max conf is " << confidence << std::endl;
+  classification_result_vector_.clear();
+
+  if (label_vector_.empty()) {
+	classification_result_vector_.emplace_back(std::to_string(max_element_index), confidence);
+	return true;
+  }
+
+  if (label_vector_.size() <= max_element_index) {
+	return false;
+  }
+  classification_result_vector_.emplace_back(label_vector_[max_element_index], confidence);
   return true;
 }
 }

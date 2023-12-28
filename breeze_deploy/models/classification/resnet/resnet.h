@@ -15,20 +15,19 @@
 #ifndef BREEZE_DEPLOY_MODELS_CLASSIFICATION_RESNET_RESNET_H_
 #define BREEZE_DEPLOY_MODELS_CLASSIFICATION_RESNET_RESNET_H_
 
-#include "breeze_deploy/models/breeze_deploy_model.h"
+#include "breeze_deploy/models/classification/classification_model.h"
 
 namespace breeze_deploy {
 namespace models {
-class Resnet : public BreezeDeployModel {
+class Resnet : public ClassificationModel {
  public:
   Resnet();
   ~Resnet() override;
-  bool Predict(const cv::Mat &input_mat) override;
 
- private:
-  bool Preprocess(const cv::Mat &input_mat);
-  bool Infer();
-  bool Postprocess();
+ protected:
+  bool Preprocess(const cv::Mat &input_mat) override;
+  bool Infer() override;
+  bool Postprocess() override;
 };
 }
 }

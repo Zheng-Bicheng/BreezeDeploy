@@ -27,18 +27,25 @@ namespace breeze_deploy {
 namespace models {
 using namespace breeze_deploy::function;
 using namespace breeze_deploy::backend;
+
 class BreezeDeployModel {
  public:
-  BreezeDeployModel() = default;
-  virtual ~BreezeDeployModel() = default;
+  BreezeDeployModel();
+  virtual ~BreezeDeployModel();
   bool Initialize(const BreezeDeployBackendOption &breeze_deploy_backend_option);
   virtual bool Predict(const cv::Mat &input_mat);
 
  protected:
   std::vector<std::shared_ptr<BreezeDeployPreprocessFunction>> preprocess_function_vector_{};
+  virtual bool Preprocess(const cv::Mat &input_mat);
+
   std::vector<BreezeDeployTensor> input_tensor_vector_{};
   std::vector<BreezeDeployTensor> output_tensor_vector_{};
   std::shared_ptr<BreezeDeployBackend> breeze_deploy_backend_ = nullptr;
+  virtual bool Infer();
+
+  virtual bool Postprocess();
+
   BreezeDeployTime spend_time_;
 };
 }

@@ -16,13 +16,33 @@
 #include "breeze_deploy/backends/onnx_backend/onnx_backend.h"
 namespace breeze_deploy {
 namespace models {
-bool BreezeDeployModel::Predict(const cv::Mat &input_mat) {
-  return false;
-}
+BreezeDeployModel::BreezeDeployModel() = default;
+BreezeDeployModel::~BreezeDeployModel() = default;
 bool BreezeDeployModel::Initialize(const BreezeDeployBackendOption &breeze_deploy_backend_option) {
   breeze_deploy_backend_ = std::make_shared<ONNXBackend>();
   auto result = breeze_deploy_backend_->Initialize(breeze_deploy_backend_option);
   return result;
+}
+bool BreezeDeployModel::Preprocess(const cv::Mat &input_mat) {
+  return false;
+}
+bool BreezeDeployModel::Infer() {
+  return false;
+}
+bool BreezeDeployModel::Postprocess() {
+  return false;
+}
+bool BreezeDeployModel::Predict(const cv::Mat &input_mat) {
+  if (!Preprocess(input_mat)) {
+	return false;
+  }
+  if (!Infer()) {
+	return false;
+  }
+  if (!Postprocess()) {
+	return false;
+  }
+  return true;
 }
 }
 }

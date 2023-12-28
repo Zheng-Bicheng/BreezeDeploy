@@ -20,9 +20,15 @@ int main() {
 	return 1;
   }
 
+  auto label_file_path = "/Users/zhengbicheng/CLionProjects/BreezeDeploy/test/label/ILSVRC2012_label.txt";
+  resnet.SetLabel(label_file_path);
+
   if (!resnet.Predict(mat)) {
 	std::cout << "模型推理失败" << std::endl;
 	return 1;
   }
+
+  auto results_vector_ = resnet.GetClassificationResult();
+  printf("Label is %s,confidence is %f\n", results_vector_[0].label_.c_str(), results_vector_[0].confidence_);
   return 0;
 }
