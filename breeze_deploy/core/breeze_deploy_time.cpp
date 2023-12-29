@@ -21,9 +21,26 @@ void BreezeDeployTime::Start() {
 void BreezeDeployTime::End() {
   end_ = std::chrono::high_resolution_clock::now();
 }
-void BreezeDeployTime::PrintInfo(const std::string &prefix, float proportion) {
+float BreezeDeployTime::GetTimeDifference(const BreezeDeployTimeType &breeze_deploy_time_type) {
+  float scale = 1;
+  switch (breeze_deploy_time_type) {
+	case BreezeDeployTimeType::Nanoseconds: scale = 1;
+	  break;
+	case BreezeDeployTimeType::Microseconds: scale = 1e-3;
+	  break;
+	case BreezeDeployTimeType::Milliseconds: scale = 1e-6;
+	  break;
+	case BreezeDeployTimeType::Seconds: scale = 1e-9;
+	  break;
+  }
   auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end_ - begin_);
   auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end_ - begin_);
-  std::cout << prefix << " duration = " << static_cast<float>(elapsed.count()) * proportion << "ns." << std::endl;
+  return static_cast<float>(elapsed.count()) * scale;
+}
+void BreezeDeployTime::PrintInfo(const std::string &prefix,
+								 float proportion,
+								 const BreezeDeployTimeType &breeze_deploy_time_type) {
+  auto time_difference = GetTimeDifference(breeze_deploy_time_type);
+  std::cout << prefix << " duration = " << time_difference * proportion << "." << std::endl;
 }
 }

@@ -57,7 +57,8 @@ bool Resnet::Postprocess() {
   auto output_tensor_size = output_tensor_vector_[0].GetTensorSize() / sizeof(float);
   auto max_element = std::max_element(output_tensor_data, output_tensor_data + output_tensor_size);
   auto max_element_index = max_element - output_tensor_data;
-  auto confidence = Softmax::Run(*max_element, output_tensor_data, output_tensor_size);
+//  auto confidence = Softmax::Run(*max_element, output_tensor_data, output_tensor_size);
+  auto confidence = *max_element;
   classification_result_vector_.clear();
 
   if (label_vector_.empty()) {

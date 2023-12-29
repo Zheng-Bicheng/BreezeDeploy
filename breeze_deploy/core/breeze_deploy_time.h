@@ -19,11 +19,21 @@
 #include <string>
 
 namespace breeze_deploy {
+enum class BreezeDeployTimeType {
+  Nanoseconds,
+  Microseconds,
+  Milliseconds,
+  Seconds
+};
+
 class BreezeDeployTime {
  public:
   void Start();
   void End();
-  void PrintInfo(const std::string &prefix, float proportion = 1.0);
+  float GetTimeDifference(const BreezeDeployTimeType &breeze_deploy_time_type = BreezeDeployTimeType::Microseconds);
+  void PrintInfo(const std::string &prefix,
+				 float proportion = 1.0,
+				 const BreezeDeployTimeType &breeze_deploy_time_type = BreezeDeployTimeType::Microseconds);
  private:
   std::chrono::time_point<std::chrono::high_resolution_clock> begin_;
   std::chrono::time_point<std::chrono::high_resolution_clock> end_;
