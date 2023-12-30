@@ -16,16 +16,8 @@
 #include "breeze_deploy/postprocess_function/postprocess_function.h"
 namespace breeze_deploy {
 namespace models {
-Resnet::Resnet() {
-  int width = 224;
-  int height = 224;
-  preprocess_function_vector_.push_back(std::make_shared<Resize>(width, height));
-  preprocess_function_vector_.push_back(std::make_shared<BGRToRGB>());
-  std::vector<float> mean = {0.485f, 0.456f, 0.406f};
-  std::vector<float> std = {0.229f, 0.224f, 0.225f};
-  preprocess_function_vector_.push_back(std::make_shared<Normalize>(mean, std));
-  preprocess_function_vector_.push_back(std::make_shared<HWCToCHW>());
-
+Resnet::Resnet(const std::string& model_path, const std::string& config_file_path)
+	: ClassificationModel(model_path, config_file_path) {
   input_tensor_vector_.resize(1);
   output_tensor_vector_.resize(1);
 }

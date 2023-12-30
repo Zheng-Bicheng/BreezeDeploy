@@ -8,25 +8,23 @@ using namespace breeze_deploy::models;
 using cv::imread;
 
 int main(int argc, char *argv[]) {
-  if (argc < 3) {
-	std::cout << "Usage: rknpu_test path/to/model path/to/image path/to/label" << std::endl;
+  if (argc < 4) {
+	std::cout << "Usage: test_ghostnet path/to/model /path/to/config_file path/to/image path/to/label" << std::endl;
 	return -1;
   }
 
   std::string model_path = argv[1];
-  std::string image_path = argv[2];
-  std::string label_file_path = argv[3];
+  std::string config_path = argv[2];
 
-  BreezeDeployBackendOption breeze_deploy_backend_option;
-  breeze_deploy_backend_option.SetModelPath(model_path);
-
-  GhostNet ghost_net;
-  if (!ghost_net.Initialize(breeze_deploy_backend_option)) {
+  GhostNet ghost_net("model_path", "config_path");
+  if (!ghost_net.Initialize()) {
 	std::cout << "模型初始化失败" << std::endl;
 	return 1;
   }
+  std::string label_file_path = argv[4];
   ghost_net.SetLabel(label_file_path);
 
+  std::string image_path = argv[3];
   auto mat = cv::imread(image_path);
   BreezeDeployTime cost;
   cost.Start();

@@ -15,14 +15,15 @@
 #ifndef BREEZE_DEPLOY_MODELS_CLASSIFICATION_RESNET_RESNET_H_
 #define BREEZE_DEPLOY_MODELS_CLASSIFICATION_RESNET_RESNET_H_
 
+#include <string>
 #include "breeze_deploy/models/classification/classification_model.h"
 
 namespace breeze_deploy {
 namespace models {
 class Resnet : public ClassificationModel {
  public:
-  Resnet();
-  ~Resnet() override;
+  Resnet(const std::string& model_path, const std::string& config_file_path);
+  ~Resnet();
 
  protected:
   bool Preprocess(const cv::Mat &input_mat) override;

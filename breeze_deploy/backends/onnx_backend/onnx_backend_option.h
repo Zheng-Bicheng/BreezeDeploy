@@ -21,11 +21,15 @@ namespace breeze_deploy {
 namespace backend {
 class ONNXBackendOption {
  public:
+  ONNXBackendOption() = default;
+  ONNXBackendOption(const ONNXBackendOption& onnx_backend_option);
+  ONNXBackendOption &operator=(const ONNXBackendOption &breeze_deploy_backend_option);
+
   OrtLoggingLevel GetOrtLoggingLevel();
   const std::string& GetLogID();
   GraphOptimizationLevel GetGraphOptimizationLevel();
-  int GetIntraOPNumThreads();
-  int GetInterOPNumThreads();
+  int GetIntraOPNumThreads() const;
+  int GetInterOPNumThreads() const;
 
  private:
   OrtLoggingLevel ort_logging_level_ = OrtLoggingLevel::ORT_LOGGING_LEVEL_WARNING;

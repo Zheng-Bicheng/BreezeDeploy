@@ -23,10 +23,12 @@ namespace backend {
 class BreezeDeployBackendOption {
  public:
   BreezeDeployBackendOption() = default;
+  BreezeDeployBackendOption(const BreezeDeployBackendOption &c);
+  BreezeDeployBackendOption &operator=(const BreezeDeployBackendOption &breeze_deploy_backend_option);
   ~BreezeDeployBackendOption() = default;
-  const std::string& GetModelPath();
+  const std::string &GetModelPath() const;
   void SetModelPath(const std::string &model_path);
-  const ONNXBackendOption& GetONNXBackendOption();
+  const ONNXBackendOption &GetONNXBackendOption();
 
  private:
   std::string model_path_;

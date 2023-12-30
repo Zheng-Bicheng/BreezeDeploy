@@ -16,7 +16,10 @@
 #include "classification_model.h"
 namespace breeze_deploy {
 namespace models {
-bool ClassificationModel::SetLabel(const std::string &label_file_path) {
+ClassificationModel::ClassificationModel(const std::string &model_path, const std::string &config_file_path)
+	: BreezeDeployModel(model_path, config_file_path) {
+}
+bool ClassificationModel::SetLabel(const std::string &label_file_path){
   label_vector_.clear();
   std::ifstream input_file(label_file_path);
   if (!input_file.is_open()) {

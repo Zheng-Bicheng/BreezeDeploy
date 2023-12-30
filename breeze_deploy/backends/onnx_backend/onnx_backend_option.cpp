@@ -12,20 +12,37 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "onnx_backend_option.h"
+#include "breeze_deploy/backends/onnx_backend/onnx_backend_option.h"
+#include "breeze_deploy/core/breeze_deploy_logger.h"
 namespace breeze_deploy {
 namespace backend {
-
+ONNXBackendOption::ONNXBackendOption(const ONNXBackendOption &onnx_backend_option) {
+  ort_logging_level_ = onnx_backend_option.ort_logging_level_;
+  log_id_ = onnx_backend_option.log_id_;
+  graph_optimization_level_ = onnx_backend_option.graph_optimization_level_;
+  intra_op_num_threads_ = onnx_backend_option.intra_op_num_threads_;
+  inter_op_num_threads_ = onnx_backend_option.inter_op_num_threads_;
+}
+ONNXBackendOption &ONNXBackendOption::operator=(const ONNXBackendOption &breeze_deploy_backend_option) {
+  if (this != &breeze_deploy_backend_option) {
+	ort_logging_level_ = breeze_deploy_backend_option.ort_logging_level_;
+	log_id_ = breeze_deploy_backend_option.log_id_;
+	graph_optimization_level_ = breeze_deploy_backend_option.graph_optimization_level_;
+	intra_op_num_threads_ = breeze_deploy_backend_option.intra_op_num_threads_;
+	inter_op_num_threads_ = breeze_deploy_backend_option.inter_op_num_threads_;
+  }
+  return *this;
+}
 GraphOptimizationLevel ONNXBackendOption::GetGraphOptimizationLevel() {
   return graph_optimization_level_;
 }
 OrtLoggingLevel ONNXBackendOption::GetOrtLoggingLevel() {
   return ort_logging_level_;
 }
-int ONNXBackendOption::GetIntraOPNumThreads() {
+int ONNXBackendOption::GetIntraOPNumThreads() const {
   return intra_op_num_threads_;
 }
-int ONNXBackendOption::GetInterOPNumThreads() {
+int ONNXBackendOption::GetInterOPNumThreads() const {
   return inter_op_num_threads_;
 }
 const std::string &ONNXBackendOption::GetLogID() {

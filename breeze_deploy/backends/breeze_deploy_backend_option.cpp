@@ -12,11 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "breeze_deploy_backend_option.h"
+#include "breeze_deploy/backends/breeze_deploy_backend_option.h"
+#include "breeze_deploy/core/breeze_deploy_logger.h"
 
 namespace breeze_deploy {
 namespace backend {
-const std::string &BreezeDeployBackendOption::GetModelPath() {
+BreezeDeployBackendOption::BreezeDeployBackendOption(const BreezeDeployBackendOption &breeze_deploy_backend_option) {
+  model_path_ = breeze_deploy_backend_option.model_path_;
+  onnx_backend_option_ = breeze_deploy_backend_option.onnx_backend_option_;
+}
+BreezeDeployBackendOption &BreezeDeployBackendOption::operator=(const BreezeDeployBackendOption &breeze_deploy_backend_option) {
+  if (this != &breeze_deploy_backend_option) {
+	model_path_ = breeze_deploy_backend_option.model_path_;
+	onnx_backend_option_ = breeze_deploy_backend_option.onnx_backend_option_;
+  }
+  return *this;
+}
+const std::string &BreezeDeployBackendOption::GetModelPath() const {
   return model_path_;
 }
 void BreezeDeployBackendOption::SetModelPath(const std::string &model_path) {

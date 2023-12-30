@@ -29,8 +29,7 @@ class ClassificationResult {
 };
 class ClassificationModel : public BreezeDeployModel {
  public:
-  ClassificationModel() = default;
-  ~ClassificationModel() override = default;
+  ClassificationModel(const std::string& model_path, const std::string& config_file_path);
   bool SetLabel(const std::string &label_file_path);
   const std::vector<ClassificationResult>& GetClassificationResult();
 
