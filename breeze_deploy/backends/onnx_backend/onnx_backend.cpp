@@ -14,6 +14,7 @@
 
 #include "breeze_deploy/backends/onnx_backend/onnx_backend.h"
 #include "breeze_deploy/core/breeze_deploy_logger.h"
+#include "breeze_deploy/core/breeze_deploy_type.h"
 namespace breeze_deploy {
 namespace backend {
 bool ONNXBackend::Initialize(const BreezeDeployBackendOption &breeze_deploy_backend_option) {
@@ -96,7 +97,7 @@ bool ONNXBackend::Infer(std::vector<BreezeDeployTensor> &input_tensor, std::vect
   auto memory_info = Ort::MemoryInfo::CreateCpu(OrtAllocatorType::OrtArenaAllocator, OrtMemType::OrtMemTypeDefault);
   std::vector<Ort::Value> input_tensors{};
   for (int i = 0; i < input_tensor.size(); ++i) {
-	auto p_data = reinterpret_cast<float *>(input_tensor[i].GetTensorData());
+	auto p_data = reinterpret_cast<float *>(input_tensor[i].GetTensorDataPointer());
 	auto p_data_element_count = input_tensor[i].GetTensorSize() / sizeof(float);
 	auto shape = input_tensor_info_vector_[i].shape.data();
 	auto shape_len = input_tensor_info_vector_[i].shape.size();
@@ -125,8 +126,10 @@ bool ONNXBackend::Infer(std::vector<BreezeDeployTensor> &input_tensor, std::vect
 	for (size_t shape : output_tensor_info.shape) {
 	  tensor_size *= shape;
 	}
-	tensor_size *= sizeof(float);
-	output_tensor[i].SetTensorData(tensor_data, tensor_size);
+
+	auto tensor_data_type = BreezeDeployDataType::FP32;
+	tensor_size *= GetBreezeDeployDataTypeSize(tensor_data_type);
+	output_tensor[i].SetTensorData(tensor_data, tensor_size, tensor_data_type);
   }
   return true;
 }

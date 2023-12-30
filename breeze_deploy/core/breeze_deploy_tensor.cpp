@@ -16,17 +16,20 @@
 
 namespace breeze_deploy {
 BreezeDeployTensor::BreezeDeployTensor() = default;
-BreezeDeployTensor::BreezeDeployTensor(uint8_t *tensor_data, size_t tensor_size)
-	: tensor_data_{tensor_data}, tensor_size_{tensor_size} {
+BreezeDeployTensor::BreezeDeployTensor(uint8_t *tensor_data_ptr, size_t tensor_data_size)
+	: tensor_data_ptr_{tensor_data_ptr}, tensor_data_ptr_size_{tensor_data_size} {
 }
-void BreezeDeployTensor::SetTensorData(uint8_t *tensor_data, size_t tensor_size) {
-  tensor_data_ = tensor_data;
-  tensor_size_ = tensor_size;
+void BreezeDeployTensor::SetTensorData(uint8_t *tensor_data_ptr,
+									   size_t tensor_data_size,
+									   BreezeDeployDataType tensor_data_type) {
+  tensor_data_ptr_ = tensor_data_ptr;
+  tensor_data_ptr_size_ = tensor_data_size;
+  tensor_data_type_ = tensor_data_type;
 }
-uint8_t *BreezeDeployTensor::GetTensorData() {
-  return tensor_data_;
+uint8_t *BreezeDeployTensor::GetTensorDataPointer() {
+  return tensor_data_ptr_;
 }
-size_t BreezeDeployTensor::GetTensorSize() {
-  return tensor_size_;
+size_t BreezeDeployTensor::GetTensorSize() const {
+  return tensor_data_ptr_size_;
 }
 }

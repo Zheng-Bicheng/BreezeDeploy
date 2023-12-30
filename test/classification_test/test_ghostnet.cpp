@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
   std::string model_path = argv[1];
   std::string config_path = argv[2];
 
-  GhostNet ghost_net("model_path", "config_path");
+  GhostNet ghost_net(model_path, config_path);
   if (!ghost_net.Initialize()) {
 	std::cout << "模型初始化失败" << std::endl;
 	return 1;

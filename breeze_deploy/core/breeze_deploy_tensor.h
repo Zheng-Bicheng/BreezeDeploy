@@ -15,18 +15,22 @@
 #ifndef BREEZE_DEPLOY_MODELS_BREEZE_DEPLOY_TENSOR_H_
 #define BREEZE_DEPLOY_MODELS_BREEZE_DEPLOY_TENSOR_H_
 #include <opencv2/opencv.hpp>
+#include "breeze_deploy/core/breeze_deploy_type.h"
+
 namespace breeze_deploy {
 class BreezeDeployTensor {
  public:
   BreezeDeployTensor();
-  explicit BreezeDeployTensor(uint8_t *tensor_data, size_t tensor_size);
-  void SetTensorData(uint8_t *tensor_data, size_t tensor_size);
-  uint8_t *GetTensorData();
-  size_t GetTensorSize();
+  explicit BreezeDeployTensor(uint8_t *tensor_data_ptr, size_t tensor_data_size);
+
+  void SetTensorData(uint8_t *tensor_data_ptr, size_t tensor_data_size, BreezeDeployDataType tensor_data_type);
+  uint8_t *GetTensorDataPointer();
+  size_t GetTensorSize() const;
 
  private:
-  uint8_t *tensor_data_ = nullptr;
-  size_t tensor_size_ = 0;
+  uint8_t *tensor_data_ptr_ = nullptr;
+  size_t tensor_data_ptr_size_ = 0;
+  BreezeDeployDataType tensor_data_type_ = BreezeDeployDataType::UINT8;
 };
 }
 #endif //BREEZE_DEPLOY_MODELS_BREEZE_DEPLOY_TENSOR_H_
