@@ -13,16 +13,23 @@
 // limitations under the License.
 #include <cmath>
 #include <Eigen/Dense>
-#include "softmax.h"
+#include "breeze_deploy/postprocess_function/softmax/softmax.h"
 namespace breeze_deploy {
 namespace function {
-float Softmax::Run(float x, float *input_pointer, size_t input_size) {
+bool Softmax::Run(BreezeDeployTensor &tensor, ClassificationResults &result) {
+
+
+  return BreezeDeployPostprocessFunction::Run(tensor, result);
+}
+template<typename T>
+float Softmax::Run(T x, T *input_pointer, size_t input_size) {
   Eigen::Map<Eigen::VectorXf> inputVector(input_pointer, static_cast<long>(input_size));
   auto max_num = inputVector.maxCoeff();
   Eigen::VectorXf softmax = (inputVector.array() - max_num).exp();
   return exp(x - max_num) / softmax.sum();
 }
-float Softmax::Run(float x, std::vector<float> input_vector) {
+template<typename T>
+float Softmax::Run(T x, std::vector<T> input_vector) {
   Eigen::Map<Eigen::VectorXf> inputVector(input_vector.data(), static_cast<long>(input_vector.size()));
   auto max_num = inputVector.maxCoeff();
   Eigen::VectorXf softmax = (inputVector.array() - max_num).exp();

@@ -12,29 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <fstream>
-#include "classification_model.h"
+#include "breeze_deploy/models/classification/classification_model.h"
 namespace breeze_deploy {
 namespace models {
 ClassificationModel::ClassificationModel(const std::string &model_path, const std::string &config_file_path)
 	: BreezeDeployModel(model_path, config_file_path) {
 }
 bool ClassificationModel::SetLabel(const std::string &label_file_path){
-  label_vector_.clear();
-  std::ifstream input_file(label_file_path);
-  if (!input_file.is_open()) {
-	BREEZE_DEPLOY_LOGGER_ERROR("Could not open file: {}.", label_file_path)
-	return false;
-  }
-  std::string line;
-  while (std::getline(input_file, line)) {
-	label_vector_.push_back(line);
-  }
-  input_file.close();
-  return true;
+  return classification_results_.ReadLabelFile(label_file_path);
 }
-const std::vector<ClassificationResult> &ClassificationModel::GetClassificationResult() {
-  return classification_result_vector_;
+const ClassificationResults &ClassificationModel::GetClassificationResults() {
+  return classification_results_;
 }
 }
 }

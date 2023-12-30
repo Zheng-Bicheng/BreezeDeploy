@@ -14,14 +14,18 @@
 
 #ifndef BREEZE_DEPLOY_POSTPROCESS_FUNCTION_SOFTMAX_H_
 #define BREEZE_DEPLOY_POSTPROCESS_FUNCTION_SOFTMAX_H_
-#include <iostream>
-#include <vector>
+#include "breeze_deploy/postprocess_function/breeze_deploy_postprocess_function.h"
 namespace breeze_deploy {
 namespace function {
-class Softmax {
+class Softmax : public BreezeDeployPostprocessFunction {
  public:
-  static float Run(float x, float *input_pointer, size_t input_size);
-  static float Run(float x, std::vector<float> input_vector);
+  bool Run(BreezeDeployTensor &tensor, ClassificationResults &result);
+
+  template<typename T>
+  static float Run(T x, T *input_pointer, size_t input_size);
+
+  template<typename T>
+  static float Run(T x, std::vector<T> input_vector);
 };
 }
 }

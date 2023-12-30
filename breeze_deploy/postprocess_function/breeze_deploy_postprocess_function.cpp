@@ -15,7 +15,7 @@
 #include "breeze_deploy/postprocess_function/breeze_deploy_postprocess_function.h"
 namespace breeze_deploy {
 namespace function {
-bool BreezeDeployPostprocessFunction::Run(BreezeDeployTensor &tensor, std::vector<ClassificationResult> &result) {
+bool BreezeDeployPostprocessFunction::Run(BreezeDeployTensor &tensor, ClassificationResults &result) {
   return false;
 }
 }

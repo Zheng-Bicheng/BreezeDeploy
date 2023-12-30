@@ -21,7 +21,7 @@ namespace function {
 using namespace breeze_deploy::models;
 class BreezeDeployPostprocessFunction {
  public:
-  virtual bool Run(BreezeDeployTensor &tensor, std::vector<ClassificationResult> &result);
+  virtual bool Run(BreezeDeployTensor &tensor, ClassificationResults &result);
 };
 }
 }

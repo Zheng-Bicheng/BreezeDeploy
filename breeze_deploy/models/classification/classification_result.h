@@ -19,14 +19,31 @@
 
 namespace breeze_deploy {
 namespace models {
-class ClassificationResult {
+struct ClassificationResult {
+  ClassificationResult(const std::string &temp_label, size_t temp_index, float temp_confidence)
+	  : label{temp_label}, index{temp_index}, confidence{temp_confidence} {}
+  std::string label;
+  size_t index;
+  float confidence;
+};
+class ClassificationResults {
  public:
-  ClassificationResult() = default;
-  ClassificationResult(std::string label, float confidence);
-  ClassificationResult(size_t index, float confidence);
-  std::string label_;
-  size_t index_ = 0;
-  float confidence_ = 0;
+  ClassificationResults() = default;
+
+  void Clear();
+  void EmplaceBack(size_t index, float confidence);
+  std::vector<ClassificationResult> GetClassificationResultVector() const;
+  const std::vector<float> &GetConfidenceVector();
+  const std::vector<size_t> &GetIndexVector();
+  const std::vector<std::string> &GetLabelVector();
+  size_t GetResultSize() const;
+  bool ReadLabelFile(const std::string &label_file_path);
+
+ private:
+  std::vector<std::string> label_vector_{};
+  std::vector<size_t> index_vector_{};
+  std::vector<float> confidence_vector_{};
+  std::vector<std::string> base_labels_{};
 };
 }
 }

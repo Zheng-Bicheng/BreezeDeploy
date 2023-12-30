@@ -47,7 +47,7 @@ bool Resnet::Infer() {
 }
 bool Resnet::Postprocess() {
   for (const auto & i : postprocess_function_vector_) {
-	i->Run(output_tensor_vector_[0], classification_result_vector_);
+	i->Run(output_tensor_vector_[0], classification_results_);
   }
   return true;
 }
