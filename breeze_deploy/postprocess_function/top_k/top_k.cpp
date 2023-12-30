@@ -35,7 +35,7 @@ bool TopK::Run(BreezeDeployTensor &tensor, ClassificationResults &result) {
 
   result.Clear();
   while (!min_heap.empty()) {
-	result.EmplaceBack(min_heap.top().second, min_heap.top().first);
+	result.EmplaceFront(min_heap.top().second, min_heap.top().first);
 	min_heap.pop();
   }
   return true;

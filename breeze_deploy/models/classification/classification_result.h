@@ -16,12 +16,13 @@
 #define BREEZE_DEPLOY_MODELS_CLASSIFICATION_CLASSIFICATION_RESULT_H_
 
 #include <iostream>
+#include <deque>
 
 namespace breeze_deploy {
 namespace models {
 struct ClassificationResult {
-  ClassificationResult(const std::string &temp_label, size_t temp_index, float temp_confidence)
-	  : label{temp_label}, index{temp_index}, confidence{temp_confidence} {}
+  ClassificationResult(std::string temp_label, size_t temp_index, float temp_confidence)
+	  : label{std::move(temp_label)}, index{temp_index}, confidence{temp_confidence} {}
   std::string label;
   size_t index;
   float confidence;
@@ -32,18 +33,19 @@ class ClassificationResults {
 
   void Clear();
   void EmplaceBack(size_t index, float confidence);
+  void EmplaceFront(size_t index, float confidence);
   std::vector<ClassificationResult> GetClassificationResultVector() const;
-  const std::vector<float> &GetConfidenceVector();
-  const std::vector<size_t> &GetIndexVector();
-  const std::vector<std::string> &GetLabelVector();
+  const std::deque<float> &GetConfidenceDeque();
+  const std::deque<size_t> &GetIndexDeque();
+  const std::deque<std::string> &GetLabelDeque();
   size_t GetResultSize() const;
   bool ReadLabelFile(const std::string &label_file_path);
 
  private:
-  std::vector<std::string> label_vector_{};
-  std::vector<size_t> index_vector_{};
-  std::vector<float> confidence_vector_{};
-  std::vector<std::string> base_labels_{};
+  std::deque<std::string> label_deque_{};
+  std::deque<size_t> index_deque_{};
+  std::deque<float> confidence_deque_{};
+  std::deque<std::string> base_labels_{};
 };
 }
 }

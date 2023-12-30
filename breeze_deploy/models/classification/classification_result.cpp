@@ -18,17 +18,23 @@
 namespace breeze_deploy {
 namespace models {
 void ClassificationResults::Clear() {
-  label_vector_.clear();
-  index_vector_.clear();
-  confidence_vector_.clear();
+  label_deque_.clear();
+  index_deque_.clear();
+  confidence_deque_.clear();
 }
 void ClassificationResults::EmplaceBack(size_t index, float confidence) {
-  label_vector_.emplace_back(base_labels_[index]);
-  index_vector_.emplace_back(index);
-  confidence_vector_.emplace_back(confidence);
+  label_deque_.emplace_back(base_labels_[index]);
+  index_deque_.emplace_back(index);
+  confidence_deque_.emplace_back(confidence);
+}
+void ClassificationResults::EmplaceFront(size_t index, float confidence) {
+  label_deque_.emplace_front(base_labels_[index]);
+  index_deque_.emplace_front(index);
+  confidence_deque_.emplace_front(confidence);
+
 }
 size_t ClassificationResults::GetResultSize() const {
-  return index_vector_.size();
+  return index_deque_.size();
 }
 bool ClassificationResults::ReadLabelFile(const std::string &label_file_path) {
   base_labels_.clear();
@@ -44,21 +50,21 @@ bool ClassificationResults::ReadLabelFile(const std::string &label_file_path) {
   input_file.close();
   return true;
 }
-const std::vector<std::string> &ClassificationResults::GetLabelVector() {
-  return label_vector_;
+const std::deque<std::string> &ClassificationResults::GetLabelDeque() {
+  return label_deque_;
 }
-const std::vector<size_t> &ClassificationResults::GetIndexVector() {
-  return index_vector_;
+const std::deque<size_t> &ClassificationResults::GetIndexDeque() {
+  return index_deque_;
 }
-const std::vector<float> &ClassificationResults::GetConfidenceVector() {
-  return confidence_vector_;
+const std::deque<float> &ClassificationResults::GetConfidenceDeque() {
+  return confidence_deque_;
 }
 std::vector<ClassificationResult> ClassificationResults::GetClassificationResultVector() const {
   auto result_size = GetResultSize();
   std::vector<ClassificationResult> classification_results;
   classification_results.reserve(result_size);
   for (int i = 0; i < result_size; ++i) {
-	classification_results.emplace_back(label_vector_[i], index_vector_[i], confidence_vector_[i]);
+	classification_results.emplace_back(label_deque_[i], index_deque_[i], confidence_deque_[i]);
   }
   return classification_results;
 }
