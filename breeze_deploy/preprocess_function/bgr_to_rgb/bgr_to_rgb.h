@@ -19,9 +19,7 @@ namespace breeze_deploy {
 namespace function {
 class BGRToRGB : public BreezeDeployPreprocessFunction {
  public:
-  BGRToRGB();
-  ~BGRToRGB() override;
-  bool Run(BreezeDeployMat &tensor) override;
+  bool Run(BreezeDeployMat &breeze_deploy_mat) override;
 };
 }
 }

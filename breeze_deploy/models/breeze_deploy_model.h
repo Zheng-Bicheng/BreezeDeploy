@@ -18,11 +18,12 @@
 #include <iostream>
 #include <memory>
 #include "breeze_deploy/backends/breeze_deploy_backend.h"
-#include "breeze_deploy/preprocess_function/preprocess_function.h"
-#include "breeze_deploy/core/breeze_deploy_tensor.h"
-#include "breeze_deploy/core/breeze_deploy_mat.h"
-#include "breeze_deploy/core/breeze_deploy_time.h"
 #include "breeze_deploy/core/breeze_deploy_logger.h"
+#include "breeze_deploy/core/breeze_deploy_mat.h"
+#include "breeze_deploy/core/breeze_deploy_tensor.h"
+#include "breeze_deploy/core/breeze_deploy_time.h"
+#include "breeze_deploy/postprocess_function/postprocess_function.h"
+#include "breeze_deploy/preprocess_function/preprocess_function.h"
 
 namespace breeze_deploy {
 namespace models {
@@ -43,6 +44,7 @@ class BreezeDeployModel {
 
   // Model Initialize
   bool ReadPreprocessYAML();
+  bool ReadPostprocessYAML();
 
   // Model Predict
   std::vector<std::shared_ptr<BreezeDeployPreprocessFunction>> preprocess_function_vector_{};
@@ -52,6 +54,7 @@ class BreezeDeployModel {
   BreezeDeployBackendOption breeze_deploy_backend_option_;
   std::shared_ptr<BreezeDeployBackend> breeze_deploy_backend_ = nullptr;
   virtual bool Infer();
+  std::vector<std::shared_ptr<BreezeDeployPostprocessFunction>> postprocess_function_vector_{};
   virtual bool Postprocess();
 };
 }

@@ -15,10 +15,8 @@
 #include "breeze_deploy/preprocess_function/bgr_to_rgb/bgr_to_rgb.h"
 namespace breeze_deploy {
 namespace function {
-BGRToRGB::BGRToRGB() = default;
-BGRToRGB::~BGRToRGB() = default;
-bool BGRToRGB::Run(BreezeDeployMat &tensor) {
-  cv::Mat &opencv_mat = tensor.GetMat();
+bool BGRToRGB::Run(BreezeDeployMat &breeze_deploy_mat) {
+  cv::Mat &opencv_mat = breeze_deploy_mat.GetMat();
   cv::cvtColor(opencv_mat, opencv_mat, cv::COLOR_BGR2RGB);
   return true;
 }

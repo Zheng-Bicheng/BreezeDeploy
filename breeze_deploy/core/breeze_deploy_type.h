@@ -17,6 +17,7 @@
 #include <iostream>
 namespace breeze_deploy {
 enum class BreezeDeployDataType {
+  UNKNOWN,
   UINT8,
   FP32
 };

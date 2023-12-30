@@ -22,8 +22,7 @@ namespace function {
 class Resize : public BreezeDeployPreprocessFunction {
  public:
   Resize(int width, int height);
-  ~Resize() override;
-  bool Run(BreezeDeployMat &tensor) override;
+  bool Run(BreezeDeployMat &breeze_deploy_mat) override;
 
  private:
   int width_ = 0;

@@ -1,4 +1,4 @@
-// Copyright (c) 2023/12/27 Zheng-Bicheng. All Rights Reserved.
+// Copyright (c) 2023/12/30 Zheng-Bicheng. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,15 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef BREEZE_DEPLOY_PREPROCESS_FUNCTION_HWC_TO_CHW_HWC_TO_CHW_H_
-#define BREEZE_DEPLOY_PREPROCESS_FUNCTION_HWC_TO_CHW_HWC_TO_CHW_H_
-#include "breeze_deploy/preprocess_function/breeze_deploy_preprocess_function.h"
+#ifndef BREEZE_DEPLOY_POSTPROCESS_FUNCTION_TOPK_TOP_K_H_
+#define BREEZE_DEPLOY_POSTPROCESS_FUNCTION_TOPK_TOP_K_H_
+#include "breeze_deploy/postprocess_function/breeze_deploy_postprocess_function.h"
 namespace breeze_deploy {
 namespace function {
-class HWCToCHW : public BreezeDeployPreprocessFunction {
+class TopK : public BreezeDeployPostprocessFunction {
  public:
-  bool Run(BreezeDeployMat &breeze_deploy_mat) override;
+  explicit TopK(size_t k);
+  virtual bool Run(BreezeDeployTensor &tensor, std::vector<ClassificationResult> &result) override;
+ private:
+  size_t k_ = 1;
 };
 }
 }
-#endif //BREEZE_DEPLOY_PREPROCESS_FUNCTION_HWC_TO_CHW_HWC_TO_CHW_H_
+#endif //BREEZE_DEPLOY_POSTPROCESS_FUNCTION_TOPK_TOP_K_H_

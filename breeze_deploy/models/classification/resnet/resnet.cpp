@@ -37,35 +37,18 @@ bool Resnet::Preprocess(const cv::Mat &input_mat) {
   }
 
   auto tensor_data = breeze_deploy_mat.GetMat().data;
-  auto tensor_size = breeze_deploy_mat.GetBytes();
-  input_tensor_vector_[0].SetTensorData(tensor_data, tensor_size, BreezeDeployDataType::FP32);
+  auto tensor_size = breeze_deploy_mat.GetMatDataByteSize();
+  auto tensor_data_type = breeze_deploy_mat.GetMatDataType();
+  input_tensor_vector_[0].SetTensorData(tensor_data, tensor_size, tensor_data_type);
   return true;
 }
 bool Resnet::Infer() {
   return breeze_deploy_backend_->Infer(input_tensor_vector_, output_tensor_vector_);
 }
 bool Resnet::Postprocess() {
-  auto output_tensor_data = reinterpret_cast<float *>(output_tensor_vector_[0].GetTensorDataPointer());
-  auto output_tensor_size = output_tensor_vector_[0].GetTensorSize() / sizeof(float);
-
-  // 排序
-  auto max_element = std::max_element(output_tensor_data, output_tensor_data + output_tensor_size);
-  auto max_element_index = max_element - output_tensor_data;
-
-  // 执行TopK
-//  auto confidence = Softmax::Run(*max_element, output_tensor_data, output_tensor_size);
-  auto confidence = *max_element;
-  classification_result_vector_.clear();
-
-  if (label_vector_.empty()) {
-	classification_result_vector_.emplace_back(std::to_string(max_element_index), confidence);
-	return true;
+  for (const auto & i : postprocess_function_vector_) {
+	i->Run(output_tensor_vector_[0], classification_result_vector_);
   }
-
-  if (label_vector_.size() <= max_element_index) {
-	return false;
-  }
-  classification_result_vector_.emplace_back(label_vector_[max_element_index], confidence);
   return true;
 }
 }

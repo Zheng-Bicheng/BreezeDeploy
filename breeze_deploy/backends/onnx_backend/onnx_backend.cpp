@@ -98,7 +98,7 @@ bool ONNXBackend::Infer(std::vector<BreezeDeployTensor> &input_tensor, std::vect
   std::vector<Ort::Value> input_tensors{};
   for (int i = 0; i < input_tensor.size(); ++i) {
 	auto p_data = reinterpret_cast<float *>(input_tensor[i].GetTensorDataPointer());
-	auto p_data_element_count = input_tensor[i].GetTensorSize() / sizeof(float);
+	auto p_data_element_count = input_tensor[i].GetTensorSize();
 	auto shape = input_tensor_info_vector_[i].shape.data();
 	auto shape_len = input_tensor_info_vector_[i].shape.size();
 	input_tensors.emplace_back(Ort::Value::CreateTensor<float>(

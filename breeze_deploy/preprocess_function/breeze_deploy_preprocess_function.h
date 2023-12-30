@@ -23,9 +23,7 @@ namespace breeze_deploy {
 namespace function {
 class BreezeDeployPreprocessFunction {
  public:
-  BreezeDeployPreprocessFunction();
-  virtual ~BreezeDeployPreprocessFunction();
-  virtual bool Run(BreezeDeployMat &tensor);
+  virtual bool Run(BreezeDeployMat &breeze_deploy_mat);
 };
 }
 }

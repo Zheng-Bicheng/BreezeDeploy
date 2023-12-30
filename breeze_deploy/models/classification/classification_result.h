@@ -1,4 +1,4 @@
-// Copyright (c) 2023/12/27 Zheng-Bicheng. All Rights Reserved.
+// Copyright (c) 2023/12/30 Zheng-Bicheng. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,15 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef BREEZE_DEPLOY_PREPROCESS_FUNCTION_HWC_TO_CHW_HWC_TO_CHW_H_
-#define BREEZE_DEPLOY_PREPROCESS_FUNCTION_HWC_TO_CHW_HWC_TO_CHW_H_
-#include "breeze_deploy/preprocess_function/breeze_deploy_preprocess_function.h"
+#ifndef BREEZE_DEPLOY_MODELS_CLASSIFICATION_CLASSIFICATION_RESULT_H_
+#define BREEZE_DEPLOY_MODELS_CLASSIFICATION_CLASSIFICATION_RESULT_H_
+
+#include <iostream>
+
 namespace breeze_deploy {
-namespace function {
-class HWCToCHW : public BreezeDeployPreprocessFunction {
+namespace models {
+class ClassificationResult {
  public:
-  bool Run(BreezeDeployMat &breeze_deploy_mat) override;
+  ClassificationResult() = default;
+  ClassificationResult(std::string label, float confidence);
+  ClassificationResult(size_t index, float confidence);
+  std::string label_;
+  size_t index_ = 0;
+  float confidence_ = 0;
 };
 }
 }
-#endif //BREEZE_DEPLOY_PREPROCESS_FUNCTION_HWC_TO_CHW_HWC_TO_CHW_H_
+
+#endif //BREEZE_DEPLOY_MODELS_CLASSIFICATION_CLASSIFICATION_RESULT_H_

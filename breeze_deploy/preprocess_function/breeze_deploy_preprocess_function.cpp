@@ -16,9 +16,7 @@
 
 namespace breeze_deploy {
 namespace function {
-BreezeDeployPreprocessFunction::BreezeDeployPreprocessFunction() = default;
-BreezeDeployPreprocessFunction::~BreezeDeployPreprocessFunction() = default;
-bool BreezeDeployPreprocessFunction::Run(BreezeDeployMat &tensor) {
+bool BreezeDeployPreprocessFunction::Run(BreezeDeployMat &breeze_deploy_mat) {
   BREEZE_DEPLOY_LOGGER_ERROR("{} don't support this api.", "BreezeDeployPreprocessFunction")
   return false;
 }

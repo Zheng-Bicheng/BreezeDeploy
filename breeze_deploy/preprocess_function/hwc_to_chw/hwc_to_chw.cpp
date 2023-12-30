@@ -15,10 +15,8 @@
 #include "breeze_deploy/preprocess_function/hwc_to_chw/hwc_to_chw.h"
 namespace breeze_deploy {
 namespace function {
-HWCToCHW::HWCToCHW() = default;
-HWCToCHW::~HWCToCHW() = default;
-bool HWCToCHW::Run(BreezeDeployMat &tensor) {
-  auto &hwc_mat = tensor.GetMat();
+bool HWCToCHW::Run(BreezeDeployMat &breeze_deploy_mat) {
+  auto &hwc_mat = breeze_deploy_mat.GetMat();
   auto channel_mat_vector = std::vector<cv::Mat>(3);
   cv::split(hwc_mat, channel_mat_vector);
   for (int i = 0; i < channel_mat_vector.size(); ++i) {

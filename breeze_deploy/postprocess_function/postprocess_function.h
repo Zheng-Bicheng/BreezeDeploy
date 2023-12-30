@@ -14,5 +14,7 @@
 
 #ifndef BREEZE_DEPLOY_POSTPROCESS_FUNCTION_POSTPROCESS_FUNCTION_H_
 #define BREEZE_DEPLOY_POSTPROCESS_FUNCTION_POSTPROCESS_FUNCTION_H_
+#include "breeze_deploy/postprocess_function/breeze_deploy_postprocess_function.h"
 #include "breeze_deploy/postprocess_function/softmax/softmax.h"
+#include "breeze_deploy/postprocess_function/top_k/top_k.h"
 #endif //BREEZE_DEPLOY_POSTPROCESS_FUNCTION_POSTPROCESS_FUNCTION_H_

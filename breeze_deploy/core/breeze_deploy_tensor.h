@@ -21,11 +21,12 @@ namespace breeze_deploy {
 class BreezeDeployTensor {
  public:
   BreezeDeployTensor();
-  explicit BreezeDeployTensor(uint8_t *tensor_data_ptr, size_t tensor_data_size);
+//  explicit BreezeDeployTensor(uint8_t *tensor_data_ptr, size_t tensor_data_size);
 
   void SetTensorData(uint8_t *tensor_data_ptr, size_t tensor_data_size, BreezeDeployDataType tensor_data_type);
   uint8_t *GetTensorDataPointer();
   size_t GetTensorSize() const;
+  size_t GetTensorDataByteSize() const;
 
  private:
   uint8_t *tensor_data_ptr_ = nullptr;

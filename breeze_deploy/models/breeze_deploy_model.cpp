@@ -69,6 +69,38 @@ bool BreezeDeployModel::ReadPreprocessYAML() {
 	} else {
 	  BREEZE_DEPLOY_LOGGER_ERROR("The preprocess function name only supports [Resize, BGRToRGB, Normalize, HWCToCHW], "
 								 "but now it is called {}.", function_name)
+	  return false;
+	}
+  }
+  return true;
+}
+bool BreezeDeployModel::ReadPostprocessYAML() {
+  postprocess_function_vector_.clear();
+  YAML::Node yaml_config;
+  try {
+	yaml_config = YAML::LoadFile(config_file_path_);
+  } catch (YAML::BadFile &e) {
+	BREEZE_DEPLOY_LOGGER_ERROR("Failed to load yaml file: {}.", config_file_path_)
+	return false;
+  }
+
+  // Get postprocess root node
+  auto postprocess_config = yaml_config["postprocess"];
+  // Traverse postprocess root node branches
+  for (const auto &postprocess_function_config : postprocess_config) {
+	auto function_name = postprocess_function_config.begin()->first.as<std::string>();
+	if (function_name == "TopK") {
+	  auto &k_config_node = postprocess_function_config.begin()->second["k"];
+	  if (!k_config_node) {
+		BREEZE_DEPLOY_LOGGER_ERROR("The function(TopK) must have a k element.")
+		return false;
+	  }
+	  auto k = k_config_node.as<size_t>();
+	  postprocess_function_vector_.push_back(std::make_shared<TopK>(k));
+	} else {
+	  BREEZE_DEPLOY_LOGGER_ERROR("The postprocess function name only supports [TopK], "
+								 "but now it is called {}.", function_name)
+	  return false;
 	}
   }
   return true;
@@ -76,7 +108,13 @@ bool BreezeDeployModel::ReadPreprocessYAML() {
 bool BreezeDeployModel::Initialize(const BreezeDeployBackendOption &breeze_deploy_backend_option) {
   // Read preprocess config yaml
   if (!ReadPreprocessYAML()) {
-	BREEZE_DEPLOY_LOGGER_ERROR("Failed to read preprocess function from yaml: {}.", config_file_path_);
+	BREEZE_DEPLOY_LOGGER_ERROR("Failed to read preprocess function from yaml: {}.", config_file_path_)
+	return false;
+  }
+
+  // Read postprocess config yaml
+  if (!ReadPostprocessYAML()) {
+	BREEZE_DEPLOY_LOGGER_ERROR("Failed to read postprocess function from yaml: {}.", config_file_path_)
 	return false;
   }
 

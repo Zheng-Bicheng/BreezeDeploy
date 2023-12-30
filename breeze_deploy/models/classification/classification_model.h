@@ -15,23 +15,15 @@
 #ifndef BREEZE_DEPLOY_MODELS_CLASSIFICATION_CLASSIFICATION_MODEL_H_
 #define BREEZE_DEPLOY_MODELS_CLASSIFICATION_CLASSIFICATION_MODEL_H_
 #include <utility>
-
 #include "breeze_deploy/models/breeze_deploy_model.h"
+#include "breeze_deploy/models/classification/classification_result.h"
 namespace breeze_deploy {
 namespace models {
-class ClassificationResult {
- public:
-  ClassificationResult() = default;
-  ClassificationResult(std::string label, float confidence) :
-	  label_{std::move(label)}, confidence_{confidence} {};
-  std::string label_;
-  float confidence_ = 0;
-};
 class ClassificationModel : public BreezeDeployModel {
  public:
-  ClassificationModel(const std::string& model_path, const std::string& config_file_path);
+  ClassificationModel(const std::string &model_path, const std::string &config_file_path);
   bool SetLabel(const std::string &label_file_path);
-  const std::vector<ClassificationResult>& GetClassificationResult();
+  const std::vector<ClassificationResult> &GetClassificationResult();
 
  protected:
   std::vector<std::string> label_vector_;

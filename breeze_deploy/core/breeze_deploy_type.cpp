@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "breeze_deploy/core/breeze_deploy_logger.h"
 #include "breeze_deploy/core/breeze_deploy_type.h"
 namespace breeze_deploy {
 size_t GetBreezeDeployDataTypeSize(BreezeDeployDataType breeze_deploy_data_type) {
@@ -22,6 +23,9 @@ size_t GetBreezeDeployDataTypeSize(BreezeDeployDataType breeze_deploy_data_type)
 	  break;
 	case BreezeDeployDataType::FP32:
 	  size = sizeof(float);
+	  break;
+	case BreezeDeployDataType::UNKNOWN:
+	  size = 0;
 	  break;
   }
   return size;

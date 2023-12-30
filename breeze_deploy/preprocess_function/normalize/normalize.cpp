@@ -29,9 +29,8 @@ Normalize::Normalize(const std::vector<float> &mean, const std::vector<float> &s
 	beta_.push_back(static_cast<float>(beta));
   }
 }
-Normalize::~Normalize() = default;
-bool Normalize::Run(BreezeDeployMat &tensor) {
-  auto &cv_mat = tensor.GetMat();
+bool Normalize::Run(BreezeDeployMat &breeze_deploy_mat) {
+  auto &cv_mat = breeze_deploy_mat.GetMat();
   std::vector<cv::Mat> split_im;
   cv::split(cv_mat, split_im);
   for (int c = 0; c < cv_mat.channels(); c++) {

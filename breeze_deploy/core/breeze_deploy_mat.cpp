@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 #include "breeze_deploy/core/breeze_deploy_mat.h"
+#include "breeze_deploy/core/breeze_deploy_logger.h"
 namespace breeze_deploy {
 BreezeDeployMat::BreezeDeployMat(const cv::Mat &mat) {
   mat_ = mat;
@@ -40,7 +41,23 @@ int BreezeDeployMat::GetChannel() const {
 void BreezeDeployMat::SetChannel(int channel) {
   channel_ = channel;
 }
-size_t BreezeDeployMat::GetBytes() const {
-  return GetHeight() * GetWidth() * GetChannel() * sizeof(float);
+size_t BreezeDeployMat::GetMatDataByteSize() const {
+  // Get the total number of data in the matrix.
+  auto totalElements = mat_.total();
+  // Get the number of bytes per element.
+  auto elementSize = mat_.elemSize();
+  // Calculate the total number of bytes.
+  auto totalSize = totalElements * elementSize;
+  return totalSize;
+}
+BreezeDeployDataType BreezeDeployMat::GetMatDataType() {
+  auto mat_data_type = mat_.type();
+  switch (mat_data_type) {
+	case CV_8UC3: return BreezeDeployDataType::UINT8;
+	case CV_32FC3: return BreezeDeployDataType::FP32;
+	default: BREEZE_DEPLOY_LOGGER_ERROR("BreezeDeployMat only support CV_8UC3/CV_32FC3, but type is {}.",
+										cv::typeToString(mat_data_type))
+	  return BreezeDeployDataType::UNKNOWN;
+  }
 }
 }

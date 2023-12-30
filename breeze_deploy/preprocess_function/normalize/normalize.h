@@ -23,8 +23,7 @@ namespace function {
 class Normalize : public BreezeDeployPreprocessFunction {
  public:
   Normalize(const std::vector<float> &mean, const std::vector<float> &std);
-  ~Normalize() override;
-  bool Run(BreezeDeployMat &tensor) override;
+  bool Run(BreezeDeployMat &breeze_deploy_mat) override;
 
  private:
   std::vector<float> alpha_;

@@ -16,22 +16,24 @@
 #define BREEZE_DEPLOY_CORE_BREEZE_DEPLOY_MAT_H_
 #include <opencv2/opencv.hpp>
 #include "breeze_deploy/core/breeze_deploy_type.h"
-
 namespace breeze_deploy {
 class BreezeDeployMat {
  public:
   explicit BreezeDeployMat(const cv::Mat &mat);
+
   cv::Mat &GetMat();
 
   int GetWidth() const;
   void SetWidth(int width);
+
   int GetHeight() const;
   void SetHeight(int height);
+
   int GetChannel() const;
   void SetChannel(int channel);
 
-  size_t GetBytes() const;
-
+  size_t GetMatDataByteSize() const;
+  BreezeDeployDataType GetMatDataType();
  private:
   cv::Mat mat_{};
   int channel_ = 0;

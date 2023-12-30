@@ -16,23 +16,22 @@
 breeze_deploy::function::Resize::Resize(int width, int height)
 	: width_{width}, height_{height} {
 }
-breeze_deploy::function::Resize::~Resize() = default;
-bool breeze_deploy::function::Resize::Run(BreezeDeployMat &tensor) {
+bool breeze_deploy::function::Resize::Run(BreezeDeployMat &breeze_deploy_mat) {
   if (width_ == 0 || height_ == 0) {
 	BREEZE_DEPLOY_LOGGER_ERROR("width_ == 0 || height_ == 0")
 	return false;
   }
 
-  if (width_ == tensor.GetWidth() && height_ == tensor.GetHeight()) {
+  if (width_ == breeze_deploy_mat.GetWidth() && height_ == breeze_deploy_mat.GetHeight()) {
 	return true;
   }
-  auto &mat = tensor.GetMat();
+  auto &mat = breeze_deploy_mat.GetMat();
   // cv::INTER_NEAREST 214911 	204187 	223560 	0.989138
   // cv::INTER_CUBIC   586599					0.998558
   // cv::INTER_LINEAR  291267	269096			0.998771
   // cv::INTER_AREA    max						0.999129
   cv::resize(mat, mat, cv::Size(width_, height_), 0, 0, cv::INTER_NEAREST);
-  tensor.SetHeight(height_);
-  tensor.SetWidth(width_);
+  breeze_deploy_mat.SetHeight(height_);
+  breeze_deploy_mat.SetWidth(width_);
   return true;
 }
