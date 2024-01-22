@@ -20,7 +20,7 @@ namespace function {
 class TopK : public BreezeDeployPostprocessFunction {
  public:
   explicit TopK(size_t k);
-  bool Run(BreezeDeployTensor &tensor, ClassificationResults &result) override;
+  bool Run(BreezeDeployTensor &tensor, std::vector<ClassificationResult> &result) override;
  private:
   size_t k_ = 1;
 };

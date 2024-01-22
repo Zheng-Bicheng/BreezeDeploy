@@ -36,7 +36,7 @@ bool LetterBox::Run(BreezeDeployMat &breeze_deploy_mat) {
   int bottom = int(round(pad_height + 0.1));
   int left = int(round(pad_width - 0.1));
   int right = int(round(pad_width + 0.1));
-  cv::copyMakeBorder(src, src, top, bottom, left, right, 0, cv::Scalar(127, 127, 127));
+  cv::copyMakeBorder(src, src, top, bottom, left, right, 0, cv::Scalar(114.0, 114.0, 114.0));
   return true;
 }
 }

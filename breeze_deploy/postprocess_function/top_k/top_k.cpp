@@ -18,7 +18,7 @@
 namespace breeze_deploy {
 namespace function {
 TopK::TopK(size_t k) : k_{k} {}
-bool TopK::Run(BreezeDeployTensor &tensor, ClassificationResults &result) {
+bool TopK::Run(BreezeDeployTensor &tensor, std::vector<ClassificationResult> &result) {
   // 使用最小堆来保存 TopK 元素，最小堆的每一个元素为{float confidence, int index}并将使用std::pair来表示
   std::priority_queue<std::pair<float, size_t>, std::vector<std::pair<float, size_t>>, std::greater<>> min_heap;
 
@@ -33,11 +33,12 @@ bool TopK::Run(BreezeDeployTensor &tensor, ClassificationResults &result) {
 	}
   }
 
-  result.Clear();
+  result.clear();
   while (!min_heap.empty()) {
-	result.EmplaceFront(min_heap.top().second, min_heap.top().first);
+	result.emplace_back(min_heap.top().second, min_heap.top().first);
 	min_heap.pop();
   }
+  std::reverse(result.begin(), result.end());
   return true;
 }
 }

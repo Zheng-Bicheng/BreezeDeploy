@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+#if 0
 #include <cmath>
 #include <Eigen/Dense>
 #include "breeze_deploy/postprocess_function/softmax/softmax.h"
@@ -36,3 +37,4 @@ float Softmax::Run(T x, std::vector<T> input_vector) {
 }
 }
 }
+#endif

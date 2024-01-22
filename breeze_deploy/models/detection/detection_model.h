@@ -16,6 +16,7 @@
 #define BREEZE_DEPLOY_MODELS_DETECTION_DETECTION_MODEL_H_
 #include <utility>
 #include "breeze_deploy/models/breeze_deploy_model.h"
+#include "breeze_deploy/models/detection/detection_result.h"
 namespace breeze_deploy {
 namespace models {
 class DetectionModel  : public BreezeDeployModel {

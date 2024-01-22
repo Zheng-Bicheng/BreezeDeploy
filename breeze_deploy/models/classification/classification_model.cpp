@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
+#include <fstream>
 #include "breeze_deploy/models/classification/classification_model.h"
 namespace breeze_deploy {
 namespace models {
@@ -47,12 +47,32 @@ bool ClassificationModel::Postprocess() {
   for (const auto & i : postprocess_function_vector_) {
 	i->Run(output_tensor_vector_[0], classification_results_);
   }
+
+  if(classification_labels_.empty()) {
+	BREEZE_DEPLOY_LOGGER_WARN("The classification labels is empty.");
+	return true;
+  }
+
+  for (auto & classification_result : classification_results_) {
+	classification_result.label = classification_labels_[classification_result.index];
+  }
   return true;
 }
 bool ClassificationModel::SetLabel(const std::string &label_file_path){
-  return classification_results_.ReadLabelFile(label_file_path);
+  classification_labels_.clear();
+  std::ifstream input_file(label_file_path);
+  if (!input_file.is_open()) {
+	BREEZE_DEPLOY_LOGGER_ERROR("Could not open file: {}.", label_file_path)
+	return false;
+  }
+  std::string line;
+  while (std::getline(input_file, line)) {
+	classification_labels_.push_back(line);
+  }
+  input_file.close();
+  return true;
 }
-const ClassificationResults &ClassificationModel::GetClassificationResults() {
+const std::vector<ClassificationResult> &ClassificationModel::GetClassificationResults() {
   return classification_results_;
 }
 }

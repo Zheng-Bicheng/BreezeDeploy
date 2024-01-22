@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef BREEZE_DEPLOY_MODELS_CLASSIFICATION_CLASSIFICATION_RESULT_H_
-#define BREEZE_DEPLOY_MODELS_CLASSIFICATION_CLASSIFICATION_RESULT_H_
+#ifndef BREEZE_DEPLOY_MODELS_DETECTION_DETECTION_RESULT_H_
+#define BREEZE_DEPLOY_MODELS_DETECTION_DETECTION_RESULT_H_
 
 #include <iostream>
 
 namespace breeze_deploy {
 namespace models {
-struct ClassificationResult {
-  ClassificationResult(size_t temp_index, float temp_confidence)
+struct DetectionResult {
+  DetectionResult(size_t temp_index, float temp_confidence)
 	  : index{temp_index}, confidence{temp_confidence} {}
-  ClassificationResult(std::string temp_label, size_t temp_index, float temp_confidence)
+  DetectionResult(std::string temp_label, size_t temp_index, float temp_confidence)
 	  : label{std::move(temp_label)}, index{temp_index}, confidence{temp_confidence} {}
   void SetLabel(const std::string &temp_label) {
 	label = temp_label;
@@ -34,4 +34,4 @@ struct ClassificationResult {
 }
 }
 
-#endif //BREEZE_DEPLOY_MODELS_CLASSIFICATION_CLASSIFICATION_RESULT_H_
+#endif //BREEZE_DEPLOY_MODELS_DETECTION_DETECTION_RESULT_H_

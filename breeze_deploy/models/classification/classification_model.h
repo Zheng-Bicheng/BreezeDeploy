@@ -23,14 +23,14 @@ class ClassificationModel : public BreezeDeployModel {
  public:
   ClassificationModel(const std::string &model_path, const std::string &config_file_path);
   bool SetLabel(const std::string &label_file_path);
-  const ClassificationResults &GetClassificationResults();
+  const std::vector<ClassificationResult> &GetClassificationResults();
 
  protected:
   bool Preprocess(const cv::Mat &input_mat) override;
   bool Infer() override;
   bool Postprocess() override;
-  std::vector<std::string> label_vector_;
-  ClassificationResults classification_results_;
+  std::vector<ClassificationResult> classification_results_;
+  std::deque<std::string> classification_labels_{};
 };
 }
 }

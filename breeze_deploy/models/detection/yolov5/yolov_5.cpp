@@ -41,7 +41,6 @@ bool YOLOV5::Preprocess(const cv::Mat &input_mat) {
   return true;
 }
 bool YOLOV5::Postprocess() {
-
   return BreezeDeployModel::Postprocess();
 }
 }

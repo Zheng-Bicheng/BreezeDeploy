@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
+#if 0
 #ifndef BREEZE_DEPLOY_POSTPROCESS_FUNCTION_SOFTMAX_H_
 #define BREEZE_DEPLOY_POSTPROCESS_FUNCTION_SOFTMAX_H_
 #include "breeze_deploy/postprocess_function/breeze_deploy_postprocess_function.h"
@@ -30,3 +30,4 @@ class Softmax : public BreezeDeployPostprocessFunction {
 }
 }
 #endif //BREEZE_DEPLOY_POSTPROCESS_FUNCTION_SOFTMAX_H_
+#endif

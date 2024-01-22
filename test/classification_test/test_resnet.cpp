@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
   cost.End();
   cost.PrintInfo("Resnet", 1.0 / 100, BreezeDeployTimeType::Milliseconds);
 
-  auto classification_results = resnet.GetClassificationResults().GetClassificationResultVector();
+  auto classification_results = resnet.GetClassificationResults();
   for (auto &classification_result : classification_results) {
 	printf("Label is %s,confidence is %f\n", classification_result.label.c_str(), classification_result.confidence);
   }
