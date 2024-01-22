@@ -17,6 +17,37 @@ namespace breeze_deploy {
 namespace models {
 ClassificationModel::ClassificationModel(const std::string &model_path, const std::string &config_file_path)
 	: BreezeDeployModel(model_path, config_file_path) {
+  input_tensor_vector_.resize(1);
+  output_tensor_vector_.resize(1);
+}
+bool ClassificationModel::Preprocess(const cv::Mat &input_mat) {
+  if (input_mat.empty()) {
+	BREEZE_DEPLOY_LOGGER_ERROR("input_mat is empty.")
+	return false;
+  }
+
+  BreezeDeployMat breeze_deploy_mat(input_mat);
+  for (const auto &preprocess_function : preprocess_function_vector_) {
+	if (!preprocess_function->Run(breeze_deploy_mat)) {
+	  BREEZE_DEPLOY_LOGGER_ERROR("Failed to run preprocess_function.")
+	  return false;
+	}
+  }
+
+  auto tensor_data = breeze_deploy_mat.GetMat().data;
+  auto tensor_size = breeze_deploy_mat.GetMatDataByteSize();
+  auto tensor_data_type = breeze_deploy_mat.GetMatDataType();
+  input_tensor_vector_[0].SetTensorData(tensor_data, tensor_size, tensor_data_type);
+  return true;
+}
+bool ClassificationModel::Infer() {
+  return breeze_deploy_backend_->Infer(input_tensor_vector_, output_tensor_vector_);
+}
+bool ClassificationModel::Postprocess() {
+  for (const auto & i : postprocess_function_vector_) {
+	i->Run(output_tensor_vector_[0], classification_results_);
+  }
+  return true;
 }
 bool ClassificationModel::SetLabel(const std::string &label_file_path){
   return classification_results_.ReadLabelFile(label_file_path);

@@ -16,9 +16,8 @@
 #include "breeze_deploy/postprocess_function/softmax/softmax.h"
 namespace breeze_deploy {
 namespace function {
+// Todo: Move Softmax to TopK
 bool Softmax::Run(BreezeDeployTensor &tensor, ClassificationResults &result) {
-
-
   return BreezeDeployPostprocessFunction::Run(tensor, result);
 }
 template<typename T>

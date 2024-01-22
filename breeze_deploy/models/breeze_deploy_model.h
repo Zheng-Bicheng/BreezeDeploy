@@ -46,14 +46,18 @@ class BreezeDeployModel {
   bool ReadPreprocessYAML();
   bool ReadPostprocessYAML();
 
-  // Model Predict
+  // Model Preprocess
   std::vector<std::shared_ptr<BreezeDeployPreprocessFunction>> preprocess_function_vector_{};
   virtual bool Preprocess(const cv::Mat &input_mat);
+
+  // Model Infer
   std::vector<BreezeDeployTensor> input_tensor_vector_{};
   std::vector<BreezeDeployTensor> output_tensor_vector_{};
   BreezeDeployBackendOption breeze_deploy_backend_option_;
   std::shared_ptr<BreezeDeployBackend> breeze_deploy_backend_ = nullptr;
   virtual bool Infer();
+
+  // Model PostProcess
   std::vector<std::shared_ptr<BreezeDeployPostprocessFunction>> postprocess_function_vector_{};
   virtual bool Postprocess();
 };

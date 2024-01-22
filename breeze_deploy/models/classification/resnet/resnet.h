@@ -20,16 +20,7 @@
 
 namespace breeze_deploy {
 namespace models {
-class Resnet : public ClassificationModel {
- public:
-  Resnet(const std::string& model_path, const std::string& config_file_path);
-  ~Resnet();
-
- protected:
-  bool Preprocess(const cv::Mat &input_mat) override;
-  bool Infer() override;
-  bool Postprocess() override;
-};
+using Resnet = ClassificationModel;
 }
 }
 

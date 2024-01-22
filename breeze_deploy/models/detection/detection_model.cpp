@@ -1,4 +1,4 @@
-// Copyright (c) 2023/12/29 Zheng-Bicheng. All Rights Reserved.
+// Copyright (c) 2024/1/22 Zheng-Bicheng. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,12 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef BREEZE_DEPLOY_MODELS_CLASSIFICATION_GHOSTNET_GHOST_NET_H_
-#define BREEZE_DEPLOY_MODELS_CLASSIFICATION_GHOSTNET_GHOST_NET_H_
-#include "breeze_deploy/models/classification/classification_model.h"
+#include "breeze_deploy/models/detection/detection_model.h"
+
 namespace breeze_deploy {
 namespace models {
-using GhostNet = ClassificationModel;
+
+DetectionModel::DetectionModel(const std::string &model_path, const std::string &config_file_path)
+	: BreezeDeployModel(model_path, config_file_path) {
+}
+
 }
 }
-#endif //BREEZE_DEPLOY_MODELS_CLASSIFICATION_GHOSTNET_GHOST_NET_H_
