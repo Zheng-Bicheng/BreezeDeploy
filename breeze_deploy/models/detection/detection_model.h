@@ -25,6 +25,7 @@ class DetectionModel  : public BreezeDeployModel {
 
  protected:
   bool Infer() override;
+  std::vector<DetectionResult> detection_results;
 };
 }
 }

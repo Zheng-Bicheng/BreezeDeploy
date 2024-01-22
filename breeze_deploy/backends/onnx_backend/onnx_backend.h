@@ -32,6 +32,9 @@ class ONNXBackend : public BreezeDeployBackend {
   ~ONNXBackend() override = default;
   bool Initialize(const BreezeDeployBackendOption &breeze_deploy_backend_option) override;
   bool Infer(std::vector<BreezeDeployTensor> &input_tensor, std::vector<BreezeDeployTensor> &output_tensor) override;
+  std::vector<BreezeDeployTensorInfo> GetInputTensorInfo() override;
+  std::vector<BreezeDeployTensorInfo> GetOutputTensorInfo() override;
+
 
  private:
   Ort::Env env_{};
@@ -39,10 +42,12 @@ class ONNXBackend : public BreezeDeployBackend {
   Ort::Session session_{nullptr};
 
   std::vector<ONNXTensorInfo> input_tensor_info_vector_{};
-  std::vector<ONNXTensorInfo> output_tensor_info_vector_{};
-
   std::vector<const char *> input_node_vector_{};
+  void SetInputTensorInfo();
+
+  std::vector<ONNXTensorInfo> output_tensor_info_vector_{};
   std::vector<const char *> output_node_vector_{};
+  void SetOutputTensorInfo();
 
   std::vector<Ort::Value> output_tensors_{};
 };

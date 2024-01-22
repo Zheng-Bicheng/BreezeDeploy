@@ -35,30 +35,36 @@ bool ClassificationModel::Preprocess(const cv::Mat &input_mat) {
   }
 
   auto tensor_data = breeze_deploy_mat.GetMat().data;
-  auto tensor_size = breeze_deploy_mat.GetMatDataByteSize();
   auto tensor_data_type = breeze_deploy_mat.GetMatDataType();
-  input_tensor_vector_[0].SetTensorData(tensor_data, tensor_size, tensor_data_type);
+  auto c = breeze_deploy_mat.GetChannel();
+  auto h = breeze_deploy_mat.GetHeight();
+  auto w = breeze_deploy_mat.GetWidth();
+  if (breeze_deploy_mat.GetMatDataFormat() == BreezeDeployDataFormat::CHW) {
+	input_tensor_vector_[0].SetTensorData(tensor_data, {1, c, h, w}, tensor_data_type);
+  } else {
+	input_tensor_vector_[0].SetTensorData(tensor_data, {1, h, w, c}, tensor_data_type);
+  }
   return true;
 }
 bool ClassificationModel::Infer() {
   return breeze_deploy_backend_->Infer(input_tensor_vector_, output_tensor_vector_);
 }
 bool ClassificationModel::Postprocess() {
-  for (const auto & i : postprocess_function_vector_) {
+  for (const auto &i : postprocess_function_vector_) {
 	i->Run(output_tensor_vector_[0], classification_results_);
   }
 
-  if(classification_labels_.empty()) {
+  if (classification_labels_.empty()) {
 	BREEZE_DEPLOY_LOGGER_WARN("The classification labels is empty.");
 	return true;
   }
 
-  for (auto & classification_result : classification_results_) {
+  for (auto &classification_result : classification_results_) {
 	classification_result.label = classification_labels_[classification_result.index];
   }
   return true;
 }
-bool ClassificationModel::SetLabel(const std::string &label_file_path){
+bool ClassificationModel::SetLabel(const std::string &label_file_path) {
   classification_labels_.clear();
   std::ifstream input_file(label_file_path);
   if (!input_file.is_open()) {

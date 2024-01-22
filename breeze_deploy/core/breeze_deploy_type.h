@@ -16,11 +16,16 @@
 #define BREEZE_DEPLOY_CORE_BREEZE_DEPLOY_TYPE_H_
 #include <iostream>
 namespace breeze_deploy {
-enum class BreezeDeployDataType {
+enum class BreezeDeployDataFormat{
+  UNKNOWN,
+  CHW,
+  HWC
+};
+enum class BreezeDeployTensorDataType {
   UNKNOWN,
   UINT8,
   FP32
 };
-size_t GetBreezeDeployDataTypeSize(BreezeDeployDataType breeze_deploy_data_type);
+size_t GetBreezeDeployDataTypeSize(BreezeDeployTensorDataType breeze_deploy_data_type);
 }
 #endif //BREEZE_DEPLOY_CORE_BREEZE_DEPLOY_TYPE_H_

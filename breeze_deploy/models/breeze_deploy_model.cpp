@@ -73,9 +73,26 @@ bool BreezeDeployModel::ReadPreprocessYAML() {
 	  preprocess_function_vector_.push_back(std::make_shared<Normalize>(mean, std));
 	} else if (function_name == "HWCToCHW") {
 	  preprocess_function_vector_.push_back(std::make_shared<HWCToCHW>());
+	} else if (function_name == "LetterBox") {
+	  auto &resize_width_node = preprocess_function_config.begin()->second["width"];
+	  if (!resize_width_node) {
+		BREEZE_DEPLOY_LOGGER_ERROR("The function(Resize) must have a width element.")
+		return false;
+	  }
+	  auto target_width_size = resize_width_node.as<int>();
+
+	  auto &resize_height_node = preprocess_function_config.begin()->second["height"];
+	  if (!resize_height_node) {
+		BREEZE_DEPLOY_LOGGER_ERROR("The function(Resize) must have a height element.")
+		return false;
+	  }
+	  auto target_height_size = resize_height_node.as<int>();
+	  preprocess_function_vector_.push_back(std::make_shared<LetterBox>(target_width_size, target_height_size));
 	} else {
-	  BREEZE_DEPLOY_LOGGER_ERROR("The preprocess function name only supports [Resize, BGRToRGB, Normalize, HWCToCHW], "
-								 "but now it is called {}.", function_name)
+	  BREEZE_DEPLOY_LOGGER_ERROR(
+		  "The preprocess function name only supports [Resize, BGRToRGB, Normalize, HWCToCHW, LetterBox], "
+		  "but now it is called {}.",
+		  function_name)
 	  return false;
 	}
   }
@@ -128,7 +145,7 @@ bool BreezeDeployModel::Initialize(const BreezeDeployBackendOption &breeze_deplo
   // Copy backend option and set model_path.
   breeze_deploy_backend_option_ = breeze_deploy_backend_option;
   breeze_deploy_backend_option_.SetModelPath(model_path_);
-  breeze_deploy_backend_ = std::make_shared<ONNXBackend>();
+  breeze_deploy_backend_ = std::make_unique<ONNXBackend>();
   auto result = breeze_deploy_backend_->Initialize(breeze_deploy_backend_option_);
   return result;
 }

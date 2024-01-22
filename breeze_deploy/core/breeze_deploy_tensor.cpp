@@ -13,26 +13,32 @@
 // limitations under the License.
 
 #include "breeze_deploy/core/breeze_deploy_tensor.h"
+#include "breeze_deploy/core/breeze_deploy_logger.h"
 
 namespace breeze_deploy {
 BreezeDeployTensor::BreezeDeployTensor() = default;
-//BreezeDeployTensor::BreezeDeployTensor(uint8_t *tensor_data_ptr, size_t tensor_data_size)
-//	: tensor_data_ptr_{tensor_data_ptr}, tensor_data_ptr_size_{tensor_data_size} {
-//}
 void BreezeDeployTensor::SetTensorData(uint8_t *tensor_data_ptr,
-									   size_t tensor_data_size,
-									   BreezeDeployDataType tensor_data_type) {
+									   const std::vector<int64_t> &tensor_shape,
+									   BreezeDeployTensorDataType tensor_data_type) {
   tensor_data_ptr_ = tensor_data_ptr;
-  tensor_data_ptr_size_ = tensor_data_size;
-  tensor_data_type_ = tensor_data_type;
+  tensor_info_.tensor_shape = tensor_shape;
+  tensor_info_.tensor_type = tensor_data_type;
+
+  tensor_data_ptr_size_ = 1;
+  for (auto shape : tensor_shape) {
+	tensor_data_ptr_size_ *= shape;
+  }
 }
 uint8_t *BreezeDeployTensor::GetTensorDataPointer() {
   return tensor_data_ptr_;
 }
 size_t BreezeDeployTensor::GetTensorSize() const {
-  return tensor_data_ptr_size_ / GetBreezeDeployDataTypeSize(tensor_data_type_);
+  return tensor_data_ptr_size_;
 }
 size_t BreezeDeployTensor::GetTensorDataByteSize() const {
-  return tensor_data_ptr_size_;
+  return tensor_data_ptr_size_ * GetBreezeDeployDataTypeSize(tensor_info_.tensor_type);
+}
+const BreezeDeployTensorInfo &BreezeDeployTensor::GetTensorInfo() {
+  return tensor_info_;
 }
 }

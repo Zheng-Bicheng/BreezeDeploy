@@ -18,20 +18,28 @@
 #include "breeze_deploy/core/breeze_deploy_type.h"
 
 namespace breeze_deploy {
+struct BreezeDeployTensorInfo {
+  BreezeDeployTensorInfo() = default;
+  std::string tensor_name;
+  std::vector<int64_t> tensor_shape = {0, 0, 0, 0};
+  BreezeDeployTensorDataType tensor_type = BreezeDeployTensorDataType::FP32;
+};
+
 class BreezeDeployTensor {
  public:
   BreezeDeployTensor();
-//  explicit BreezeDeployTensor(uint8_t *tensor_data_ptr, size_t tensor_data_size);
-
-  void SetTensorData(uint8_t *tensor_data_ptr, size_t tensor_data_size, BreezeDeployDataType tensor_data_type);
+  void SetTensorData(uint8_t *tensor_data_ptr,
+					 const std::vector<int64_t> &tensor_shape,
+					 BreezeDeployTensorDataType tensor_data_type);
   uint8_t *GetTensorDataPointer();
   size_t GetTensorSize() const;
   size_t GetTensorDataByteSize() const;
+  const BreezeDeployTensorInfo &GetTensorInfo();
 
  private:
   uint8_t *tensor_data_ptr_ = nullptr;
-  size_t tensor_data_ptr_size_ = 0;
-  BreezeDeployDataType tensor_data_type_ = BreezeDeployDataType::UINT8;
+  uint64_t tensor_data_ptr_size_ = 0;
+  BreezeDeployTensorInfo tensor_info_ = {"", {}, BreezeDeployTensorDataType::UNKNOWN};
 };
 }
 #endif //BREEZE_DEPLOY_MODELS_BREEZE_DEPLOY_TENSOR_H_

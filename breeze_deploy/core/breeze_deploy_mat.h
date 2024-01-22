@@ -33,10 +33,14 @@ class BreezeDeployMat {
 
   // Data Type
   size_t GetMatDataByteSize() const;
-  BreezeDeployDataType GetMatDataType();
+  BreezeDeployTensorDataType GetMatDataType();
 
+  // Data Format
+  BreezeDeployDataFormat GetMatDataFormat() const;
+  void SetDataFormat(BreezeDeployDataFormat format);
  private:
   cv::Mat mat_{};
+  BreezeDeployDataFormat format_ = BreezeDeployDataFormat::HWC;
 };
 }
 #endif //BREEZE_DEPLOY_CORE_BREEZE_DEPLOY_MAT_H_

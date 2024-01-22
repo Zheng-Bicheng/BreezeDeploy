@@ -16,5 +16,6 @@ install_name_tool -add_rpath ${PWD} test_resnet
 # 
 ./test_resnet BreezeDeployModelZoo/classfication/models/ResNet50_vd_QAT.onnx config/classification/classification_onnx_template.yaml BreezeDeployModelZoo/classfication/images/ILSVRC2012_val_00020010.jpg BreezeDeployModelZoo/classfication/labels/ILSVRC2012_label.txt
 ./test_ghostnet BreezeDeployModelZoo/classfication/models/GhostNet_x1_0_QAT.onnx config/classification/classification_onnx_template.yaml BreezeDeployModelZoo/classfication/images/ILSVRC2012_val_00020010.jpg BreezeDeployModelZoo/classfication/labels/ILSVRC2012_label.txt
+./test_yolov5 BreezeDeployModelZoo/detection/models/yolov5n.onnx config/detection/yolov5/yolov5_onnx_template.yaml BreezeDeployModelZoo/detection/images/000000014439.jpg BreezeDeployModelZoo/classfication/labels/ILSVRC2012_label.txt
 
 ```

@@ -40,9 +40,10 @@ class BreezeDeployModel {
   // Model Attribute
   std::string model_name_ = "BreezeDeployModel";
   std::string model_path_;
-  std::string config_file_path_;
+  std::unique_ptr<BreezeDeployBackend> breeze_deploy_backend_ = nullptr;
 
   // Model Initialize
+  std::string config_file_path_;
   bool ReadPreprocessYAML();
   bool ReadPostprocessYAML();
 
@@ -54,7 +55,6 @@ class BreezeDeployModel {
   std::vector<BreezeDeployTensor> input_tensor_vector_{};
   std::vector<BreezeDeployTensor> output_tensor_vector_{};
   BreezeDeployBackendOption breeze_deploy_backend_option_;
-  std::shared_ptr<BreezeDeployBackend> breeze_deploy_backend_ = nullptr;
   virtual bool Infer();
 
   // Model PostProcess

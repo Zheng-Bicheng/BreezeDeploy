@@ -15,16 +15,16 @@
 #include "breeze_deploy/core/breeze_deploy_logger.h"
 #include "breeze_deploy/core/breeze_deploy_type.h"
 namespace breeze_deploy {
-size_t GetBreezeDeployDataTypeSize(BreezeDeployDataType breeze_deploy_data_type) {
+size_t GetBreezeDeployDataTypeSize(BreezeDeployTensorDataType breeze_deploy_data_type) {
   size_t size = 0;
   switch (breeze_deploy_data_type) {
-	case BreezeDeployDataType::UINT8:
+	case BreezeDeployTensorDataType::UINT8:
 	  size = sizeof(uint8_t);
 	  break;
-	case BreezeDeployDataType::FP32:
+	case BreezeDeployTensorDataType::FP32:
 	  size = sizeof(float);
 	  break;
-	case BreezeDeployDataType::UNKNOWN:
+	case BreezeDeployTensorDataType::UNKNOWN:
 	  size = 0;
 	  break;
   }

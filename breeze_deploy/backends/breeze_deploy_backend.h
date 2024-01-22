@@ -24,8 +24,11 @@ class BreezeDeployBackend {
  public:
   BreezeDeployBackend() = default;
   virtual ~BreezeDeployBackend() = default;
-  virtual bool Initialize(const BreezeDeployBackendOption& breeze_deploy_backend_option);
-  virtual bool Infer(std::vector<BreezeDeployTensor>& input_tensor, std::vector<BreezeDeployTensor>& output_tensor);
+  virtual bool Initialize(const BreezeDeployBackendOption &breeze_deploy_backend_option) = 0;
+  virtual bool Infer(std::vector<BreezeDeployTensor> &input_tensor, std::vector<BreezeDeployTensor> &output_tensor) = 0;
+  virtual std::vector<BreezeDeployTensorInfo> GetInputTensorInfo() = 0;
+  virtual std::vector<BreezeDeployTensorInfo> GetOutputTensorInfo() = 0;
+
 //  virtual bool PrintBackendTensorInfo();
 
  protected:

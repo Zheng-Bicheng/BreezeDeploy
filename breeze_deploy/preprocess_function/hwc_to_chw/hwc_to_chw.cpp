@@ -25,6 +25,7 @@ bool HWCToCHW::Run(BreezeDeployMat &breeze_deploy_mat) {
 	auto hwc_mat_pointer = hwc_mat.data + i * channel_data.size() * sizeof(float);
 	memcpy(hwc_mat_pointer, channel_data.data(), channel_data.size() * sizeof(float));
   }
+  breeze_deploy_mat.SetDataFormat(BreezeDeployDataFormat::CHW);
   return true;
 }
 }
