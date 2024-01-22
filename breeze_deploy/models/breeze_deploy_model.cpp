@@ -45,13 +45,20 @@ bool BreezeDeployModel::ReadPreprocessYAML() {
   for (const auto &preprocess_function_config : preprocess_config) {
 	auto function_name = preprocess_function_config.begin()->first.as<std::string>();
 	if (function_name == "Resize") {
-	  auto &resize_config_node = preprocess_function_config.begin()->second["size"];
-	  if (!resize_config_node) {
-		BREEZE_DEPLOY_LOGGER_ERROR("The function(Resize) must have a size element.")
+	  auto &resize_width_node = preprocess_function_config.begin()->second["width"];
+	  if (!resize_width_node) {
+		BREEZE_DEPLOY_LOGGER_ERROR("The function(Resize) must have a width element.")
 		return false;
 	  }
-	  auto target_size = resize_config_node.as<std::vector<int>>();
-	  preprocess_function_vector_.push_back(std::make_shared<Resize>(target_size[0], target_size[1]));
+	  auto target_width_size = resize_width_node.as<int>();
+
+	  auto &resize_height_node = preprocess_function_config.begin()->second["height"];
+	  if (!resize_height_node) {
+		BREEZE_DEPLOY_LOGGER_ERROR("The function(Resize) must have a height element.")
+		return false;
+	  }
+	  auto target_height_size = resize_height_node.as<int>();
+	  preprocess_function_vector_.push_back(std::make_shared<Resize>(target_width_size, target_height_size));
 	} else if (function_name == "BGRToRGB") {
 	  preprocess_function_vector_.push_back(std::make_shared<BGRToRGB>());
 	} else if (function_name == "Normalize") {

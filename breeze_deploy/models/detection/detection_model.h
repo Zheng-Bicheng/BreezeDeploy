@@ -21,6 +21,9 @@ namespace models {
 class DetectionModel  : public BreezeDeployModel {
  public:
   DetectionModel(const std::string &model_path, const std::string &config_file_path);
+
+ protected:
+  bool Infer() override;
 };
 }
 }

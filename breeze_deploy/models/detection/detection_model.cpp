@@ -16,10 +16,11 @@
 
 namespace breeze_deploy {
 namespace models {
-
 DetectionModel::DetectionModel(const std::string &model_path, const std::string &config_file_path)
 	: BreezeDeployModel(model_path, config_file_path) {
 }
-
+bool DetectionModel::Infer() {
+  return breeze_deploy_backend_->Infer(input_tensor_vector_, output_tensor_vector_);
+}
 }
 }

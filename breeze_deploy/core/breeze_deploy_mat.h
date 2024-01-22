@@ -23,22 +23,20 @@ class BreezeDeployMat {
 
   cv::Mat &GetMat();
 
-  int GetWidth() const;
-  void SetWidth(int width);
-
-  int GetHeight() const;
-  void SetHeight(int height);
-
+  // C H W
   int GetChannel() const;
-  void SetChannel(int channel);
+  int GetWidth() const;
+  int GetHeight() const;
 
+  // Type
+  int GetMatType();
+
+  // Data Type
   size_t GetMatDataByteSize() const;
   BreezeDeployDataType GetMatDataType();
+
  private:
   cv::Mat mat_{};
-  int channel_ = 0;
-  int width_ = 0;
-  int height_ = 0;
 };
 }
 #endif //BREEZE_DEPLOY_CORE_BREEZE_DEPLOY_MAT_H_

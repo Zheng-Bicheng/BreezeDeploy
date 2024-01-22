@@ -26,9 +26,9 @@ class ClassificationModel : public BreezeDeployModel {
   const ClassificationResults &GetClassificationResults();
 
  protected:
-  virtual bool Preprocess(const cv::Mat &input_mat);
-  virtual bool Infer();
-  virtual bool Postprocess();
+  bool Preprocess(const cv::Mat &input_mat) override;
+  bool Infer() override;
+  bool Postprocess() override;
   std::vector<std::string> label_vector_;
   ClassificationResults classification_results_;
 };

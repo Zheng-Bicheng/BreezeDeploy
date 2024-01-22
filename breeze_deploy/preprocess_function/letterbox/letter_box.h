@@ -12,20 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef BREEZE_DEPLOY_MODELS_DETECTION_YOLOV5_YOLOV_5_H_
-#define BREEZE_DEPLOY_MODELS_DETECTION_YOLOV5_YOLOV_5_H_
-
-#include "breeze_deploy/models/detection/detection_model.h"
+#ifndef BREEZE_DEPLOY_PREPROCESS_FUNCTION_LETTERBOX_LETTER_BOX_H_
+#define BREEZE_DEPLOY_PREPROCESS_FUNCTION_LETTERBOX_LETTER_BOX_H_
+#include "breeze_deploy/preprocess_function/breeze_deploy_preprocess_function.h"
 namespace breeze_deploy {
-namespace models {
-class YOLOV5 : public DetectionModel {
+namespace function {
+class LetterBox : public BreezeDeployPreprocessFunction {
  public:
-  YOLOV5(const std::string &model_path, const std::string &config_file_path);
+  LetterBox(int width, int height);
+  bool Run(BreezeDeployMat &breeze_deploy_mat) override;
 
  protected:
-  bool Preprocess(const cv::Mat &input_mat) override;
-  bool Postprocess() override;
+
+ private:
+  int width_ = 0;
+  int height_ = 0;
 };
 }
 }
-#endif //BREEZE_DEPLOY_MODELS_DETECTION_YOLOV5_YOLOV_5_H_
+#endif //BREEZE_DEPLOY_PREPROCESS_FUNCTION_LETTERBOX_LETTER_BOX_H_

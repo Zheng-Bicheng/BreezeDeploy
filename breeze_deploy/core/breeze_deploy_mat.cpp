@@ -16,30 +16,18 @@
 namespace breeze_deploy {
 BreezeDeployMat::BreezeDeployMat(const cv::Mat &mat) {
   mat_ = mat;
-  channel_ = mat_.channels();
-  width_ = mat_.cols;
-  height_ = mat_.rows;
 }
 cv::Mat &BreezeDeployMat::GetMat() {
   return mat_;
 }
 int BreezeDeployMat::GetWidth() const {
-  return width_;
-}
-void BreezeDeployMat::SetWidth(int width) {
-  width_ = width;
+  return mat_.cols;
 }
 int BreezeDeployMat::GetHeight() const {
-  return height_;
-}
-void BreezeDeployMat::SetHeight(int height) {
-  height_ = height;
+  return mat_.rows;
 }
 int BreezeDeployMat::GetChannel() const {
-  return channel_;
-}
-void BreezeDeployMat::SetChannel(int channel) {
-  channel_ = channel;
+  return mat_.channels();
 }
 size_t BreezeDeployMat::GetMatDataByteSize() const {
   // Get the total number of data in the matrix.
@@ -59,5 +47,8 @@ BreezeDeployDataType BreezeDeployMat::GetMatDataType() {
 										cv::typeToString(mat_data_type))
 	  return BreezeDeployDataType::UNKNOWN;
   }
+}
+int BreezeDeployMat::GetMatType() {
+  return mat_.type();
 }
 }

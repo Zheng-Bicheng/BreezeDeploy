@@ -31,7 +31,5 @@ bool breeze_deploy::function::Resize::Run(BreezeDeployMat &breeze_deploy_mat) {
   // cv::INTER_LINEAR  291267	269096			0.998771
   // cv::INTER_AREA    max						0.999129
   cv::resize(mat, mat, cv::Size(width_, height_), 0, 0, cv::INTER_NEAREST);
-  breeze_deploy_mat.SetHeight(height_);
-  breeze_deploy_mat.SetWidth(width_);
   return true;
 }
