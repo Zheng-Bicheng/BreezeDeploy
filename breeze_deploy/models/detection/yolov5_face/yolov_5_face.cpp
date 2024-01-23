@@ -19,13 +19,14 @@ namespace models {
 bool YOLOV5Face::Postprocess() {
   detection_results_.clear();
   auto output_data = reinterpret_cast<float *>(output_tensor_vector_[0].GetTensorDataPointer());
-  auto output_shape = output_tensor_vector_[0].GetTensorInfo().tensor_shape;  // output_shape is [1,25200,85]
+  auto output_shape = output_tensor_vector_[0].GetTensorInfo().tensor_shape;  // output_shape is [1,25200,16]
 
   std::vector<float> confidences;
   std::vector<cv::Rect> boxes;
   std::vector<long> class_ids;
+  BREEZE_DEPLOY_LOGGER_DEBUG("{} {} {}", radio_, pad_width_, pad_height_)
   for (size_t i = 0; i < output_shape[1]; ++i) {
-	// [x1,y1,w1,h1,box_score,conf1,....,conf80]
+	// [x1,y1,w1,h1,landmark_x1,landmark_y1,....,label_confidence]
 	auto skip = i * output_shape[2];
 
 	// Get object score
@@ -54,7 +55,9 @@ bool YOLOV5Face::Postprocess() {
 	auto box_pointer = output_data + skip;
 	auto left = int((box_pointer[0] - (float)pad_width_ - (box_pointer[2] / 2.0f)) / radio_);
 	auto top = int((box_pointer[1] - (float)pad_height_ - (box_pointer[3] / 2.0f)) / radio_);
-	boxes.emplace_back(left, top, box_pointer[2], box_pointer[3]);
+	auto width = box_pointer[2] / radio_;
+	auto height = box_pointer[3] / radio_;
+	boxes.emplace_back(left, top, width, height);
   }
 
   std::vector<int> indices;

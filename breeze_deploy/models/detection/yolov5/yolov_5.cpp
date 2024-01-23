@@ -94,7 +94,9 @@ bool YOLOV5::Postprocess() {
 	auto box_pointer = output_data + skip;
 	auto left = int((box_pointer[0] - (float)pad_width_ - (box_pointer[2] / 2.0f)) / radio_);
 	auto top = int((box_pointer[1] - (float)pad_height_ - (box_pointer[3] / 2.0f)) / radio_);
-	boxes.emplace_back(left, top, box_pointer[2], box_pointer[3]);
+	auto width = box_pointer[2] / radio_;
+	auto height = box_pointer[3] / radio_;
+	boxes.emplace_back(left, top, width, height);
   }
 
   std::vector<int> indices;

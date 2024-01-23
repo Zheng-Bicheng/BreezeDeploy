@@ -15,7 +15,7 @@
 #include <iostream>
 #include <string>
 #include "breeze_deploy/core/breeze_deploy_time.h"
-#include "breeze_deploy/models/detection/yolov5/yolov_5.h"
+#include "breeze_deploy/models/detection/yolov5_face/yolov_5_face.h"
 
 using namespace breeze_deploy;
 using namespace breeze_deploy::models;
@@ -23,7 +23,7 @@ using cv::imread;
 
 int main(int argc, char *argv[]) {
   if (argc < 3) {
-	std::cout << "Usage: test_yolov5 path/to/model /path/to/config_file path/to/image" << std::endl;
+	std::cout << "Usage: test_yolov5_face_license_plate path/to/model /path/to/config_file path/to/image" << std::endl;
 	return -1;
   }
 
