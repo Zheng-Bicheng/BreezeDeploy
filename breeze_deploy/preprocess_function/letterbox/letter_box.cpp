@@ -15,8 +15,8 @@
 #include "breeze_deploy/preprocess_function/letterbox/letter_box.h"
 namespace breeze_deploy {
 namespace function {
-LetterBox::LetterBox(int width, int height, std::array<float, 3> rgb)
-	: width_{width}, height_{height}, rgb_{rgb} {
+LetterBox::LetterBox(int width, int height, std::array<float, 3> scalar)
+	: width_{width}, height_{height}, scalar_{scalar} {
 }
 
 // Copy form https://flyfish.blog.csdn.net/article/details/130320915
@@ -40,7 +40,7 @@ bool LetterBox::Run(BreezeDeployMat &breeze_deploy_mat) {
   int bottom = int(round(pad_height_ + 0.1));
   int left = int(round(pad_width_ - 0.1));
   int right = int(round(pad_width_ + 0.1));
-  cv::copyMakeBorder(src, src, top, bottom, left, right, 0, cv::Scalar(rgb_[0], rgb_[1], rgb_[2]));
+  cv::copyMakeBorder(src, src, top, bottom, left, right, 0, cv::Scalar(scalar_[0], scalar_[1], scalar_[2]));
   return true;
 }
 }

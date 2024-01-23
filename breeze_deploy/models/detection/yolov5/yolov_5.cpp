@@ -26,6 +26,7 @@ bool YOLOV5::Preprocess(const cv::Mat &input_mat) {
 	return false;
   }
 
+  // Do preprocess
   BreezeDeployMat breeze_deploy_mat(input_mat);
   for (const auto &preprocess_function : preprocess_functions_) {
 	if (!preprocess_function->Run(breeze_deploy_mat)) {
@@ -34,6 +35,7 @@ bool YOLOV5::Preprocess(const cv::Mat &input_mat) {
 	}
   }
 
+  // Set data to tensor
   auto tensor_data = breeze_deploy_mat.GetMat().data;
   auto tensor_data_type = breeze_deploy_mat.GetMatDataType();
   auto c = breeze_deploy_mat.GetChannel();
@@ -44,18 +46,24 @@ bool YOLOV5::Preprocess(const cv::Mat &input_mat) {
   } else {
 	input_tensor_vector_[0].SetTensorData(tensor_data, {1, h, w, c}, tensor_data_type);
   }
+
+  // Get resize radio and pad height/width.
+  for (const auto &preprocess_function : preprocess_functions_) {
+	if (preprocess_function->FunctionName() != "LetterBox") {
+	  continue;
+	}
+	pad_height_ = preprocess_function->GetPadHeight();
+	pad_width_ = preprocess_function->GetPadWidth();
+	radio_ = preprocess_function->GetRadio();
+  }
   return true;
 }
 
 bool YOLOV5::Postprocess() {
   detection_results_.clear();
-
   auto output_data = reinterpret_cast<float *>(output_tensor_vector_[0].GetTensorDataPointer());
-  // output_shape is [1,25200,85]
-  auto output_shape = output_tensor_vector_[0].GetTensorInfo().tensor_shape;
+  auto output_shape = output_tensor_vector_[0].GetTensorInfo().tensor_shape;  // output_shape is [1,25200,85]
 
-  // TODO: Remove conf_threshold_
-  float conf_threshold_ = 0.1;
   std::vector<float> confidences;
   std::vector<cv::Rect> boxes;
   std::vector<long> class_ids;
@@ -73,7 +81,7 @@ bool YOLOV5::Postprocess() {
 	auto max_label_score_pointer = std::max_element(label_score_pointer, label_score_pointer + label_num);
 	// 最大的类别分数*置信度
 	auto max_label_score = (*max_label_score_pointer) * object_score;
-	if (max_label_score <= conf_threshold_) {
+	if (max_label_score <= confidence_threshold_) {
 	  continue;
 	}
 	confidences.emplace_back(max_label_score);
@@ -84,23 +92,15 @@ bool YOLOV5::Postprocess() {
 
 	// convert from [x, y, w, h] to [left, top, w, h]
 	auto box_pointer = output_data + skip;
-	for (const auto &preprocess_function : preprocess_functions_) {
-	  if (preprocess_function->FunctionName() == "LetterBox") {
-		pad_height_ = preprocess_function->GetPadHeight();
-		pad_width_ = preprocess_function->GetPadWidth();
-		radio_ = preprocess_function->GetRadio();
-		BREEZE_DEPLOY_LOGGER_DEBUG("{} {} {}", pad_height_, pad_width_, radio_)
-	  }
-	}
-	auto left = int((box_pointer[0] - (float)pad_width_ - (box_pointer[2] / 2.0f) ) / radio_);
-	auto top = int((box_pointer[1] - (float)pad_height_ - (box_pointer[3] / 2.0f) ) / radio_);
+	auto left = int((box_pointer[0] - (float)pad_width_ - (box_pointer[2] / 2.0f)) / radio_);
+	auto top = int((box_pointer[1] - (float)pad_height_ - (box_pointer[3] / 2.0f)) / radio_);
 	boxes.emplace_back(left, top, box_pointer[2], box_pointer[3]);
   }
 
   std::vector<int> indices;
   // TODO:
 //  cv::dnn::NMSBoxes(boxes, confidences, this->confThreshold, this->nmsThreshold, indices);
-  cv::dnn::NMSBoxes(boxes, confidences, conf_threshold_, 0.5, indices);
+  cv::dnn::NMSBoxes(boxes, confidences, confidence_threshold_, nms_threshold_, indices);
   for (int idx : indices) {
 	detection_results_.emplace_back(class_ids[idx], confidences[idx], boxes[idx]);
   }

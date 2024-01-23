@@ -25,11 +25,16 @@ class DetectionModel : public BreezeDeployModel {
   static cv::Mat Draw(const cv::Mat &mat, const std::vector<DetectionResult> &detection_results);
   const std::vector<DetectionResult> &GetDetectionResults();
 
- protected:
+  void SetConfidenceThreshold(float confidence_threshold) { confidence_threshold_ = confidence_threshold; }
+  void SetNMSThreshold(float nms_threshold) { nms_threshold_ = nms_threshold; }
 
+ protected:
   double radio_ = 0.0;
   int pad_width_ = 0;
   int pad_height_ = 0;
+
+  float confidence_threshold_ = 0.5;
+  float nms_threshold_ = 0.5;
 
   bool Infer() override;
   std::vector<DetectionResult> detection_results_;

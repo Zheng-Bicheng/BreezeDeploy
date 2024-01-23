@@ -34,37 +34,29 @@ int main(int argc, char *argv[]) {
 	std::cout << "模型初始化失败" << std::endl;
 	return 1;
   }
-//  std::string label_file_path = argv[4];
-//  yolov_5.SetLabel(label_file_path);
+
+  detect_model.SetConfidenceThreshold(0.5);
+  detect_model.SetNMSThreshold(0.5);
 
   std::string image_path = argv[3];
   auto mat = cv::imread(image_path);
-#if 0
+
   BreezeDeployTime cost;
   cost.Start();
   for (int i = 0; i < 100; ++i) {
-	if (!resnet.Predict(mat)) {
+	if (!detect_model.Predict(mat)) {
 	  std::cout << "模型推理失败" << std::endl;
 	  return 1;
 	}
   }
   cost.End();
-  cost.PrintInfo("Resnet", 1.0 / 100, BreezeDeployTimeType::Milliseconds);
-#else
-  if (!detect_model.Predict(mat)) {
-	std::cout << "模型推理失败" << std::endl;
-	return 1;
-  }
-#endif
+  cost.PrintInfo("YOLOV5", 1.0 / 100, BreezeDeployTimeType::Milliseconds);
+
   auto detection_results = detect_model.GetDetectionResults();
   for (auto detection_result : detection_results) {
 	detection_result.PrintResult();
   }
   mat = DetectionModel::Draw(mat, detection_results);
   cv::imwrite("./detect_result.png", mat);
-//  auto classification_results = yolov_5.GetClassificationResults();
-//  for (auto &classification_result : classification_results) {
-//	printf("Label is %s,label_confidence_ is %f\n", classification_result.label_name_.c_str(), classification_result.label_confidence_);
-//  }
   return 0;
 }

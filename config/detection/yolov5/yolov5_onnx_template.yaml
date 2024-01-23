@@ -5,6 +5,7 @@ preprocess:
   - LetterBox:
       width: 640
       height: 640
+      scalar: [ 114,114,114 ]
   # Perform color channel transformation, converting RGB colors to BGR.
   - BGRToRGB:
   # Perform normalization operation.
@@ -13,4 +14,3 @@ preprocess:
       std: [ 0.5, 0.5, 0.5 ]
   # The input to the ONNX model is in NCHW format, and we need to change the memory layout of the data from NHWC to NCHW.
   - HWCToCHW:
-

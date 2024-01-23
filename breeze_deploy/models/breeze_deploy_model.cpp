@@ -74,20 +74,33 @@ bool BreezeDeployModel::ReadPreprocessYAML() {
 	} else if (function_name == "HWCToCHW") {
 	  preprocess_functions_.push_back(std::make_shared<HWCToCHW>());
 	} else if (function_name == "LetterBox") {
+	  // Get LetterBox width
 	  auto &resize_width_node = preprocess_function_config.begin()->second["width"];
 	  if (!resize_width_node) {
-		BREEZE_DEPLOY_LOGGER_ERROR("The function(Resize) must have a width element.")
+		BREEZE_DEPLOY_LOGGER_ERROR("The function(LetterBox) must have a width element.")
 		return false;
 	  }
 	  auto target_width_size = resize_width_node.as<int>();
 
+	  // Get LetterBox height
 	  auto &resize_height_node = preprocess_function_config.begin()->second["height"];
 	  if (!resize_height_node) {
-		BREEZE_DEPLOY_LOGGER_ERROR("The function(Resize) must have a height element.")
+		BREEZE_DEPLOY_LOGGER_ERROR("The function(LetterBox) must have a height element.")
 		return false;
 	  }
 	  auto target_height_size = resize_height_node.as<int>();
-	  preprocess_functions_.push_back(std::make_shared<LetterBox>(target_width_size, target_height_size));
+
+	  // Get LetterBox scalar
+	  auto &pad_scalar_node = preprocess_function_config.begin()->second["scalar"];
+	  if (!pad_scalar_node) {
+		BREEZE_DEPLOY_LOGGER_ERROR("The function(LetterBox) must have a scalar element.")
+		return false;
+	  }
+	  auto target_scalar_size = pad_scalar_node.as<std::array<float, 3>>();
+
+	  preprocess_functions_.push_back(std::make_shared<LetterBox>(target_width_size,
+																  target_height_size,
+																  target_scalar_size));
 	} else {
 	  BREEZE_DEPLOY_LOGGER_ERROR(
 		  "The preprocess function name only supports [Resize, BGRToRGB, Normalize, HWCToCHW, LetterBox], "
