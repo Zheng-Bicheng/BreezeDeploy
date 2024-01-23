@@ -75,11 +75,9 @@ bool ONNXBackend::Infer(std::vector<BreezeDeployTensor> &input_tensor, std::vect
   output_tensor.resize(output_tensors_.size());
   for (int i = 0; i < output_tensor.size(); ++i) {
 	auto tensor_data = reinterpret_cast<uint8_t *>(output_tensors_[i].GetTensorMutableData<float>());
-	auto output_shape = output_tensor_info_vector_[i].shape;
+	auto tensor_type_and_shape_info = output_tensors_[i].GetTensorTypeAndShapeInfo();
+	auto output_shape = tensor_type_and_shape_info.GetShape();
 	auto tensor_data_type = BreezeDeployTensorDataType::FP32;
-	if (output_shape[0] == -1) {
-	  output_shape[0] = 1;
-	}
 	output_tensor[i].SetTensorData(tensor_data, output_shape, tensor_data_type);
   }
   return true;

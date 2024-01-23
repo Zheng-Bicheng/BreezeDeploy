@@ -50,6 +50,7 @@ bool ClassificationModel::Infer() {
   return breeze_deploy_backend_->Infer(input_tensor_vector_, output_tensor_vector_);
 }
 bool ClassificationModel::Postprocess() {
+  classification_results_.clear();
   for (const auto &i : postprocess_function_vector_) {
 	i->Run(output_tensor_vector_[0], classification_results_);
   }
