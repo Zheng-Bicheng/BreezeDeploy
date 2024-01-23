@@ -29,15 +29,21 @@ class DetectionModel : public BreezeDeployModel {
   void SetNMSThreshold(float nms_threshold) { nms_threshold_ = nms_threshold; }
 
  protected:
+  std::vector<DetectionResult> detection_results_;
+  bool Infer() override;
+  bool ReadPostprocessYAML() override;
+
+  // For restore original coordinates
   double radio_ = 0.0;
   int pad_width_ = 0;
   int pad_height_ = 0;
 
+  // For postprocess
   float confidence_threshold_ = 0.5;
-  float nms_threshold_ = 0.5;
+  int landmark_num_ = 0;
 
-  bool Infer() override;
-  std::vector<DetectionResult> detection_results_;
+  // For nms
+  float nms_threshold_ = 0.5;
 };
 }
 }

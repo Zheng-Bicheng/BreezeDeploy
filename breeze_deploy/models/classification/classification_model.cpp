@@ -49,6 +49,37 @@ bool ClassificationModel::Preprocess(const cv::Mat &input_mat) {
 bool ClassificationModel::Infer() {
   return breeze_deploy_backend_->Infer(input_tensor_vector_, output_tensor_vector_);
 }
+bool ClassificationModel::ReadPostprocessYAML() {
+  postprocess_function_vector_.clear();
+  YAML::Node yaml_config;
+  try {
+	yaml_config = YAML::LoadFile(config_file_path_);
+  } catch (YAML::BadFile &e) {
+	BREEZE_DEPLOY_LOGGER_ERROR("Failed to load yaml file: {}.", config_file_path_)
+	return false;
+  }
+
+  // Get postprocess root node
+  auto postprocess_config = yaml_config["postprocess"];
+  // Traverse postprocess root node branches
+  for (const auto &postprocess_function_config : postprocess_config) {
+	auto function_name = postprocess_function_config.begin()->first.as<std::string>();
+	if (function_name == "TopK") {
+	  auto &k_config_node = postprocess_function_config.begin()->second["k"];
+	  if (!k_config_node) {
+		BREEZE_DEPLOY_LOGGER_ERROR("The function(TopK) must have a k element.")
+		return false;
+	  }
+	  auto k = k_config_node.as<size_t>();
+	  postprocess_function_vector_.push_back(std::make_shared<TopK>(k));
+	} else {
+	  BREEZE_DEPLOY_LOGGER_ERROR("The postprocess name only supports [TopK], "
+								 "but now it is called {}.", function_name)
+	  return false;
+	}
+  }
+  return true;
+}
 bool ClassificationModel::Postprocess() {
   classification_results_.clear();
   for (const auto &i : postprocess_function_vector_) {

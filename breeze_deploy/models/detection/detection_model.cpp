@@ -22,6 +22,36 @@ DetectionModel::DetectionModel(const std::string &model_path, const std::string 
 bool DetectionModel::Infer() {
   return breeze_deploy_backend_->Infer(input_tensor_vector_, output_tensor_vector_);
 }
+bool DetectionModel::ReadPostprocessYAML() {
+  postprocess_function_vector_.clear();
+  YAML::Node yaml_config;
+  try {
+	yaml_config = YAML::LoadFile(config_file_path_);
+  } catch (YAML::BadFile &e) {
+	BREEZE_DEPLOY_LOGGER_ERROR("Failed to load yaml file: {}.", config_file_path_)
+	return false;
+  }
+
+  // Get postprocess root node
+  auto postprocess_config = yaml_config["postprocess"];
+  // Traverse postprocess root node branches
+  for (const auto &postprocess_function_config : postprocess_config) {
+	auto function_name = postprocess_function_config.begin()->first.as<std::string>();
+	if (function_name == "landmark_num") {
+	  auto &landmark_num_node = postprocess_function_config.begin()->second;
+	  if (!landmark_num_node) {
+		BREEZE_DEPLOY_LOGGER_ERROR("The function(landmark_num) must have a landmark_num element.")
+		return false;
+	  }
+	  landmark_num_ = landmark_num_node.as<int>();
+	} else {
+	  BREEZE_DEPLOY_LOGGER_ERROR("The postprocess name only supports [landmark_num], "
+								 "but now it is called {}.", function_name)
+	  return false;
+	}
+  }
+  return true;
+}
 cv::Mat DetectionModel::Draw(const cv::Mat &mat, const std::vector<DetectionResult> &detection_results) {
   for (const auto &detection_result : detection_results) {
 	cv::rectangle(mat, detection_result.rect_, cv::Scalar(0, 0, 255), 1);

@@ -17,6 +17,8 @@
 
 #include <iostream>
 #include <memory>
+#include <yaml-cpp/yaml.h>
+
 #include "breeze_deploy/backends/breeze_deploy_backend.h"
 #include "breeze_deploy/core/breeze_deploy_logger.h"
 #include "breeze_deploy/core/breeze_deploy_mat.h"
@@ -44,22 +46,22 @@ class BreezeDeployModel {
 
   // Model Initialize
   std::string config_file_path_;
-  virtual bool ReadPreprocessYAML();
-  bool ReadPostprocessYAML();
+  bool ReadPreprocessYAML();
+  virtual bool ReadPostprocessYAML() = 0;
 
   // Model Preprocess
   std::vector<std::shared_ptr<BreezeDeployPreprocessFunction>> preprocess_functions_{};
-  virtual bool Preprocess(const cv::Mat &input_mat);
+  virtual bool Preprocess(const cv::Mat &input_mat) = 0;
 
   // Model Infer
   std::vector<BreezeDeployTensor> input_tensor_vector_{};
   std::vector<BreezeDeployTensor> output_tensor_vector_{};
   BreezeDeployBackendOption breeze_deploy_backend_option_;
-  virtual bool Infer();
+  virtual bool Infer() = 0;
 
   // Model PostProcess
   std::vector<std::shared_ptr<BreezeDeployPostprocessFunction>> postprocess_function_vector_{};
-  virtual bool Postprocess();
+  virtual bool Postprocess() = 0;
 };
 }
 }

@@ -1,4 +1,4 @@
-// Copyright (c) 2024/1/22 Zheng-Bicheng. All Rights Reserved.
+// Copyright (c) 2024/1/23 Zheng-Bicheng. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,54 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "breeze_deploy/models/detection/yolov5/yolov_5.h"
+#include "yolov_5_face.h"
+
 namespace breeze_deploy {
 namespace models {
-YOLOV5::YOLOV5(const std::string &model_path, const std::string &config_file_path)
-	: DetectionModel(model_path, config_file_path) {
-  input_tensor_vector_.resize(1);
-  output_tensor_vector_.resize(1);
-}
-bool YOLOV5::Preprocess(const cv::Mat &input_mat) {
-  if (input_mat.empty()) {
-	BREEZE_DEPLOY_LOGGER_ERROR("input_mat is empty.")
-	return false;
-  }
-
-  // Do preprocess
-  BreezeDeployMat breeze_deploy_mat(input_mat);
-  for (const auto &preprocess_function : preprocess_functions_) {
-	if (!preprocess_function->Run(breeze_deploy_mat)) {
-	  BREEZE_DEPLOY_LOGGER_ERROR("Failed to run preprocess_function.")
-	  return false;
-	}
-  }
-
-  // Set data to tensor
-  auto tensor_data = breeze_deploy_mat.GetMat().data;
-  auto tensor_data_type = breeze_deploy_mat.GetMatDataType();
-  auto c = breeze_deploy_mat.GetChannel();
-  auto h = breeze_deploy_mat.GetHeight();
-  auto w = breeze_deploy_mat.GetWidth();
-  if (breeze_deploy_mat.GetMatDataFormat() == BreezeDeployDataFormat::CHW) {
-	input_tensor_vector_[0].SetTensorData(tensor_data, {1, c, h, w}, tensor_data_type);
-  } else {
-	input_tensor_vector_[0].SetTensorData(tensor_data, {1, h, w, c}, tensor_data_type);
-  }
-
-  // Get resize radio and pad height/width.
-  for (const auto &preprocess_function : preprocess_functions_) {
-	if (preprocess_function->FunctionName() != "LetterBox") {
-	  continue;
-	}
-	pad_height_ = preprocess_function->GetPadHeight();
-	pad_width_ = preprocess_function->GetPadWidth();
-	radio_ = preprocess_function->GetRadio();
-  }
-  return true;
-}
-
-bool YOLOV5::Postprocess() {
+bool YOLOV5Face::Postprocess() {
   detection_results_.clear();
   auto output_data = reinterpret_cast<float *>(output_tensor_vector_[0].GetTensorDataPointer());
   auto output_shape = output_tensor_vector_[0].GetTensorInfo().tensor_shape;  // output_shape is [1,25200,85]
@@ -75,9 +32,12 @@ bool YOLOV5::Postprocess() {
 	auto object_score_pointer = output_data + skip + 4;  // size is 1
 	auto object_score = *object_score_pointer;
 
+	// Get landmark score
+	auto landmark_score_pointer = object_score_pointer + 1;
+
 	// Get label_name_ score
-	auto label_score_pointer = object_score_pointer + 1;  // size is 80
-	auto label_num = output_shape[2] - 5;
+	auto label_score_pointer = landmark_score_pointer + landmark_num_;  // size is 80
+	auto label_num = output_shape[2] - 5 - landmark_num_;
 	auto max_label_score_pointer = std::max_element(label_score_pointer, label_score_pointer + label_num);
 	// 最大的类别分数*置信度
 	auto max_label_score = (*max_label_score_pointer) * object_score;

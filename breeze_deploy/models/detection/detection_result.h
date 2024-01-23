@@ -45,6 +45,7 @@ struct DetectionResult {
   size_t label_id_ = -1;
   float label_confidence_ = 0.0;
   cv::Rect rect_ = {0, 0, 0, 0};
+  std::vector<cv::Point> landmarks_;
 };
 }
 }

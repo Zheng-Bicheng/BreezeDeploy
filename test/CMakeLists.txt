@@ -16,7 +16,15 @@ list(APPEND INSTALL_APP_LIST test_ghostnet)
 add_executable(test_yolov5 detection_test/test_yolov5.cpp)
 target_link_libraries(test_yolov5 breeze_deploy ${OpenCV_LIBS})
 list(APPEND INSTALL_APP_LIST test_yolov5)
+# test_yolov5_face
+add_executable(test_yolov5_face detection_test/test_yolov5_face.cpp)
+target_link_libraries(test_yolov5_face breeze_deploy ${OpenCV_LIBS})
+list(APPEND INSTALL_APP_LIST test_yolov5_face)
 
+# test_license_plate
+add_executable(test_license_plate ocr_test/test_license_plate.cpp)
+target_link_libraries(test_license_plate breeze_deploy ${OpenCV_LIBS})
+list(APPEND INSTALL_APP_LIST test_license_plate)
 
 # install
 install(TARGETS ${INSTALL_APP_LIST} DESTINATION bin)

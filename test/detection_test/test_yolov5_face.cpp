@@ -15,7 +15,7 @@
 #include <iostream>
 #include <string>
 #include "breeze_deploy/core/breeze_deploy_time.h"
-#include "breeze_deploy/models/detection/yolov5/yolov_5.h"
+#include "breeze_deploy/models/detection/yolov5_face/yolov_5_face.h"
 
 using namespace breeze_deploy;
 using namespace breeze_deploy::models;
@@ -23,13 +23,13 @@ using cv::imread;
 
 int main(int argc, char *argv[]) {
   if (argc < 3) {
-	std::cout << "Usage: test_yolov5 path/to/model /path/to/config_file path/to/image" << std::endl;
+	std::cout << "Usage: test_yolov5_face path/to/model /path/to/config_file path/to/image" << std::endl;
 	return -1;
   }
 
   std::string model_path = argv[1];
   std::string config_path = argv[2];
-  YOLOV5 detect_model(model_path, config_path);
+  YOLOV5Face detect_model(model_path, config_path);
   if (!detect_model.Initialize()) {
 	std::cout << "模型初始化失败" << std::endl;
 	return 1;
@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
 	return 1;
   }
   cost.End();
-  cost.PrintInfo("YOLOV5", 1.0, BreezeDeployTimeType::Milliseconds);
+  cost.PrintInfo("YOLOV5Face", 1.0, BreezeDeployTimeType::Milliseconds);
 
   auto detection_results = detect_model.GetDetectionResults();
   for (auto detection_result : detection_results) {
