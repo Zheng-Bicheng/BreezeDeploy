@@ -24,27 +24,27 @@ namespace breeze_deploy {
 namespace models {
 struct DetectionResult {
   DetectionResult(size_t temp_index, float temp_confidence, const cv::Rect &temp_coordinate)
-	  : index{temp_index}, confidence{temp_confidence}, coordinate{temp_coordinate} {}
+	  : label_id_{temp_index}, label_confidence_{temp_confidence}, rect_{temp_coordinate} {}
 
   void SetLabel(const std::string &temp_label) {
-	label = temp_label;
+	label_name_ = temp_label;
   }
 
   void PrintResult() {
-	BREEZE_DEPLOY_LOGGER_INFO("label: {}, label_id: {}, label_confidence: {}, [left,top,w,h]:[{} {} {} {}]",
-							  label,
-							  index,
-							  confidence,
-							  coordinate.x,
-							  coordinate.y,
-							  coordinate.width,
-							  coordinate.height);
+	BREEZE_DEPLOY_LOGGER_INFO("label_name_: {}, label_id: {}, label_confidence_: {}, [left,top,w,h]:[{} {} {} {}]",
+							  label_name_,
+							  label_id_,
+							  label_confidence_,
+							  rect_.x,
+							  rect_.y,
+							  rect_.width,
+							  rect_.height);
   }
 
-  std::string label;
-  size_t index = -1;
-  float confidence = 0.0;
-  cv::Rect coordinate = {0, 0, 0, 0};
+  std::string label_name_;
+  size_t label_id_ = -1;
+  float label_confidence_ = 0.0;
+  cv::Rect rect_ = {0, 0, 0, 0};
 };
 }
 }

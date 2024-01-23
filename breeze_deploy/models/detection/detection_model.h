@@ -22,10 +22,12 @@ namespace models {
 class DetectionModel  : public BreezeDeployModel {
  public:
   DetectionModel(const std::string &model_path, const std::string &config_file_path);
+  static cv::Mat Draw(const cv::Mat &mat, const std::vector<DetectionResult>& detection_results);
+  const std::vector<DetectionResult>& GetDetectionResults();
 
  protected:
   bool Infer() override;
-  std::vector<DetectionResult> detection_results;
+  std::vector<DetectionResult> detection_results_;
 };
 }
 }

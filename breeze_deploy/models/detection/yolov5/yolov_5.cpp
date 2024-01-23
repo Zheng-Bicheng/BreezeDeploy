@@ -48,7 +48,7 @@ bool YOLOV5::Preprocess(const cv::Mat &input_mat) {
 }
 
 bool YOLOV5::Postprocess() {
-  detection_results.clear();
+  detection_results_.clear();
 
   auto output_data = reinterpret_cast<float *>(output_tensor_vector_[0].GetTensorDataPointer());
   // output_shape is [1,25200,85]
@@ -67,7 +67,7 @@ bool YOLOV5::Postprocess() {
 	auto object_score_pointer = output_data + skip + 4;  // size is 1
 	auto object_score = output_data[skip + 4];
 
-	// Get label score
+	// Get label_name_ score
 	auto label_score_pointer = object_score_pointer + 1;  // size is 80
 	auto label_num = output_shape[2] - 5;
 	auto max_label_score_pointer = std::max_element(label_score_pointer, label_score_pointer + label_num);
@@ -78,7 +78,7 @@ bool YOLOV5::Postprocess() {
 	}
 	confidences.emplace_back(max_label_score);
 
-	// Get label id
+	// Get label_name_ id
 	auto label_id = max_label_score_pointer - label_score_pointer;
 	class_ids.emplace_back(label_id);
 
@@ -95,12 +95,9 @@ bool YOLOV5::Postprocess() {
 //  cv::dnn::NMSBoxes(boxes, confidences, this->confThreshold, this->nmsThreshold, indices);
   cv::dnn::NMSBoxes(boxes, confidences, conf_threshold_, 0.5, indices);
   for (int idx : indices) {
-	detection_results.emplace_back(class_ids[idx], confidences[idx], boxes[idx]);
+	detection_results_.emplace_back(class_ids[idx], confidences[idx], boxes[idx]);
   }
-  for (auto detection_result:detection_results) {
-	detection_result.PrintResult();
-  }
-  return false;
+  return true;
 }
 }
 }

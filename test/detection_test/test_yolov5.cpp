@@ -29,8 +29,8 @@ int main(int argc, char *argv[]) {
 
   std::string model_path = argv[1];
   std::string config_path = argv[2];
-  YOLOV5 yolov_5(model_path, config_path);
-  if (!yolov_5.Initialize()) {
+  YOLOV5 detect_model(model_path, config_path);
+  if (!detect_model.Initialize()) {
 	std::cout << "模型初始化失败" << std::endl;
 	return 1;
   }
@@ -51,14 +51,20 @@ int main(int argc, char *argv[]) {
   cost.End();
   cost.PrintInfo("Resnet", 1.0 / 100, BreezeDeployTimeType::Milliseconds);
 #else
-  if (!yolov_5.Predict(mat)) {
+  if (!detect_model.Predict(mat)) {
 	std::cout << "模型推理失败" << std::endl;
 	return 1;
   }
 #endif
+  auto detection_results = detect_model.GetDetectionResults();
+  for (auto detection_result : detection_results) {
+	detection_result.PrintResult();
+  }
+  mat = DetectionModel::Draw(mat, detection_results);
+  cv::imwrite("./detect_result.png", mat);
 //  auto classification_results = yolov_5.GetClassificationResults();
 //  for (auto &classification_result : classification_results) {
-//	printf("Label is %s,confidence is %f\n", classification_result.label.c_str(), classification_result.confidence);
+//	printf("Label is %s,label_confidence_ is %f\n", classification_result.label_name_.c_str(), classification_result.label_confidence_);
 //  }
   return 0;
 }

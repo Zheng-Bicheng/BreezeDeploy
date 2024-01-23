@@ -22,5 +22,14 @@ DetectionModel::DetectionModel(const std::string &model_path, const std::string 
 bool DetectionModel::Infer() {
   return breeze_deploy_backend_->Infer(input_tensor_vector_, output_tensor_vector_);
 }
+cv::Mat DetectionModel::Draw(const cv::Mat &mat, const std::vector<DetectionResult> &detection_results) {
+  for (const auto &detection_result : detection_results) {
+	cv::rectangle(mat, detection_result.rect_, cv::Scalar(0, 0, 255), 1);
+  }
+  return mat;
+}
+const std::vector<DetectionResult> &DetectionModel::GetDetectionResults() {
+  return detection_results_;
+}
 }
 }
