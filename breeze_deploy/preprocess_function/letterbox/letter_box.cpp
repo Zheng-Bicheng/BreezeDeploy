@@ -15,28 +15,32 @@
 #include "breeze_deploy/preprocess_function/letterbox/letter_box.h"
 namespace breeze_deploy {
 namespace function {
-LetterBox::LetterBox(int width, int height)
-	: width_{width}, height_{height} {
+LetterBox::LetterBox(int width, int height, std::array<float, 3> rgb)
+	: width_{width}, height_{height}, rgb_{rgb} {
 }
 
 // Copy form https://flyfish.blog.csdn.net/article/details/130320915
 bool LetterBox::Run(BreezeDeployMat &breeze_deploy_mat) {
   auto &src = breeze_deploy_mat.GetMat();
+
+  // Get radio
   auto mat_height = breeze_deploy_mat.GetHeight();
   auto mat_width = breeze_deploy_mat.GetWidth();
+  radio_ = std::min(static_cast<double>(width_) / mat_width, static_cast<double>(height_) / mat_height);
 
-  auto scale = std::min(static_cast<double>(height_) / mat_height, static_cast<double>(width_) / mat_width);
-  int inside_w = static_cast<int>(round(mat_width * scale));
-  int inside_h = static_cast<int>(round(mat_height * scale));
+  // Do resize
+  int inside_w = static_cast<int>(round(mat_width * radio_));
+  int inside_h = static_cast<int>(round(mat_height * radio_));
   cv::resize(src, src, cv::Size(inside_w, inside_h));
 
-  int pad_width = (width_ - inside_w) / 2;
-  int pad_height = (height_ - inside_h) / 2;
-  int top = int(round(pad_height - 0.1));
-  int bottom = int(round(pad_height + 0.1));
-  int left = int(round(pad_width - 0.1));
-  int right = int(round(pad_width + 0.1));
-  cv::copyMakeBorder(src, src, top, bottom, left, right, 0, cv::Scalar(114.0, 114.0, 114.0));
+  // Do pad
+  pad_width_ = (width_ - inside_w) / 2;
+  pad_height_ = (height_ - inside_h) / 2;
+  int top = int(round(pad_height_ - 0.1));
+  int bottom = int(round(pad_height_ + 0.1));
+  int left = int(round(pad_width_ - 0.1));
+  int right = int(round(pad_width_ + 0.1));
+  cv::copyMakeBorder(src, src, top, bottom, left, right, 0, cv::Scalar(rgb_[0], rgb_[1], rgb_[2]));
   return true;
 }
 }

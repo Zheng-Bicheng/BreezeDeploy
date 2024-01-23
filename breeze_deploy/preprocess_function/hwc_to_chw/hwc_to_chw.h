@@ -19,6 +19,7 @@ namespace breeze_deploy {
 namespace function {
 class HWCToCHW : public BreezeDeployPreprocessFunction {
  public:
+  std::string FunctionName() override { return "HWCToCHW"; }
   bool Run(BreezeDeployMat &breeze_deploy_mat) override;
 };
 }

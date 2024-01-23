@@ -19,6 +19,7 @@ namespace breeze_deploy {
 namespace function {
 class BGRToRGB : public BreezeDeployPreprocessFunction {
  public:
+  std::string FunctionName() override { return "BGRToRGB"; }
   bool Run(BreezeDeployMat &breeze_deploy_mat) override;
 };
 }

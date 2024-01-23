@@ -22,6 +22,7 @@ namespace function {
 class Resize : public BreezeDeployPreprocessFunction {
  public:
   Resize(int width, int height);
+  std::string FunctionName() override { return "Resize"; }
   bool Run(BreezeDeployMat &breeze_deploy_mat) override;
 
  private:

@@ -19,14 +19,15 @@ namespace breeze_deploy {
 namespace function {
 class LetterBox : public BreezeDeployPreprocessFunction {
  public:
-  LetterBox(int width, int height);
+  LetterBox(int width, int height, std::array<float, 3> rgb = {114, 114, 114});
+  std::string FunctionName() override { return "LetterBox"; }
   bool Run(BreezeDeployMat &breeze_deploy_mat) override;
-
- protected:
 
  private:
   int width_ = 0;
   int height_ = 0;
+
+  std::array<float, 3> rgb_ = {0, 0, 0};
 };
 }
 }

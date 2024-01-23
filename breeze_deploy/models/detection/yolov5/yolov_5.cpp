@@ -27,7 +27,7 @@ bool YOLOV5::Preprocess(const cv::Mat &input_mat) {
   }
 
   BreezeDeployMat breeze_deploy_mat(input_mat);
-  for (const auto &preprocess_function : preprocess_function_vector_) {
+  for (const auto &preprocess_function : preprocess_functions_) {
 	if (!preprocess_function->Run(breeze_deploy_mat)) {
 	  BREEZE_DEPLOY_LOGGER_ERROR("Failed to run preprocess_function.")
 	  return false;
@@ -84,10 +84,17 @@ bool YOLOV5::Postprocess() {
 
 	// convert from [x, y, w, h] to [left, top, w, h]
 	auto box_pointer = output_data + skip;
-	std::array<float, 4> box = {box_pointer[0] - box_pointer[2] / 2.0f, box_pointer[1] - box_pointer[3] / 2.0f,
-								box_pointer[2], box_pointer[3]};
-	boxes.emplace_back(box_pointer[0] - box_pointer[2] / 2.0f, box_pointer[1] - box_pointer[3] / 2.0f,
-					   box_pointer[0] + box_pointer[2] / 2.0f, box_pointer[1] + box_pointer[3] / 2.0f);
+	for (const auto &preprocess_function : preprocess_functions_) {
+	  if (preprocess_function->FunctionName() == "LetterBox") {
+		pad_height_ = preprocess_function->GetPadHeight();
+		pad_width_ = preprocess_function->GetPadWidth();
+		radio_ = preprocess_function->GetRadio();
+		BREEZE_DEPLOY_LOGGER_DEBUG("{} {} {}", pad_height_, pad_width_, radio_)
+	  }
+	}
+	auto left = int((box_pointer[0] - (float)pad_width_ - (box_pointer[2] / 2.0f) ) / radio_);
+	auto top = int((box_pointer[1] - (float)pad_height_ - (box_pointer[3] / 2.0f) ) / radio_);
+	boxes.emplace_back(left, top, box_pointer[2], box_pointer[3]);
   }
 
   std::vector<int> indices;

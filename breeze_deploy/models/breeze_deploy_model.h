@@ -44,11 +44,11 @@ class BreezeDeployModel {
 
   // Model Initialize
   std::string config_file_path_;
-  bool ReadPreprocessYAML();
+  virtual bool ReadPreprocessYAML();
   bool ReadPostprocessYAML();
 
   // Model Preprocess
-  std::vector<std::shared_ptr<BreezeDeployPreprocessFunction>> preprocess_function_vector_{};
+  std::vector<std::shared_ptr<BreezeDeployPreprocessFunction>> preprocess_functions_{};
   virtual bool Preprocess(const cv::Mat &input_mat);
 
   // Model Infer

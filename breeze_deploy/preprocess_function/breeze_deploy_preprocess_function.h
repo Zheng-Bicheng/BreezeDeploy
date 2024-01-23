@@ -23,7 +23,19 @@ namespace breeze_deploy {
 namespace function {
 class BreezeDeployPreprocessFunction {
  public:
-  virtual bool Run(BreezeDeployMat &breeze_deploy_mat);
+  virtual std::string FunctionName() = 0;
+  virtual bool Run(BreezeDeployMat &breeze_deploy_mat) = 0;
+  double GetRadio() { return radio_; }
+  int GetPadWidth() { return pad_width_; }
+  int GetPadHeight() { return pad_height_; }
+
+ protected:
+  // For resize
+  double radio_ = 0.0;
+
+  // For padding
+  int pad_width_ = 0;
+  int pad_height_ = 0;
 };
 }
 }

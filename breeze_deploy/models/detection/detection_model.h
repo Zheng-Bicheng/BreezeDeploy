@@ -19,13 +19,18 @@
 #include "breeze_deploy/models/detection/detection_result.h"
 namespace breeze_deploy {
 namespace models {
-class DetectionModel  : public BreezeDeployModel {
+class DetectionModel : public BreezeDeployModel {
  public:
   DetectionModel(const std::string &model_path, const std::string &config_file_path);
-  static cv::Mat Draw(const cv::Mat &mat, const std::vector<DetectionResult>& detection_results);
-  const std::vector<DetectionResult>& GetDetectionResults();
+  static cv::Mat Draw(const cv::Mat &mat, const std::vector<DetectionResult> &detection_results);
+  const std::vector<DetectionResult> &GetDetectionResults();
 
  protected:
+
+  double radio_ = 0.0;
+  int pad_width_ = 0;
+  int pad_height_ = 0;
+
   bool Infer() override;
   std::vector<DetectionResult> detection_results_;
 };

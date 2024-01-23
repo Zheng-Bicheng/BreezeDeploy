@@ -25,7 +25,7 @@ BreezeDeployModel::BreezeDeployModel(const std::string &model_path, const std::s
   config_file_path_ = config_file_path;
 }
 bool BreezeDeployModel::ReadPreprocessYAML() {
-  preprocess_function_vector_.clear();
+  preprocess_functions_.clear();
   YAML::Node yaml_config;
   try {
 	yaml_config = YAML::LoadFile(config_file_path_);
@@ -58,9 +58,9 @@ bool BreezeDeployModel::ReadPreprocessYAML() {
 		return false;
 	  }
 	  auto target_height_size = resize_height_node.as<int>();
-	  preprocess_function_vector_.push_back(std::make_shared<Resize>(target_width_size, target_height_size));
+	  preprocess_functions_.push_back(std::make_shared<Resize>(target_width_size, target_height_size));
 	} else if (function_name == "BGRToRGB") {
-	  preprocess_function_vector_.push_back(std::make_shared<BGRToRGB>());
+	  preprocess_functions_.push_back(std::make_shared<BGRToRGB>());
 	} else if (function_name == "Normalize") {
 	  auto &mean_config_node = preprocess_function_config.begin()->second["mean"];
 	  auto &std_config_node = preprocess_function_config.begin()->second["std"];
@@ -70,9 +70,9 @@ bool BreezeDeployModel::ReadPreprocessYAML() {
 	  }
 	  auto mean = mean_config_node.as<std::vector<float>>();
 	  auto std = std_config_node.as<std::vector<float>>();
-	  preprocess_function_vector_.push_back(std::make_shared<Normalize>(mean, std));
+	  preprocess_functions_.push_back(std::make_shared<Normalize>(mean, std));
 	} else if (function_name == "HWCToCHW") {
-	  preprocess_function_vector_.push_back(std::make_shared<HWCToCHW>());
+	  preprocess_functions_.push_back(std::make_shared<HWCToCHW>());
 	} else if (function_name == "LetterBox") {
 	  auto &resize_width_node = preprocess_function_config.begin()->second["width"];
 	  if (!resize_width_node) {
@@ -87,7 +87,7 @@ bool BreezeDeployModel::ReadPreprocessYAML() {
 		return false;
 	  }
 	  auto target_height_size = resize_height_node.as<int>();
-	  preprocess_function_vector_.push_back(std::make_shared<LetterBox>(target_width_size, target_height_size));
+	  preprocess_functions_.push_back(std::make_shared<LetterBox>(target_width_size, target_height_size));
 	} else {
 	  BREEZE_DEPLOY_LOGGER_ERROR(
 		  "The preprocess function name only supports [Resize, BGRToRGB, Normalize, HWCToCHW, LetterBox], "
