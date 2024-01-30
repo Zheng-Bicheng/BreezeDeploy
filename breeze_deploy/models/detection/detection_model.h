@@ -42,7 +42,7 @@ class DetectionModel : public BreezeDeployModel {
   float confidence_threshold_ = 0.5;
   int landmark_num_ = 0;
 
-  // For nms
+  // For NMS
   float nms_threshold_ = 0.5;
 };
 }

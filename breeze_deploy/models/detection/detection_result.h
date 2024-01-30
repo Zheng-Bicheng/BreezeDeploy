@@ -23,25 +23,26 @@
 namespace breeze_deploy {
 namespace models {
 struct DetectionResult {
-  DetectionResult(size_t temp_index, float temp_confidence, const cv::Rect &temp_coordinate)
-	  : label_id_{temp_index}, label_confidence_{temp_confidence}, rect_{temp_coordinate} {}
-
-  void SetLabel(const std::string &temp_label) {
-	label_name_ = temp_label;
+  DetectionResult(size_t temp_label_id, float temp_confidence, const cv::Rect &temp_coordinate)
+	  : label_id_{temp_label_id}, label_confidence_{temp_confidence}, rect_{temp_coordinate} {
+  }
+  DetectionResult(size_t temp_label_id,
+				  float temp_confidence,
+				  const cv::Rect &temp_coordinate,
+				  const std::vector<cv::Point> &landmark)
+	  : label_id_{temp_label_id}, label_confidence_{temp_confidence}, rect_{temp_coordinate}, landmarks_{landmark} {
   }
 
   void PrintResult() {
-	BREEZE_DEPLOY_LOGGER_INFO("label_name_: {}, label_id: {}, label_confidence_: {}, [left,top,w,h]:[{} {} {} {}]",
-							  label_name_,
+	BREEZE_DEPLOY_LOGGER_INFO("label_id: {}, label_confidence_: {}, [left,top,w,h]:[{} {} {} {}]",
 							  label_id_,
 							  label_confidence_,
 							  rect_.x,
 							  rect_.y,
 							  rect_.width,
-							  rect_.height);
+							  rect_.height)
   }
 
-  std::string label_name_;
   size_t label_id_ = -1;
   float label_confidence_ = 0.0;
   cv::Rect rect_ = {0, 0, 0, 0};
