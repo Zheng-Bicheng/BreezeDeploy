@@ -1,4 +1,4 @@
-// Copyright (c) 2024/1/22 Zheng-Bicheng. All Rights Reserved.
+// Copyright (c) 2024/1/30 Zheng-Bicheng. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,20 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef BREEZE_DEPLOY_MODELS_DETECTION_YOLOV5_YOLOV_5_H_
-#define BREEZE_DEPLOY_MODELS_DETECTION_YOLOV5_YOLOV_5_H_
+#include "breeze_deploy/models/detection/without_landmark/detection_model_without_landmark.h"
 
-#include "breeze_deploy/models/detection/detection_model.h"
 namespace breeze_deploy {
 namespace models {
-class YOLOV5 : public DetectionModel {
- public:
-  YOLOV5(const std::string &model_path, const std::string &config_file_path);
+cv::Mat DetectionModelWithoutLandmark::Draw(const cv::Mat &mat,
+											const DetectionResultWithoutLandmark &detection_result) {
+  if (detection_result.GetSize() == 0) {
+	return {};
+  }
 
- protected:
-  bool Preprocess(const cv::Mat &input_mat) override;
-  bool Postprocess() override;
-};
+  for (int i = 0; i < detection_result.GetSize(); ++i) {
+	auto rect_vector = detection_result.rect_vector[i];
+	cv::rectangle(mat, rect_vector, cv::Scalar(0, 0, 255), 1);
+  }
+  return mat;
 }
 }
-#endif //BREEZE_DEPLOY_MODELS_DETECTION_YOLOV5_YOLOV_5_H_
+}

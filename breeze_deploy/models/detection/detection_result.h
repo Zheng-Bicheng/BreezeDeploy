@@ -22,31 +22,25 @@
 
 namespace breeze_deploy {
 namespace models {
-struct DetectionResult {
-  DetectionResult(size_t temp_label_id, float temp_confidence, const cv::Rect &temp_coordinate)
-	  : label_id_{temp_label_id}, label_confidence_{temp_confidence}, rect_{temp_coordinate} {
+struct DetectionResultWithoutLandmark {
+  virtual void Clear() {
+	label_id_vector.clear();
+	label_confidence_vector.clear();
+	rect_vector.clear();
   }
-  DetectionResult(size_t temp_label_id,
-				  float temp_confidence,
-				  const cv::Rect &temp_coordinate,
-				  const std::vector<cv::Point> &landmark)
-	  : label_id_{temp_label_id}, label_confidence_{temp_confidence}, rect_{temp_coordinate}, landmarks_{landmark} {
-  }
+  size_t GetSize() const { return label_id_vector.size(); }
 
-  void PrintResult() {
-	BREEZE_DEPLOY_LOGGER_INFO("label_id: {}, label_confidence_: {}, [left,top,w,h]:[{} {} {} {}]",
-							  label_id_,
-							  label_confidence_,
-							  rect_.x,
-							  rect_.y,
-							  rect_.width,
-							  rect_.height)
-  }
+  std::vector<int> label_id_vector;  // The 'indices' parameter of the cv::dnn::NMSBoxes() function requires a std::vector<int>
+  std::vector<float> label_confidence_vector;
+  std::vector<cv::Rect> rect_vector;
+};
 
-  size_t label_id_ = -1;
-  float label_confidence_ = 0.0;
-  cv::Rect rect_ = {0, 0, 0, 0};
-  std::vector<cv::Point> landmarks_;
+struct DetectionResultWithLandmark : public DetectionResultWithoutLandmark {
+  void Clear() override {
+	DetectionResultWithoutLandmark::Clear();
+	landmarks_vector.clear();
+  }
+  std::vector<std::vector<cv::Point>> landmarks_vector;
 };
 }
 }

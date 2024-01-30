@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "breeze_deploy/models/detection/yolov5/yolov_5.h"
+#include "breeze_deploy/models/detection/without_landmark/yolov5/yolov_5.h"
 namespace breeze_deploy {
 namespace models {
 YOLOV5::YOLOV5(const std::string &model_path, const std::string &config_file_path)
@@ -58,9 +58,9 @@ bool YOLOV5::Preprocess(const cv::Mat &input_mat) {
   }
   return true;
 }
-
-bool YOLOV5::Postprocess() {
-  detection_results_.clear();
+bool YOLOV5::Predict(const cv::Mat &input_mat,
+					 breeze_deploy::models::DetectionResultWithoutLandmark &result_without_landmark) {
+  result_without_landmark.Clear();
   auto output_data = reinterpret_cast<float *>(output_tensor_vector_[0].GetTensorDataPointer());
   auto output_shape = output_tensor_vector_[0].GetTensorInfo().tensor_shape;  // output_shape is [1,25200,85]
 
@@ -100,14 +100,18 @@ bool YOLOV5::Postprocess() {
   }
 
   std::vector<int> indices;
-  cv::dnn::NMSBoxes(temp_box_vector, temp_confidence_vector, confidence_threshold_, nms_threshold_, indices);
+  cv::dnn::NMSBoxes(temp_box_vector,
+					temp_confidence_vector,
+					confidence_threshold_,
+					nms_threshold_,
+					result_without_landmark.label_id_vector);
   for (int idx : indices) {
-	detection_results_.emplace_back(temp_class_id_vector[idx], temp_confidence_vector[idx], temp_box_vector[idx]);
+	result_without_landmark.rect_vector.emplace_back(temp_box_vector[idx]);
+	result_without_landmark.label_confidence_vector.emplace_back(temp_confidence_vector[idx]);
   }
 
   // 恢复box到原坐标
-  for (auto &detection_result : detection_results_) {
-	auto &rect = detection_result.rect_;
+  for (auto &rect : result_without_landmark.rect_vector) {
 	rect.x = static_cast<int>(static_cast<double>(rect.x - pad_width_) / radio_);
 	rect.y = static_cast<int>(static_cast<double>(rect.y - pad_height_) / radio_);
 	rect.width = static_cast<int>(static_cast<double>(rect.width) / radio_);

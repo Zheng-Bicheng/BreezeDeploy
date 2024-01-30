@@ -17,7 +17,12 @@
 #include "breeze_deploy/models/classification/classification_model.h"
 namespace breeze_deploy {
 namespace models {
-using GhostNet = ClassificationModel;
+class GhostNet : public ClassificationModel {
+ public:
+  GhostNet(const std::string &model_path, const std::string &config_file_path)
+	  : ClassificationModel(model_path, config_file_path) {};
+  std::string ModelName() override { return "GhostNet"; }
+};
 }
 }
 #endif //BREEZE_DEPLOY_MODELS_CLASSIFICATION_GHOSTNET_GHOST_NET_H_

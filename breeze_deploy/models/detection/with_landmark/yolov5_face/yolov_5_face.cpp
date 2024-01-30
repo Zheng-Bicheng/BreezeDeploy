@@ -12,12 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "yolov_5_face.h"
+#include "breeze_deploy/models/detection/with_landmark/yolov5_face/yolov_5_face.h"
 
 namespace breeze_deploy {
 namespace models {
-bool YOLOV5Face::Postprocess() {
-  detection_results_.clear();
+bool YOLOV5Face::Predict(const cv::Mat &input_mat,
+						 breeze_deploy::models::DetectionResultWithLandmark &result_with_landmark) {
+  result_with_landmark.Clear();
   auto output_data = reinterpret_cast<float *>(output_tensor_vector_[0].GetTensorDataPointer());
   auto output_shape = output_tensor_vector_[0].GetTensorInfo().tensor_shape;  // output_shape is [1,25200,16]
   std::vector<float> temp_confidence_vector;
@@ -68,14 +69,19 @@ bool YOLOV5Face::Postprocess() {
   }
 
   std::vector<int> indices;
-  cv::dnn::NMSBoxes(temp_box_vector, temp_confidence_vector, confidence_threshold_, nms_threshold_, indices);
+  cv::dnn::NMSBoxes(temp_box_vector,
+					temp_confidence_vector,
+					confidence_threshold_,
+					nms_threshold_,
+					result_with_landmark.label_id_vector);
   for (int idx : indices) {
-	detection_results_.emplace_back(temp_class_id_vector[idx], temp_confidence_vector[idx], temp_box_vector[idx], temp_landmark_vector[idx]);
+	result_with_landmark.rect_vector.emplace_back(temp_box_vector[idx]);
+	result_with_landmark.label_confidence_vector.emplace_back(temp_confidence_vector[idx]);
+	result_with_landmark.landmarks_vector.emplace_back(temp_landmark_vector[idx]);
   }
 
   // 恢复box到原坐标
-  for (auto &detection_result : detection_results_) {
-	auto &rect = detection_result.rect_;
+  for (auto &rect : result_with_landmark.rect_vector) {
 	rect.x = static_cast<int>(static_cast<double>(rect.x - pad_width_) / radio_);
 	rect.y = static_cast<int>(static_cast<double>(rect.y - pad_height_) / radio_);
 	rect.width = static_cast<int>(static_cast<double>(rect.width) / radio_);
@@ -83,9 +89,8 @@ bool YOLOV5Face::Postprocess() {
   }
 
   // 恢复landmark到原坐标
-  for (auto & detection_result : detection_results_) {
-	auto &landmarks = detection_result.landmarks_;
-	for (auto & landmark : landmarks) {
+  for (auto &landmarks : result_with_landmark.landmarks_vector) {
+	for (auto &landmark : landmarks) {
 	  landmark.x = static_cast<int>(static_cast<double>(landmark.x - pad_width_) / radio_);
 	  landmark.y = static_cast<int>(static_cast<double>(landmark.y - pad_height_) / radio_);
 	}

@@ -23,6 +23,7 @@ class ClassificationModel : public BreezeDeployModel {
  public:
   ClassificationModel(const std::string &model_path, const std::string &config_file_path);
   bool ReadLabelFile(const std::string &label_file_path);
+  std::string ModelName() override { return "ClassificationModel"; }
   virtual bool Predict(const cv::Mat &input_mat, ClassificationLabelResult& label_result);
   virtual bool Predict(const cv::Mat &input_mat, ClassificationFeatureResult& label_result);
 

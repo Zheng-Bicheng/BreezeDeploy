@@ -34,11 +34,10 @@ class BreezeDeployModel {
  public:
   BreezeDeployModel(const std::string &model_path, const std::string &config_file_path);
   bool Initialize(const BreezeDeployBackendOption &breeze_deploy_backend_option = BreezeDeployBackendOption());
-  bool Predict(const cv::Mat &input_mat);
+  virtual std::string ModelName() { return "BreezeDeployModel"; }
 
  protected:
   // Model Attribute
-  std::string model_name_ = "BreezeDeployModel";
   std::string model_path_;
   std::unique_ptr<BreezeDeployBackend> breeze_deploy_backend_ = nullptr;
 
@@ -59,6 +58,9 @@ class BreezeDeployModel {
 
   // Model PostProcess
   virtual bool Postprocess() = 0;
+
+  // Model Predict
+  bool Predict(const cv::Mat &input_mat);
 };
 }
 }

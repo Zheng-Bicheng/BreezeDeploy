@@ -21,24 +21,28 @@ namespace breeze_deploy {
 namespace models {
 class DetectionModel : public BreezeDeployModel {
  public:
-  DetectionModel(const std::string &model_path, const std::string &config_file_path);
-  static cv::Mat Draw(const cv::Mat &mat, const std::vector<DetectionResult> &detection_results);
-  const std::vector<DetectionResult> &GetDetectionResults();
+  DetectionModel(const std::string &model_path, const std::string &config_file_path)
+	  : BreezeDeployModel(model_path, config_file_path) {}
+  std::string ModelName() override { return "DetectionModel"; }
   void SetConfidenceThreshold(float confidence_threshold) { confidence_threshold_ = confidence_threshold; }
   void SetNMSThreshold(float nms_threshold) { nms_threshold_ = nms_threshold; }
 
  protected:
-  std::vector<DetectionResult> detection_results_;
   bool Infer() override;
+  bool Postprocess() override;
   bool ReadPostprocessYAML() override;
 
-  // For restore original coordinates
+  // For [Resize,LetterBox]
   double radio_ = 0.0;
+
+  // For [LetterBox]
   int pad_width_ = 0;
   int pad_height_ = 0;
 
-  // For postprocess
+  // For [DetectionResultWithoutLandmark,DetectionResultWithLandmark]
   float confidence_threshold_ = 0.5;
+
+  // For [DetectionResultWithLandmark]
   int landmark_num_ = 0;
 
   // For NMS

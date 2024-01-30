@@ -16,9 +16,6 @@
 
 namespace breeze_deploy {
 namespace models {
-DetectionModel::DetectionModel(const std::string &model_path, const std::string &config_file_path)
-	: BreezeDeployModel(model_path, config_file_path) {
-}
 bool DetectionModel::Infer() {
   return breeze_deploy_backend_->Infer(input_tensor_vector_, output_tensor_vector_);
 }
@@ -51,29 +48,8 @@ bool DetectionModel::ReadPostprocessYAML() {
   }
   return true;
 }
-cv::Mat DetectionModel::Draw(const cv::Mat &mat, const std::vector<DetectionResult> &detection_results) {
-  if (detection_results.empty()) {
-	return {};
-  }
-
-  for (const auto &detection_result : detection_results) {
-	cv::rectangle(mat, detection_result.rect_, cv::Scalar(0, 0, 255), 1);
-  }
-
-  auto without_landmark = detection_results[0].landmarks_.empty();
-  if (without_landmark) {
-	return mat;
-  }
-
-  for (const auto &detection_result : detection_results) {
-	for (auto landmark : detection_result.landmarks_) {
-	  cv::circle(mat, landmark, 1, cv::Scalar(0, 0, 255), 1);
-	}
-  }
-  return mat;
-}
-const std::vector<DetectionResult> &DetectionModel::GetDetectionResults() {
-  return detection_results_;
+bool DetectionModel::Postprocess() {
+  return true;
 }
 }
 }
