@@ -28,6 +28,8 @@ class BreezeDeployBackend {
   virtual bool Infer(std::vector<BreezeDeployTensor> &input_tensor, std::vector<BreezeDeployTensor> &output_tensor) = 0;
   virtual std::vector<BreezeDeployTensorInfo> GetInputTensorInfo() = 0;
   virtual std::vector<BreezeDeployTensorInfo> GetOutputTensorInfo() = 0;
+  virtual size_t GetInputTensorSize() = 0;
+  virtual size_t GetOutputTensorSize() = 0;
 
 //  virtual bool PrintBackendTensorInfo();
 

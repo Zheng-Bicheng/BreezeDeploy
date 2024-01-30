@@ -34,7 +34,8 @@ class ONNXBackend : public BreezeDeployBackend {
   bool Infer(std::vector<BreezeDeployTensor> &input_tensor, std::vector<BreezeDeployTensor> &output_tensor) override;
   std::vector<BreezeDeployTensorInfo> GetInputTensorInfo() override;
   std::vector<BreezeDeployTensorInfo> GetOutputTensorInfo() override;
-
+  size_t GetInputTensorSize() override { return input_tensor_info_vector_.size(); }
+  size_t GetOutputTensorSize() override { return output_tensor_info_vector_.size(); }
 
  private:
   Ort::Env env_{};

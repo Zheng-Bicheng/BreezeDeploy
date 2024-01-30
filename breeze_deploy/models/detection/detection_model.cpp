@@ -16,14 +16,45 @@
 
 namespace breeze_deploy {
 namespace models {
-DetectionModel::DetectionModel(const std::string &model_path, const std::string &config_file_path)
-	: BreezeDeployModel(model_path, config_file_path) {
-}
-bool DetectionModel::Infer() {
-  return breeze_deploy_backend_->Infer(input_tensor_vector_, output_tensor_vector_);
+bool DetectionModel::Preprocess(const cv::Mat &input_mat) {
+  if (input_mat.empty()) {
+	BREEZE_DEPLOY_LOGGER_ERROR("input_mat is empty.")
+	return false;
+  }
+
+  // Do preprocess
+  BreezeDeployMat breeze_deploy_mat(input_mat);
+  for (const auto &preprocess_function : preprocess_functions_) {
+	if (!preprocess_function->Run(breeze_deploy_mat)) {
+	  BREEZE_DEPLOY_LOGGER_ERROR("Failed to run preprocess_function.")
+	  return false;
+	}
+  }
+
+  // Set data to tensor
+  auto tensor_data = breeze_deploy_mat.GetMat().data;
+  auto tensor_data_type = breeze_deploy_mat.GetMatDataType();
+  auto c = breeze_deploy_mat.GetChannel();
+  auto h = breeze_deploy_mat.GetHeight();
+  auto w = breeze_deploy_mat.GetWidth();
+  if (breeze_deploy_mat.GetMatDataFormat() == BreezeDeployDataFormat::CHW) {
+	input_tensor_vector_[0].SetTensorData(tensor_data, {1, c, h, w}, tensor_data_type);
+  } else {
+	input_tensor_vector_[0].SetTensorData(tensor_data, {1, h, w, c}, tensor_data_type);
+  }
+
+  // Get resize radio and pad height/width.
+  for (const auto &preprocess_function : preprocess_functions_) {
+	if (preprocess_function->FunctionName() != "LetterBox") {
+	  continue;
+	}
+	pad_height_ = preprocess_function->GetPadHeight();
+	pad_width_ = preprocess_function->GetPadWidth();
+	radio_ = preprocess_function->GetRadio();
+  }
+  return true;
 }
 bool DetectionModel::ReadPostprocessYAML() {
-  postprocess_function_vector_.clear();
   YAML::Node yaml_config;
   try {
 	yaml_config = YAML::LoadFile(config_file_path_);
@@ -52,29 +83,30 @@ bool DetectionModel::ReadPostprocessYAML() {
   }
   return true;
 }
-cv::Mat DetectionModel::Draw(const cv::Mat &mat, const std::vector<DetectionResult> &detection_results) {
-  if (detection_results.empty()) {
+bool DetectionModel::Postprocess() {
+  return true;
+}
+cv::Mat DetectionModelWithoutLandmark::Draw(const cv::Mat &mat,
+											const DetectionResultWithoutLandmark &detection_result) {
+  if (detection_result.GetSize() == 0) {
 	return {};
   }
 
-  for (const auto &detection_result : detection_results) {
-	cv::rectangle(mat, detection_result.rect_, cv::Scalar(0, 0, 255), 1);
+  for (int i = 0; i < detection_result.GetSize(); ++i) {
+	auto rect_vector = detection_result.rect_vector[i];
+	cv::rectangle(mat, rect_vector, cv::Scalar(0, 0, 255), 1);
   }
-
-  auto without_landmark = detection_results[0].landmarks_.empty();
-  if (without_landmark) {
-	return mat;
-  }
-
-  for (const auto &detection_result : detection_results) {
-	for (auto landmark : detection_result.landmarks_) {
+  return mat;
+}
+cv::Mat DetectionModelWithLandmark::Draw(const cv::Mat &mat, const DetectionResultWithLandmark &detection_result) {
+  DetectionModelWithoutLandmark::Draw(mat, *dynamic_cast<const DetectionResultWithoutLandmark *>(&detection_result));
+  for (int i = 0; i < detection_result.GetSize(); ++i) {
+	auto landmarks_vector = detection_result.landmarks_vector[i];
+	for (const auto &landmark : landmarks_vector) {
 	  cv::circle(mat, landmark, 1, cv::Scalar(0, 0, 255), 1);
 	}
   }
   return mat;
-}
-const std::vector<DetectionResult> &DetectionModel::GetDetectionResults() {
-  return detection_results_;
 }
 }
 }

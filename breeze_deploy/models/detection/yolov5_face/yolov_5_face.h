@@ -14,16 +14,15 @@
 
 #ifndef BREEZE_DEPLOY_MODELS_DETECTION_YOLOV5_FACE_YOLOV_5_FACE_H_
 #define BREEZE_DEPLOY_MODELS_DETECTION_YOLOV5_FACE_YOLOV_5_FACE_H_
-#include "breeze_deploy/models/detection/yolov5/yolov_5.h"
+#include "breeze_deploy/models/detection/detection_model.h"
 namespace breeze_deploy {
 namespace models {
-class YOLOV5Face : public YOLOV5 {
+class YOLOV5Face : public DetectionModelWithLandmark {
  public:
   YOLOV5Face(const std::string &model_path, const std::string &config_file_path)
-	  : YOLOV5(model_path, config_file_path) {}
-
- protected:
-  bool Postprocess() override;
+	  : DetectionModelWithLandmark(model_path, config_file_path) {}
+  std::string ModelName() override { return "YOLOV5Face"; }
+  bool Predict(const cv::Mat &input_mat, DetectionResultWithLandmark &result_with_landmark) override;
 };
 }
 }

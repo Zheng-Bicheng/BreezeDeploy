@@ -24,7 +24,6 @@
 #include "breeze_deploy/core/breeze_deploy_mat.h"
 #include "breeze_deploy/core/breeze_deploy_tensor.h"
 #include "breeze_deploy/core/breeze_deploy_time.h"
-#include "breeze_deploy/postprocess_function/postprocess_function.h"
 #include "breeze_deploy/preprocess_function/preprocess_function.h"
 
 namespace breeze_deploy {
@@ -34,13 +33,11 @@ using namespace breeze_deploy::backend;
 class BreezeDeployModel {
  public:
   BreezeDeployModel(const std::string &model_path, const std::string &config_file_path);
-
   bool Initialize(const BreezeDeployBackendOption &breeze_deploy_backend_option = BreezeDeployBackendOption());
-  virtual bool Predict(const cv::Mat &input_mat);
+  virtual std::string ModelName() { return "BreezeDeployModel"; }
 
  protected:
   // Model Attribute
-  std::string model_name_ = "BreezeDeployModel";
   std::string model_path_;
   std::unique_ptr<BreezeDeployBackend> breeze_deploy_backend_ = nullptr;
 
@@ -57,11 +54,13 @@ class BreezeDeployModel {
   std::vector<BreezeDeployTensor> input_tensor_vector_{};
   std::vector<BreezeDeployTensor> output_tensor_vector_{};
   BreezeDeployBackendOption breeze_deploy_backend_option_;
-  virtual bool Infer() = 0;
+  virtual bool Infer();
 
   // Model PostProcess
-  std::vector<std::shared_ptr<BreezeDeployPostprocessFunction>> postprocess_function_vector_{};
   virtual bool Postprocess() = 0;
+
+  // Model Predict
+  bool Predict(const cv::Mat &input_mat);
 };
 }
 }

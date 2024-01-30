@@ -11,48 +11,46 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #include <iostream>
 #include <string>
 #include "breeze_deploy/core/breeze_deploy_time.h"
-#include "breeze_deploy/models/classification/ghostnet/ghost_net.h"
+#include "breeze_deploy/models/detection/yolov5/yolov_5.h"
 
 using namespace breeze_deploy;
 using namespace breeze_deploy::models;
 using cv::imread;
 
 int main(int argc, char *argv[]) {
-  if (argc < 4) {
-	std::cout << "Usage: test_ghostnet path/to/model /path/to/config_file path/to/image path/to/label" << std::endl;
+  if (argc < 3) {
+	std::cout << "Usage: test_yolov5 path/to/model /path/to/config_file path/to/image" << std::endl;
 	return -1;
   }
 
   std::string model_path = argv[1];
   std::string config_path = argv[2];
-
-  GhostNet ghost_net(model_path, config_path);
-  if (!ghost_net.Initialize()) {
+  YOLOV5 detect_model(model_path, config_path);
+  if (!detect_model.Initialize()) {
 	std::cout << "模型初始化失败" << std::endl;
 	return 1;
   }
-  std::string label_file_path = argv[4];
-  ghost_net.SetLabel(label_file_path);
+
+  detect_model.SetConfidenceThreshold(0.5);
+  detect_model.SetNMSThreshold(0.5);
 
   std::string image_path = argv[3];
   auto mat = cv::imread(image_path);
+
   BreezeDeployTime cost;
   cost.Start();
-  for (int i = 0; i < 100; ++i) {
-	if (!ghost_net.Predict(mat)) {
-	  std::cout << "模型推理失败" << std::endl;
-	  return 1;
-	}
+  DetectionResultWithoutLandmark result;
+  if (!detect_model.Predict(mat, result)) {
+	std::cout << "模型推理失败" << std::endl;
+	return 1;
   }
   cost.End();
-  cost.PrintInfo("GhostNet", 1.0 / 100, BreezeDeployTimeType::Milliseconds);
-
-  auto classification_results = ghost_net.GetClassificationResults();
-  for (auto &classification_result : classification_results) {
-	printf("Label is %s,confidence is %f\n", classification_result.label.c_str(), classification_result.confidence);
-  }
+  cost.PrintInfo("YOLOV5", 1.0, BreezeDeployTimeType::Milliseconds);
+  mat = DetectionModelWithoutLandmark::Draw(mat, result);
+  cv::imwrite("./detect_result.png", mat);
   return 0;
 }
