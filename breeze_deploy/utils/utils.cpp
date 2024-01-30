@@ -17,22 +17,48 @@
 
 namespace breeze_deploy{
 namespace utils{
-std::vector<std::string> GetSubdirectories(const std::string& path){
-  std::vector<std::string> subdirectories;
+bool GetSubdirectories(const std::string& path, std::vector<std::string>& subdirectories){
+  subdirectories.clear();
   DIR* dir = opendir(path.c_str());
-  if (dir != nullptr) {
-	struct dirent* entry;
-	while ((entry = readdir(dir)) != nullptr) {
-	  if (entry->d_type == DT_DIR && std::string(entry->d_name) != "." && std::string(entry->d_name) != "..") {
-		subdirectories.push_back(entry->d_name);
-	  }
-	}
-	closedir(dir);
-  } else {
-	std::cerr << "Error opening directory " << path << std::endl;
+  if(dir == nullptr){
+	BREEZE_DEPLOY_LOGGER_ERROR("Error opening directory.")
+	return false;
   }
 
-  return subdirectories;
+  struct dirent* entry;
+  while ((entry = readdir(dir)) != nullptr) {
+	if(entry->d_type != DT_DIR){
+	  continue;
+	}
+	if(std::string(entry->d_name) != "."){
+	  continue;
+	}
+	if(std::string(entry->d_name) != ".."){
+	  continue;
+	}
+	subdirectories.emplace_back(entry->d_name);
+  }
+  closedir(dir);
+  return true;
+}
+
+bool GetFiles(const std::string& path, std::vector<std::string>& files){
+  files.clear();
+  DIR* dir = opendir(path.c_str());
+  if(dir == nullptr){
+	BREEZE_DEPLOY_LOGGER_ERROR("Error opening directory.")
+	return false;
+  }
+
+  struct dirent* entry;
+  while ((entry = readdir(dir)) != nullptr) {
+	if(entry->d_type == DT_REG){
+	  continue;
+	}
+	files.emplace_back(entry->d_name);
+  }
+  closedir(dir);
+  return true;
 }
 }
 }

@@ -29,7 +29,7 @@ class ImageRecognition {
 	  : detection_model_{std::move(detection_model)}, classification_model_{std::move(classification_model)} {
   }
 
-  bool BuildDatabase(const std::string& image_folder_path, bool use_detection = true);
+  bool BuildDatabase(const std::string& image_folders_path, bool use_detection = true);
 
  private:
   std::unique_ptr<DetectionModel> detection_model_;

@@ -14,11 +14,37 @@
 
 #include <filesystem>
 #include <dirent.h>
-
+#include "breeze_deploy/utils/utils.h"
 #include "breeze_deploy/pipeline/image_recognition/image_recognition.h"
-namespace breeze_deploy{
-namespace models{
-bool ImageRecognition::BuildDatabase(const std::string &image_folder_path, bool use_detection) {
+namespace breeze_deploy {
+namespace models {
+bool ImageRecognition::BuildDatabase(const std::string &image_folders_path, bool use_detection) {
+  // 获取当前路径下的所有文件夹
+  std::vector<std::string> image_folders;
+  auto result_get = utils::GetSubdirectories(image_folders_path, image_folders);
+  if (!result_get) {
+	BREEZE_DEPLOY_LOGGER_ERROR("Failed to get image folders.")
+	return false;
+  }
+  if (image_folders.empty()) {
+	BREEZE_DEPLOY_LOGGER_ERROR("The folder does not exist in the current path.")
+	return false;
+  }
+
+  // 获取当前文件夹下的所有图片
+  for (auto &image_folder : image_folders) {
+	std::string image_folder_path = image_folders_path;
+	image_folder_path += "/";
+	image_folder_path += image_folder;
+
+	std::vector<std::string> image_files;
+	result_get = utils::GetFiles(image_folder_path, image_files);
+	if (!result_get) {
+	  BREEZE_DEPLOY_LOGGER_ERROR("Failed to get image files.")
+	  return false;
+	}
+  }
+
   // 获取当前路径下的所有文件夹名称
 //  for (const auto& entry : std::file(currentPath)) {
 //	// 检查是否是一个目录
@@ -27,9 +53,7 @@ bool ImageRecognition::BuildDatabase(const std::string &image_folder_path, bool 
 //	  std::cout << "Folder: " << entry.path().filename() << std::endl;
 //	}
 //  }
-
-
-  return false;
+  return true;
 }
 }
 }
