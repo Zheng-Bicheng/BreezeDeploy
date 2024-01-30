@@ -25,8 +25,10 @@ class ClassificationModel : public BreezeDeployModel {
 	  : BreezeDeployModel(model_path, config_file_path) {}
   bool ReadLabelFile(const std::string &label_file_path);
   std::string ModelName() override { return "ClassificationModel"; }
-  virtual bool Predict(const cv::Mat &input_mat, ClassificationLabelResult& label_result);
-  virtual bool Predict(const cv::Mat &input_mat, ClassificationFeatureResult& label_result);
+  virtual bool Predict(const cv::Mat &input_mat, ClassificationLabelResult &label_result);
+  virtual bool Predict(const cv::Mat &input_mat, ClassificationFeatureResult &label_result);
+  static double CosineSimilarity(const ClassificationFeatureResult &a,
+								const ClassificationFeatureResult &b);
 
  protected:
   bool Preprocess(const cv::Mat &input_mat) override;

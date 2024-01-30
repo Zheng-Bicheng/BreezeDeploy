@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+#include <Eigen/Dense>
 #include <fstream>
 #include "breeze_deploy/models/classification/classification_model.h"
 #include "breeze_deploy/models/classification/postprocess_function.h"
@@ -151,6 +152,31 @@ bool ClassificationModel::Predict(const cv::Mat &input_mat, ClassificationFeatur
   auto tensor_data_size = tensor.GetTensorSize();
   label_result.feature_vector_ = std::vector<float>(tensor_data_ptr, tensor_data_ptr + tensor_data_size);
   return true;
+}
+
+double ClassificationModel::CosineSimilarity(const ClassificationFeatureResult &a,
+											const ClassificationFeatureResult &b) {
+  if (a.feature_vector_.size() != b.feature_vector_.size()) {
+	BREEZE_DEPLOY_LOGGER_ERROR(
+		"The size of Vector A and B must be equal. The size of vector A is {}, while the size of vector B is also {}.",
+		a.feature_vector_.size(),
+		b.feature_vector_.size())
+	return 0;
+  }
+
+  if ((a.feature_vector_.empty()) || (b.feature_vector_.empty())) {
+	BREEZE_DEPLOY_LOGGER_ERROR(
+		"The size of vectors A and B must be greater than 0. The size of vector A is {}, while the size of vector B is also {}.",
+		a.feature_vector_.size(),
+		b.feature_vector_.size())
+	return 0;
+  }
+
+  auto feature_vector_a = a.feature_vector_;
+  auto feature_vector_b = b.feature_vector_;
+  Eigen::Map<Eigen::VectorXf> eigen_vector_a(feature_vector_a.data(), static_cast<long>(feature_vector_a.size()));
+  Eigen::Map<Eigen::VectorXf> eigen_vector_b(feature_vector_b.data(), static_cast<long>(feature_vector_b.size()));
+  return eigen_vector_a.dot(eigen_vector_b) / (eigen_vector_a.norm() * eigen_vector_b.norm());
 }
 }
 }

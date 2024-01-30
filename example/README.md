@@ -13,8 +13,8 @@
 ```bash
 # For Mac
 install_name_tool -add_rpath ${PWD} test_resnet
-./test_label_result BreezeDeployModelZoo/classfication/models/GhostNet_x1_0_QAT.onnx config/classification/classification_onnx_template.yaml BreezeDeployModelZoo/classfication/images/ILSVRC2012_val_00020010.jpg BreezeDeployModelZoo/classfication/labels/ILSVRC2012_label.txt
+./test_label_result BreezeDeployModelZoo/classfication/models/GhostNet_x1_0_QAT.onnx config/classification/resnet_onnx_template.yaml BreezeDeployModelZoo/classfication/images/ILSVRC2012_val_00020010.jpg BreezeDeployModelZoo/classfication/labels/ILSVRC2012_label.txt
+./test_feature_result BreezeDeployModelZoo/classfication/models/ms1mv3_arcface_r18.onnx config/classification/arcface_onnx_template.yaml BreezeDeployModelZoo/classfication/images/face_0.jpg BreezeDeployModelZoo/classfication/images/face_1.jpg
 ./test_yolov5 BreezeDeployModelZoo/detection/models/yolov5n.onnx config/detection/yolov5/yolov5_onnx_template.yaml BreezeDeployModelZoo/detection/images/000000014439.jpg
 ./test_yolov5_face BreezeDeployModelZoo/detection/models/yolov5s-face.onnx config/detection/yolov5_face/yolov5_face_onnx_template.yaml BreezeDeployModelZoo/detection/images/test_lite_face_detector_3.jpg
-./test_yolov5_face_license_plate BreezeDeployModelZoo/pipeline/license_plate/models/plate_detect.onnx config/pipeline/license_plate/yolov5_face_onnx_template.yaml BreezeDeployModelZoo/pipeline/license_plate/images/Quicker_20220930_181044.png
 ```
