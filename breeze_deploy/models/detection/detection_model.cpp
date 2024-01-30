@@ -53,8 +53,23 @@ bool DetectionModel::ReadPostprocessYAML() {
   return true;
 }
 cv::Mat DetectionModel::Draw(const cv::Mat &mat, const std::vector<DetectionResult> &detection_results) {
+  if (detection_results.empty()) {
+	return {};
+  }
+
   for (const auto &detection_result : detection_results) {
 	cv::rectangle(mat, detection_result.rect_, cv::Scalar(0, 0, 255), 1);
+  }
+
+  auto without_landmark = detection_results[0].landmarks_.empty();
+  if (without_landmark) {
+	return mat;
+  }
+
+  for (const auto &detection_result : detection_results) {
+	for (auto landmark : detection_result.landmarks_) {
+	  cv::circle(mat, landmark, 1, cv::Scalar(0, 0, 255), 1);
+	}
   }
   return mat;
 }

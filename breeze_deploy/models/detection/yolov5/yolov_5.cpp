@@ -64,9 +64,9 @@ bool YOLOV5::Postprocess() {
   auto output_data = reinterpret_cast<float *>(output_tensor_vector_[0].GetTensorDataPointer());
   auto output_shape = output_tensor_vector_[0].GetTensorInfo().tensor_shape;  // output_shape is [1,25200,85]
 
-  std::vector<float> confidences;
-  std::vector<cv::Rect> boxes;
-  std::vector<long> class_ids;
+  std::vector<float> temp_confidence_vector;
+  std::vector<cv::Rect> temp_box_vector;
+  std::vector<long> temp_class_id_vector;
   for (size_t i = 0; i < output_shape[1]; ++i) {
 	// [x1,y1,w1,h1,box_score,conf1,....,conf80]
 	auto skip = i * output_shape[2];
@@ -84,25 +84,34 @@ bool YOLOV5::Postprocess() {
 	if (max_label_score <= confidence_threshold_) {
 	  continue;
 	}
-	confidences.emplace_back(max_label_score);
+	temp_confidence_vector.emplace_back(max_label_score);
 
 	// Get label_name_ id
 	auto label_id = max_label_score_pointer - label_score_pointer;
-	class_ids.emplace_back(label_id);
+	temp_class_id_vector.emplace_back(label_id);
 
 	// convert from [x, y, w, h] to [left, top, w, h]
 	auto box_pointer = output_data + skip;
-	auto left = int((box_pointer[0] - (float)pad_width_ - (box_pointer[2] / 2.0f)) / radio_);
-	auto top = int((box_pointer[1] - (float)pad_height_ - (box_pointer[3] / 2.0f)) / radio_);
-	auto width = box_pointer[2] / radio_;
-	auto height = box_pointer[3] / radio_;
-	boxes.emplace_back(left, top, width, height);
+	auto left = static_cast<int>(box_pointer[0] - (box_pointer[2] / 2.0f));
+	auto top = static_cast<int>((box_pointer[1] - (box_pointer[3] / 2.0f)));
+	auto width = box_pointer[2];
+	auto height = box_pointer[3];
+	temp_box_vector.emplace_back(left, top, width, height);
   }
 
   std::vector<int> indices;
-  cv::dnn::NMSBoxes(boxes, confidences, confidence_threshold_, nms_threshold_, indices);
+  cv::dnn::NMSBoxes(temp_box_vector, temp_confidence_vector, confidence_threshold_, nms_threshold_, indices);
   for (int idx : indices) {
-	detection_results_.emplace_back(class_ids[idx], confidences[idx], boxes[idx]);
+	detection_results_.emplace_back(temp_class_id_vector[idx], temp_confidence_vector[idx], temp_box_vector[idx]);
+  }
+
+  // 恢复box到原坐标
+  for (auto &detection_result : detection_results_) {
+	auto &rect = detection_result.rect_;
+	rect.x = static_cast<int>(static_cast<double>(rect.x - pad_width_) / radio_);
+	rect.y = static_cast<int>(static_cast<double>(rect.y - pad_height_) / radio_);
+	rect.width = static_cast<int>(static_cast<double>(rect.width) / radio_);
+	rect.height = static_cast<int>(static_cast<double>(rect.height) / radio_);
   }
   return true;
 }
