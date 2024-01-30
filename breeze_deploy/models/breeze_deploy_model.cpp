@@ -136,6 +136,9 @@ bool BreezeDeployModel::Initialize(const BreezeDeployBackendOption &breeze_deplo
   output_tensor_vector_.resize(breeze_deploy_backend_->GetOutputTensorSize());
   return true;
 }
+bool BreezeDeployModel::Infer() {
+  return breeze_deploy_backend_->Infer(input_tensor_vector_, output_tensor_vector_);
+}
 bool BreezeDeployModel::Predict(const cv::Mat &input_mat) {
   if (!Preprocess(input_mat)) {
 	return false;

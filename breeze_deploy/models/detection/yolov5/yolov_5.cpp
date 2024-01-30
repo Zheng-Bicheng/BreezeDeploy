@@ -12,49 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "breeze_deploy/models/detection/without_landmark/yolov5/yolov_5.h"
+#include "breeze_deploy/models/detection/yolov5/yolov_5.h"
 namespace breeze_deploy {
 namespace models {
-bool YOLOV5::Preprocess(const cv::Mat &input_mat) {
-  if (input_mat.empty()) {
-	BREEZE_DEPLOY_LOGGER_ERROR("input_mat is empty.")
-	return false;
-  }
-
-  // Do preprocess
-  BreezeDeployMat breeze_deploy_mat(input_mat);
-  for (const auto &preprocess_function : preprocess_functions_) {
-	if (!preprocess_function->Run(breeze_deploy_mat)) {
-	  BREEZE_DEPLOY_LOGGER_ERROR("Failed to run preprocess_function.")
-	  return false;
-	}
-  }
-
-  // Set data to tensor
-  auto tensor_data = breeze_deploy_mat.GetMat().data;
-  auto tensor_data_type = breeze_deploy_mat.GetMatDataType();
-  auto c = breeze_deploy_mat.GetChannel();
-  auto h = breeze_deploy_mat.GetHeight();
-  auto w = breeze_deploy_mat.GetWidth();
-  if (breeze_deploy_mat.GetMatDataFormat() == BreezeDeployDataFormat::CHW) {
-	input_tensor_vector_[0].SetTensorData(tensor_data, {1, c, h, w}, tensor_data_type);
-  } else {
-	input_tensor_vector_[0].SetTensorData(tensor_data, {1, h, w, c}, tensor_data_type);
-  }
-
-  // Get resize radio and pad height/width.
-  for (const auto &preprocess_function : preprocess_functions_) {
-	if (preprocess_function->FunctionName() != "LetterBox") {
-	  continue;
-	}
-	pad_height_ = preprocess_function->GetPadHeight();
-	pad_width_ = preprocess_function->GetPadWidth();
-	radio_ = preprocess_function->GetRadio();
-  }
-  return true;
-}
 bool YOLOV5::Predict(const cv::Mat &input_mat,
 					 breeze_deploy::models::DetectionResultWithoutLandmark &result_without_landmark) {
+  BreezeDeployModel::Predict(input_mat);
   result_without_landmark.Clear();
   auto output_data = reinterpret_cast<float *>(output_tensor_vector_[0].GetTensorDataPointer());
   auto output_shape = output_tensor_vector_[0].GetTensorInfo().tensor_shape;  // output_shape is [1,25200,85]
@@ -74,6 +37,7 @@ bool YOLOV5::Predict(const cv::Mat &input_mat,
 	auto label_score_pointer = object_score_pointer + 1;  // size is 80
 	auto label_num = output_shape[2] - 5;
 	auto max_label_score_pointer = std::max_element(label_score_pointer, label_score_pointer + label_num);
+
 	// 最大的类别分数*置信度
 	auto max_label_score = (*max_label_score_pointer) * object_score;
 	if (max_label_score <= confidence_threshold_) {
@@ -94,13 +58,12 @@ bool YOLOV5::Predict(const cv::Mat &input_mat,
 	temp_box_vector.emplace_back(left, top, width, height);
   }
 
-  std::vector<int> indices;
   cv::dnn::NMSBoxes(temp_box_vector,
 					temp_confidence_vector,
 					confidence_threshold_,
 					nms_threshold_,
 					result_without_landmark.label_id_vector);
-  for (int idx : indices) {
+  for (int idx : result_without_landmark.label_id_vector) {
 	result_without_landmark.rect_vector.emplace_back(temp_box_vector[idx]);
 	result_without_landmark.label_confidence_vector.emplace_back(temp_confidence_vector[idx]);
   }

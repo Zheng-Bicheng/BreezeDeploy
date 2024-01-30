@@ -106,9 +106,6 @@ bool ClassificationModel::ReadPostprocessYAML() {
   }
   return true;
 }
-bool ClassificationModel::Infer() {
-  return breeze_deploy_backend_->Infer(input_tensor_vector_, output_tensor_vector_);
-}
 bool ClassificationModel::Postprocess() {
   // 判断是否需要进行Softmax
   if (need_softmax_) {

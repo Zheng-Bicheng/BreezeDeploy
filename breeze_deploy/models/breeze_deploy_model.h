@@ -54,7 +54,7 @@ class BreezeDeployModel {
   std::vector<BreezeDeployTensor> input_tensor_vector_{};
   std::vector<BreezeDeployTensor> output_tensor_vector_{};
   BreezeDeployBackendOption breeze_deploy_backend_option_;
-  virtual bool Infer() = 0;
+  virtual bool Infer();
 
   // Model PostProcess
   virtual bool Postprocess() = 0;

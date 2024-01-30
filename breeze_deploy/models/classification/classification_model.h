@@ -30,7 +30,6 @@ class ClassificationModel : public BreezeDeployModel {
 
  protected:
   bool Preprocess(const cv::Mat &input_mat) override;
-  bool Infer() override;
   bool Postprocess() override;
 
   std::vector<std::string> labels_;

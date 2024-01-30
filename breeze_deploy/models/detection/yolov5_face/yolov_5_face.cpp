@@ -12,12 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "breeze_deploy/models/detection/with_landmark/yolov5_face/yolov_5_face.h"
+#include "breeze_deploy/models/detection/yolov5_face/yolov_5_face.h"
 
 namespace breeze_deploy {
 namespace models {
 bool YOLOV5Face::Predict(const cv::Mat &input_mat,
 						 breeze_deploy::models::DetectionResultWithLandmark &result_with_landmark) {
+  BreezeDeployModel::Predict(input_mat);
   result_with_landmark.Clear();
   auto output_data = reinterpret_cast<float *>(output_tensor_vector_[0].GetTensorDataPointer());
   auto output_shape = output_tensor_vector_[0].GetTensorInfo().tensor_shape;  // output_shape is [1,25200,16]
@@ -68,13 +69,12 @@ bool YOLOV5Face::Predict(const cv::Mat &input_mat,
 	temp_box_vector.emplace_back(left, top, width, height);
   }
 
-  std::vector<int> indices;
   cv::dnn::NMSBoxes(temp_box_vector,
 					temp_confidence_vector,
 					confidence_threshold_,
 					nms_threshold_,
 					result_with_landmark.label_id_vector);
-  for (int idx : indices) {
+  for (int idx : result_with_landmark.label_id_vector) {
 	result_with_landmark.rect_vector.emplace_back(temp_box_vector[idx]);
 	result_with_landmark.label_confidence_vector.emplace_back(temp_confidence_vector[idx]);
 	result_with_landmark.landmarks_vector.emplace_back(temp_landmark_vector[idx]);

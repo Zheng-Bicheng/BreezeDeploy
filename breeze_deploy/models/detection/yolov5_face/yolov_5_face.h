@@ -14,7 +14,7 @@
 
 #ifndef BREEZE_DEPLOY_MODELS_DETECTION_YOLOV5_FACE_YOLOV_5_FACE_H_
 #define BREEZE_DEPLOY_MODELS_DETECTION_YOLOV5_FACE_YOLOV_5_FACE_H_
-#include "breeze_deploy/models/detection/with_landmark/detection_model_with_landmark.h"
+#include "breeze_deploy/models/detection/detection_model.h"
 namespace breeze_deploy {
 namespace models {
 class YOLOV5Face : public DetectionModelWithLandmark {

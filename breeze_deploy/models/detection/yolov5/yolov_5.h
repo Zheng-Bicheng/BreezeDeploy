@@ -15,17 +15,15 @@
 #ifndef BREEZE_DEPLOY_MODELS_DETECTION_YOLOV5_YOLOV_5_H_
 #define BREEZE_DEPLOY_MODELS_DETECTION_YOLOV5_YOLOV_5_H_
 
-#include "breeze_deploy/models/detection/without_landmark/detection_model_without_landmark.h"
+#include "breeze_deploy/models/detection/detection_model.h"
 namespace breeze_deploy {
 namespace models {
 class YOLOV5 : public DetectionModelWithoutLandmark {
  public:
   YOLOV5(const std::string &model_path, const std::string &config_file_path)
 	  : DetectionModelWithoutLandmark(model_path, config_file_path) {}
+  std::string ModelName() override { return "YOLOV5"; }
   bool Predict(const cv::Mat &input_mat, DetectionResultWithoutLandmark &result_without_landmark) override;
-
- protected:
-  bool Preprocess(const cv::Mat &input_mat) override;
 };
 }
 }
