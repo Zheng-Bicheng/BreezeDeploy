@@ -22,7 +22,7 @@ class DetectionModelWithLandmark : public DetectionModelWithoutLandmark {
   DetectionModelWithLandmark(const std::string &model_path, const std::string &config_file_path)
 	  : DetectionModelWithoutLandmark(model_path, config_file_path) {}
   std::string ModelName() override { return "DetectionModelWithLandmark"; }
-  virtual bool Predict(const cv::Mat &input_mat, DetectionResultWithLandmark& result_with_landmark) = 0;
+  virtual bool Predict(const cv::Mat &input_mat, DetectionResultWithLandmark &result_with_landmark) = 0;
   static cv::Mat Draw(const cv::Mat &mat, const DetectionResultWithLandmark &detection_results);
 };
 }

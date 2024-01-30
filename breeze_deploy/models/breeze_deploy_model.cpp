@@ -127,8 +127,14 @@ bool BreezeDeployModel::Initialize(const BreezeDeployBackendOption &breeze_deplo
   breeze_deploy_backend_option_ = breeze_deploy_backend_option;
   breeze_deploy_backend_option_.SetModelPath(model_path_);
   breeze_deploy_backend_ = std::make_unique<ONNXBackend>();
-  auto result = breeze_deploy_backend_->Initialize(breeze_deploy_backend_option_);
-  return result;
+  auto result_init = breeze_deploy_backend_->Initialize(breeze_deploy_backend_option_);
+  if(!result_init){
+	BREEZE_DEPLOY_LOGGER_ERROR("Failed to initialize backend.")
+	return false;
+  }
+  input_tensor_vector_.resize(breeze_deploy_backend_->GetInputTensorSize());
+  output_tensor_vector_.resize(breeze_deploy_backend_->GetOutputTensorSize());
+  return true;
 }
 bool BreezeDeployModel::Predict(const cv::Mat &input_mat) {
   if (!Preprocess(input_mat)) {

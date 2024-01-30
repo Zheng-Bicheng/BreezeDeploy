@@ -15,11 +15,6 @@
 #include "breeze_deploy/models/detection/without_landmark/yolov5/yolov_5.h"
 namespace breeze_deploy {
 namespace models {
-YOLOV5::YOLOV5(const std::string &model_path, const std::string &config_file_path)
-	: DetectionModel(model_path, config_file_path) {
-  input_tensor_vector_.resize(1);
-  output_tensor_vector_.resize(1);
-}
 bool YOLOV5::Preprocess(const cv::Mat &input_mat) {
   if (input_mat.empty()) {
 	BREEZE_DEPLOY_LOGGER_ERROR("input_mat is empty.")

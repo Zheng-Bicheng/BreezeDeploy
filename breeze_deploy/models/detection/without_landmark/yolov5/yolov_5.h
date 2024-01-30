@@ -20,8 +20,9 @@ namespace breeze_deploy {
 namespace models {
 class YOLOV5 : public DetectionModelWithoutLandmark {
  public:
-  YOLOV5(const std::string &model_path, const std::string &config_file_path);
-  bool Predict(const cv::Mat &input_mat, DetectionResultWithoutLandmark& result_without_landmark) override;
+  YOLOV5(const std::string &model_path, const std::string &config_file_path)
+	  : DetectionModelWithoutLandmark(model_path, config_file_path) {}
+  bool Predict(const cv::Mat &input_mat, DetectionResultWithoutLandmark &result_without_landmark) override;
 
  protected:
   bool Preprocess(const cv::Mat &input_mat) override;

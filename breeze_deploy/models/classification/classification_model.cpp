@@ -16,11 +16,6 @@
 #include "breeze_deploy/models/classification/postprocess_function.h"
 namespace breeze_deploy {
 namespace models {
-ClassificationModel::ClassificationModel(const std::string &model_path, const std::string &config_file_path)
-	: BreezeDeployModel(model_path, config_file_path) {
-  input_tensor_vector_.resize(1);
-  output_tensor_vector_.resize(1);
-}
 bool ClassificationModel::ReadLabelFile(const std::string &label_file_path) {
   labels_.clear();
   std::ifstream input_file(label_file_path);

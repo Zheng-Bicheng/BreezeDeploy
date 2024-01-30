@@ -22,7 +22,7 @@ class YOLOV5Face : public DetectionModelWithLandmark {
   YOLOV5Face(const std::string &model_path, const std::string &config_file_path)
 	  : DetectionModelWithLandmark(model_path, config_file_path) {}
   std::string ModelName() override { return "YOLOV5Face"; }
-  bool Predict(const cv::Mat &input_mat, DetectionResultWithLandmark& result_with_landmark) override;
+  bool Predict(const cv::Mat &input_mat, DetectionResultWithLandmark &result_with_landmark) override;
 };
 }
 }
