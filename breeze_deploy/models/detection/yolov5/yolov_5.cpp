@@ -15,11 +15,10 @@
 #include "breeze_deploy/models/detection/yolov5/yolov_5.h"
 namespace breeze_deploy {
 namespace models {
-bool YOLOV5::Predict(const cv::Mat &input_mat,
-					 breeze_deploy::models::DetectionResultWithoutLandmark &result_without_landmark) {
+bool YOLOV5::Predict(const cv::Mat &input_mat, DetectionResult &result_without_landmark) {
   BreezeDeployModel::Predict(input_mat);
   result_without_landmark.Clear();
-  auto output_data = reinterpret_cast<float *>(output_tensor_vector_[0].GetTensorDataPointer());
+  auto output_data = reinterpret_cast<const float *>(output_tensor_vector_[0].GetTensorDataPointer());
   auto output_shape = output_tensor_vector_[0].GetTensorInfo().tensor_shape;  // output_shape is [1,25200,85]
 
   std::vector<float> temp_confidence_vector;

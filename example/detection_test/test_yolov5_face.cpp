@@ -43,14 +43,14 @@ int main(int argc, char *argv[]) {
 
   BreezeDeployTime cost;
   cost.Start();
-  DetectionResultWithLandmark result_with_landmark;
+  DetectionResult result_with_landmark;
   if (!detect_model.Predict(mat, result_with_landmark)) {
 	std::cout << "模型推理失败" << std::endl;
 	return 1;
   }
   cost.End();
   cost.PrintInfo("YOLOV5Face", 1.0, BreezeDeployTimeType::Milliseconds);
-  mat = DetectionModelWithLandmark::Draw(mat, result_with_landmark);
+  mat = DetectionModel::Draw(mat, result_with_landmark);
   cv::imwrite("./detect_result.png", mat);
   return 0;
 }

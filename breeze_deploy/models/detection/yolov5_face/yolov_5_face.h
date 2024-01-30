@@ -17,12 +17,12 @@
 #include "breeze_deploy/models/detection/detection_model.h"
 namespace breeze_deploy {
 namespace models {
-class YOLOV5Face : public DetectionModelWithLandmark {
+class YOLOV5Face : public DetectionModel {
  public:
   YOLOV5Face(const std::string &model_path, const std::string &config_file_path)
-	  : DetectionModelWithLandmark(model_path, config_file_path) {}
+	  : DetectionModel(model_path, config_file_path) {}
   std::string ModelName() override { return "YOLOV5Face"; }
-  bool Predict(const cv::Mat &input_mat, DetectionResultWithLandmark &result_with_landmark) override;
+  bool Predict(const cv::Mat &input_mat, DetectionResult &result_with_landmark) override;
 };
 }
 }

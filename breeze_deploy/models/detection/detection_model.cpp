@@ -86,8 +86,7 @@ bool DetectionModel::ReadPostprocessYAML() {
 bool DetectionModel::Postprocess() {
   return true;
 }
-cv::Mat DetectionModelWithoutLandmark::Draw(const cv::Mat &mat,
-											const DetectionResultWithoutLandmark &detection_result) {
+cv::Mat DetectionModel::Draw(const cv::Mat &mat, const DetectionResult &detection_result) {
   if (detection_result.GetSize() == 0) {
 	return {};
   }
@@ -96,10 +95,11 @@ cv::Mat DetectionModelWithoutLandmark::Draw(const cv::Mat &mat,
 	auto rect_vector = detection_result.rect_vector[i];
 	cv::rectangle(mat, rect_vector, cv::Scalar(0, 0, 255), 1);
   }
-  return mat;
-}
-cv::Mat DetectionModelWithLandmark::Draw(const cv::Mat &mat, const DetectionResultWithLandmark &detection_result) {
-  DetectionModelWithoutLandmark::Draw(mat, *dynamic_cast<const DetectionResultWithoutLandmark *>(&detection_result));
+
+  if (detection_result.landmarks_vector.empty()) {
+	return mat;
+  }
+
   for (int i = 0; i < detection_result.GetSize(); ++i) {
 	auto landmarks_vector = detection_result.landmarks_vector[i];
 	for (const auto &landmark : landmarks_vector) {

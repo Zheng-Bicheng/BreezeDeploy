@@ -30,6 +30,7 @@ bool InferByONNX(ArcFace &arc_face, const std::string &image_path, Classificatio
   }
   cost.End();
   cost.PrintInfo("FeatureModel", 1.0, BreezeDeployTimeType::Milliseconds);
+  return true;
 }
 
 int main(int argc, char *argv[]) {

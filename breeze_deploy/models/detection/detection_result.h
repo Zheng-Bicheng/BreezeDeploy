@@ -22,24 +22,17 @@
 
 namespace breeze_deploy {
 namespace models {
-struct DetectionResultWithoutLandmark {
+struct DetectionResult {
   virtual void Clear() {
 	label_id_vector.clear();
 	label_confidence_vector.clear();
 	rect_vector.clear();
+	landmarks_vector.clear();
   }
   size_t GetSize() const { return label_id_vector.size(); }
-
   std::vector<int> label_id_vector;  // The 'indices' parameter of the cv::dnn::NMSBoxes() function requires a std::vector<int>
   std::vector<float> label_confidence_vector;
   std::vector<cv::Rect> rect_vector;
-};
-
-struct DetectionResultWithLandmark : public DetectionResultWithoutLandmark {
-  void Clear() override {
-	DetectionResultWithoutLandmark::Clear();
-	landmarks_vector.clear();
-  }
   std::vector<std::vector<cv::Point>> landmarks_vector;
 };
 }

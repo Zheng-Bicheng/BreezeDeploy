@@ -33,6 +33,7 @@ using namespace breeze_deploy::backend;
 class BreezeDeployModel {
  public:
   BreezeDeployModel(const std::string &model_path, const std::string &config_file_path);
+  virtual ~BreezeDeployModel() = default;
   bool Initialize(const BreezeDeployBackendOption &breeze_deploy_backend_option = BreezeDeployBackendOption());
   virtual std::string ModelName() { return "BreezeDeployModel"; }
 

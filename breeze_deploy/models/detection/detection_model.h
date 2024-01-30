@@ -26,6 +26,8 @@ class DetectionModel : public BreezeDeployModel {
   std::string ModelName() override { return "DetectionModel"; }
   void SetConfidenceThreshold(float confidence_threshold) { confidence_threshold_ = confidence_threshold; }
   void SetNMSThreshold(float nms_threshold) { nms_threshold_ = nms_threshold; }
+  virtual bool Predict(const cv::Mat &input_mat, DetectionResult &result_without_landmark) = 0;
+  static cv::Mat Draw(const cv::Mat &mat, const DetectionResult &detection_results);
 
  protected:
   bool Preprocess(const cv::Mat &input_mat) override;
@@ -47,22 +49,6 @@ class DetectionModel : public BreezeDeployModel {
 
   // For NMS
   float nms_threshold_ = 0.5;
-};
-class DetectionModelWithoutLandmark : public DetectionModel {
- public:
-  DetectionModelWithoutLandmark(const std::string &model_path, const std::string &config_file_path)
-	  : DetectionModel(model_path, config_file_path) {}
-  std::string ModelName() override { return "DetectionModelWithoutLandmark"; }
-  virtual bool Predict(const cv::Mat &input_mat, DetectionResultWithoutLandmark &result_without_landmark) = 0;
-  static cv::Mat Draw(const cv::Mat &mat, const DetectionResultWithoutLandmark &detection_results);
-};
-class DetectionModelWithLandmark : public DetectionModel {
- public:
-  DetectionModelWithLandmark(const std::string &model_path, const std::string &config_file_path)
-	  : DetectionModel(model_path, config_file_path) {}
-  std::string ModelName() override { return "DetectionModelWithLandmark"; }
-  virtual bool Predict(const cv::Mat &input_mat, DetectionResultWithLandmark &result_with_landmark) = 0;
-  static cv::Mat Draw(const cv::Mat &mat, const DetectionResultWithLandmark &detection_results);
 };
 }
 }
