@@ -24,7 +24,6 @@ class DetectionModel : public BreezeDeployModel {
   DetectionModel(const std::string &model_path, const std::string &config_file_path);
   static cv::Mat Draw(const cv::Mat &mat, const std::vector<DetectionResult> &detection_results);
   const std::vector<DetectionResult> &GetDetectionResults();
-
   void SetConfidenceThreshold(float confidence_threshold) { confidence_threshold_ = confidence_threshold; }
   void SetNMSThreshold(float nms_threshold) { nms_threshold_ = nms_threshold; }
 

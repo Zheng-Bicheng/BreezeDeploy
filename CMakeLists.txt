@@ -24,5 +24,6 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC ${OPENCV_LIBRARIES} ${ONNX_RU
 
 add_subdirectory(test)
 
+install(TARGETS ${CMAKE_PROJECT_NAME} DESTINATION lib)
 install(TARGETS ${CMAKE_PROJECT_NAME} DESTINATION bin)
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/config DESTINATION bin)

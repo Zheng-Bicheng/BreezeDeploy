@@ -35,14 +35,15 @@ int main(int argc, char *argv[]) {
 	return 1;
   }
   std::string label_file_path = argv[4];
-  ghost_net.SetLabel(label_file_path);
+  ghost_net.ReadLabelFile(label_file_path);
 
   std::string image_path = argv[3];
   auto mat = cv::imread(image_path);
   BreezeDeployTime cost;
   cost.Start();
+  ClassificationLabelResult result;
   for (int i = 0; i < 100; ++i) {
-	if (!ghost_net.Predict(mat)) {
+	if (!ghost_net.Predict(mat, result)) {
 	  std::cout << "模型推理失败" << std::endl;
 	  return 1;
 	}
@@ -50,9 +51,10 @@ int main(int argc, char *argv[]) {
   cost.End();
   cost.PrintInfo("GhostNet", 1.0 / 100, BreezeDeployTimeType::Milliseconds);
 
-  auto classification_results = ghost_net.GetClassificationResults();
-  for (auto &classification_result : classification_results) {
-	printf("Label is %s,confidence is %f\n", classification_result.label.c_str(), classification_result.confidence);
+  printf("TopK: %zu\n", result.GetSize());
+  for (int i = 0; i < result.GetSize(); ++i) {
+	printf("Label ID is %zu, Label name is %s, confidence is %f\n",
+		   result.label_id_vector[i], result.label_name_vector[i].c_str(), result.confidence_vector[i]);
   }
   return 0;
 }

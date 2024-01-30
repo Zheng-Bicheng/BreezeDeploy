@@ -19,17 +19,20 @@
 
 namespace breeze_deploy {
 namespace models {
-struct ClassificationResult {
-  ClassificationResult(size_t temp_index, float temp_confidence)
-	  : index{temp_index}, confidence{temp_confidence} {}
-  ClassificationResult(std::string temp_label, size_t temp_index, float temp_confidence)
-	  : label{std::move(temp_label)}, index{temp_index}, confidence{temp_confidence} {}
-  void SetLabel(const std::string &temp_label) {
-	label = temp_label;
+struct ClassificationFeatureResult {
+  size_t GetSize() { return feature_vector_.size(); }
+  std::vector<float> feature_vector_;
+};
+struct ClassificationLabelResult {
+  std::vector<std::string> label_name_vector;
+  std::vector<size_t> label_id_vector;
+  std::vector<float> confidence_vector;
+  void Clear() {
+	label_name_vector.clear();
+	label_id_vector.clear();
+	confidence_vector.clear();
   }
-  std::string label;
-  size_t index;
-  float confidence;
+  size_t GetSize() { return label_id_vector.size(); }
 };
 }
 }

@@ -23,7 +23,6 @@ bool DetectionModel::Infer() {
   return breeze_deploy_backend_->Infer(input_tensor_vector_, output_tensor_vector_);
 }
 bool DetectionModel::ReadPostprocessYAML() {
-  postprocess_function_vector_.clear();
   YAML::Node yaml_config;
   try {
 	yaml_config = YAML::LoadFile(config_file_path_);

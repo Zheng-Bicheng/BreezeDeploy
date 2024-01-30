@@ -13,12 +13,27 @@
 // limitations under the License.
 #include <fstream>
 #include "breeze_deploy/models/classification/classification_model.h"
+#include "breeze_deploy/models/classification/postprocess_function.h"
 namespace breeze_deploy {
 namespace models {
 ClassificationModel::ClassificationModel(const std::string &model_path, const std::string &config_file_path)
 	: BreezeDeployModel(model_path, config_file_path) {
   input_tensor_vector_.resize(1);
   output_tensor_vector_.resize(1);
+}
+bool ClassificationModel::ReadLabelFile(const std::string &label_file_path) {
+  labels_.clear();
+  std::ifstream input_file(label_file_path);
+  if (!input_file.is_open()) {
+	BREEZE_DEPLOY_LOGGER_ERROR("Could not open file: {}.", label_file_path)
+	return false;
+  }
+  std::string line;
+  while (std::getline(input_file, line)) {
+	labels_.emplace_back(line);
+  }
+  input_file.close();
+  return true;
 }
 bool ClassificationModel::Preprocess(const cv::Mat &input_mat) {
   if (input_mat.empty()) {
@@ -46,11 +61,7 @@ bool ClassificationModel::Preprocess(const cv::Mat &input_mat) {
   }
   return true;
 }
-bool ClassificationModel::Infer() {
-  return breeze_deploy_backend_->Infer(input_tensor_vector_, output_tensor_vector_);
-}
 bool ClassificationModel::ReadPostprocessYAML() {
-  postprocess_function_vector_.clear();
   YAML::Node yaml_config;
   try {
 	yaml_config = YAML::LoadFile(config_file_path_);
@@ -65,53 +76,89 @@ bool ClassificationModel::ReadPostprocessYAML() {
   for (const auto &postprocess_function_config : postprocess_config) {
 	auto function_name = postprocess_function_config.begin()->first.as<std::string>();
 	if (function_name == "TopK") {
-	  auto &k_config_node = postprocess_function_config.begin()->second["k"];
-	  if (!k_config_node) {
-		BREEZE_DEPLOY_LOGGER_ERROR("The function(TopK) must have a k element.")
+	  auto &need_node = postprocess_function_config.begin()->second["need"];
+	  if (!need_node) {
+		BREEZE_DEPLOY_LOGGER_ERROR("The function(TopK) must have a need(bool) node.")
 		return false;
 	  }
-	  auto k = k_config_node.as<size_t>();
-	  postprocess_function_vector_.push_back(std::make_shared<TopK>(k));
+	  need_topk_ = need_node.as<bool>();
+
+	  auto &k_node = postprocess_function_config.begin()->second["k"];
+	  if (!k_node) {
+		BREEZE_DEPLOY_LOGGER_ERROR("The function(TopK) must have a k(size_t) node.")
+		return false;
+	  }
+	  k_ = k_node.as<size_t>();
+
+	  auto &min_confidence_node = postprocess_function_config.begin()->second["min_confidence"];
+	  if (!min_confidence_node) {
+		BREEZE_DEPLOY_LOGGER_ERROR("The function(TopK) must have a min_confidence(float) node.")
+		return false;
+	  }
+	  min_confidence_ = min_confidence_node.as<float>();
+	} else if (function_name == "Softmax") {
+	  auto &need_node = postprocess_function_config.begin()->second["need"];
+	  if (!need_node) {
+		BREEZE_DEPLOY_LOGGER_ERROR("The function(TopK) must have a need(bool) node.")
+		return false;
+	  }
+	  need_softmax_ = need_node.as<bool>();
 	} else {
-	  BREEZE_DEPLOY_LOGGER_ERROR("The postprocess name only supports [TopK], "
+	  BREEZE_DEPLOY_LOGGER_ERROR("The postprocess name only supports [TopK,Softmax], "
 								 "but now it is called {}.", function_name)
 	  return false;
 	}
   }
   return true;
 }
+bool ClassificationModel::Infer() {
+  return breeze_deploy_backend_->Infer(input_tensor_vector_, output_tensor_vector_);
+}
 bool ClassificationModel::Postprocess() {
-  classification_results_.clear();
-  for (const auto &i : postprocess_function_vector_) {
-	i->Run(output_tensor_vector_[0], classification_results_);
-  }
+  // 判断是否需要进行Softmax
+  if (need_softmax_) {
 
-  if (classification_labels_.empty()) {
-	BREEZE_DEPLOY_LOGGER_WARN("The classification labels is empty.");
-	return true;
-  }
-
-  for (auto &classification_result : classification_results_) {
-	classification_result.label = classification_labels_[classification_result.index];
   }
   return true;
 }
-bool ClassificationModel::SetLabel(const std::string &label_file_path) {
-  classification_labels_.clear();
-  std::ifstream input_file(label_file_path);
-  if (!input_file.is_open()) {
-	BREEZE_DEPLOY_LOGGER_ERROR("Could not open file: {}.", label_file_path)
+bool ClassificationModel::Predict(const cv::Mat &input_mat, ClassificationLabelResult &label_result) {
+  auto result_predict = BreezeDeployModel::Predict(input_mat);
+  if (!result_predict) {
 	return false;
   }
-  std::string line;
-  while (std::getline(input_file, line)) {
-	classification_labels_.push_back(line);
+
+  // 清空结果
+  label_result.Clear();
+
+  // 先判断是否需要进行TopK
+  if (need_topk_) {
+	auto result_topk = TopK<float>::Run(output_tensor_vector_[0], label_result, k_, min_confidence_);
+	if (!result_topk) {
+	  return false;
+	}
   }
-  input_file.close();
+
+  // 判断是否需要将Label写入结果中
+  if (labels_.empty()) {
+	return true;
+  }
+  for (int i = 0; i < label_result.GetSize(); ++i) {
+	label_result.label_name_vector.emplace_back(labels_[i]);
+  }
+
   return true;
 }
-const std::vector<ClassificationResult> &ClassificationModel::GetClassificationResults() {
-  return classification_results_;
+bool ClassificationModel::Predict(const cv::Mat &input_mat, ClassificationFeatureResult &label_result) {
+  auto result_predict = BreezeDeployModel::Predict(input_mat);
+  if (!result_predict) {
+	return false;
+  }
+
+  auto &tensor = output_tensor_vector_[0];
+  auto tensor_data_ptr = reinterpret_cast<float *>(tensor.GetTensorDataPointer());
+  auto tensor_data_size = tensor.GetTensorSize();
+  label_result.feature_vector_ = std::vector<float>(tensor_data_ptr, tensor_data_ptr + tensor_data_size);
+  return true;
 }
 }
 }

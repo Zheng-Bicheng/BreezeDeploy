@@ -37,7 +37,7 @@ bool BreezeDeployModel::ReadPreprocessYAML() {
   // Get preprocess root node
   auto preprocess_config = yaml_config["preprocess"];
   if (!preprocess_config) {
-	BREEZE_DEPLOY_LOGGER_ERROR("The yaml config must have a preprocess element.")
+	BREEZE_DEPLOY_LOGGER_ERROR("The yaml config must have a preprocess node.")
 	return false;
   }
 
@@ -47,14 +47,14 @@ bool BreezeDeployModel::ReadPreprocessYAML() {
 	if (function_name == "Resize") {
 	  auto &resize_width_node = preprocess_function_config.begin()->second["width"];
 	  if (!resize_width_node) {
-		BREEZE_DEPLOY_LOGGER_ERROR("The function(Resize) must have a width element.")
+		BREEZE_DEPLOY_LOGGER_ERROR("The function(Resize) must have a width(int) node.")
 		return false;
 	  }
 	  auto target_width_size = resize_width_node.as<int>();
 
 	  auto &resize_height_node = preprocess_function_config.begin()->second["height"];
 	  if (!resize_height_node) {
-		BREEZE_DEPLOY_LOGGER_ERROR("The function(Resize) must have a height element.")
+		BREEZE_DEPLOY_LOGGER_ERROR("The function(Resize) must have a height(int) node.")
 		return false;
 	  }
 	  auto target_height_size = resize_height_node.as<int>();
@@ -62,14 +62,14 @@ bool BreezeDeployModel::ReadPreprocessYAML() {
 	} else if (function_name == "BGRToRGB") {
 	  preprocess_functions_.push_back(std::make_shared<BGRToRGB>());
 	} else if (function_name == "Normalize") {
-	  auto &mean_config_node = preprocess_function_config.begin()->second["mean"];
-	  auto &std_config_node = preprocess_function_config.begin()->second["std"];
-	  if (!mean_config_node || !std_config_node) {
-		BREEZE_DEPLOY_LOGGER_ERROR("The function(Normalize) must have mean and std element.")
+	  auto &mean_node = preprocess_function_config.begin()->second["mean"];
+	  auto &std_node = preprocess_function_config.begin()->second["std"];
+	  if (!mean_node || !std_node) {
+		BREEZE_DEPLOY_LOGGER_ERROR("The function(Normalize) must have mean(float) and std(float) node.")
 		return false;
 	  }
-	  auto mean = mean_config_node.as<std::vector<float>>();
-	  auto std = std_config_node.as<std::vector<float>>();
+	  auto mean = mean_node.as<std::vector<float>>();
+	  auto std = std_node.as<std::vector<float>>();
 	  preprocess_functions_.push_back(std::make_shared<Normalize>(mean, std));
 	} else if (function_name == "HWCToCHW") {
 	  preprocess_functions_.push_back(std::make_shared<HWCToCHW>());
@@ -77,7 +77,7 @@ bool BreezeDeployModel::ReadPreprocessYAML() {
 	  // Get LetterBox width
 	  auto &resize_width_node = preprocess_function_config.begin()->second["width"];
 	  if (!resize_width_node) {
-		BREEZE_DEPLOY_LOGGER_ERROR("The function(LetterBox) must have a width element.")
+		BREEZE_DEPLOY_LOGGER_ERROR("The function(LetterBox) must have a width(int) node.")
 		return false;
 	  }
 	  auto target_width_size = resize_width_node.as<int>();
@@ -85,7 +85,7 @@ bool BreezeDeployModel::ReadPreprocessYAML() {
 	  // Get LetterBox height
 	  auto &resize_height_node = preprocess_function_config.begin()->second["height"];
 	  if (!resize_height_node) {
-		BREEZE_DEPLOY_LOGGER_ERROR("The function(LetterBox) must have a height element.")
+		BREEZE_DEPLOY_LOGGER_ERROR("The function(LetterBox) must have a height(int) node.")
 		return false;
 	  }
 	  auto target_height_size = resize_height_node.as<int>();
@@ -93,11 +93,10 @@ bool BreezeDeployModel::ReadPreprocessYAML() {
 	  // Get LetterBox scalar
 	  auto &pad_scalar_node = preprocess_function_config.begin()->second["scalar"];
 	  if (!pad_scalar_node) {
-		BREEZE_DEPLOY_LOGGER_ERROR("The function(LetterBox) must have a scalar element.")
+		BREEZE_DEPLOY_LOGGER_ERROR("The function(LetterBox) must have a scalar(std::array<float, 3>) node.")
 		return false;
 	  }
 	  auto target_scalar_size = pad_scalar_node.as<std::array<float, 3>>();
-
 	  preprocess_functions_.push_back(std::make_shared<LetterBox>(target_width_size,
 																  target_height_size,
 																  target_scalar_size));

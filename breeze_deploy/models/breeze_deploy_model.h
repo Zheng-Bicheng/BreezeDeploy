@@ -24,7 +24,6 @@
 #include "breeze_deploy/core/breeze_deploy_mat.h"
 #include "breeze_deploy/core/breeze_deploy_tensor.h"
 #include "breeze_deploy/core/breeze_deploy_time.h"
-#include "breeze_deploy/postprocess_function/postprocess_function.h"
 #include "breeze_deploy/preprocess_function/preprocess_function.h"
 
 namespace breeze_deploy {
@@ -34,9 +33,8 @@ using namespace breeze_deploy::backend;
 class BreezeDeployModel {
  public:
   BreezeDeployModel(const std::string &model_path, const std::string &config_file_path);
-
   bool Initialize(const BreezeDeployBackendOption &breeze_deploy_backend_option = BreezeDeployBackendOption());
-  virtual bool Predict(const cv::Mat &input_mat);
+  bool Predict(const cv::Mat &input_mat);
 
  protected:
   // Model Attribute
@@ -60,7 +58,6 @@ class BreezeDeployModel {
   virtual bool Infer() = 0;
 
   // Model PostProcess
-  std::vector<std::shared_ptr<BreezeDeployPostprocessFunction>> postprocess_function_vector_{};
   virtual bool Postprocess() = 0;
 };
 }

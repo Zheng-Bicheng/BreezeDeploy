@@ -20,9 +20,6 @@ bool YOLOV5Face::Postprocess() {
   detection_results_.clear();
   auto output_data = reinterpret_cast<float *>(output_tensor_vector_[0].GetTensorDataPointer());
   auto output_shape = output_tensor_vector_[0].GetTensorInfo().tensor_shape;  // output_shape is [1,25200,16]
-
-  BREEZE_DEPLOY_LOGGER_DEBUG("pad_width_ is {};pad_height_ is {}", pad_width_, pad_height_);
-
   std::vector<float> temp_confidence_vector;
   std::vector<cv::Rect> temp_box_vector;
   std::vector<long> temp_class_id_vector;
