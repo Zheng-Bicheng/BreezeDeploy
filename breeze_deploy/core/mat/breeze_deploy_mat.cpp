@@ -11,8 +11,8 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-#include "breeze_deploy/core/breeze_deploy_mat.h"
-#include "breeze_deploy/core/breeze_deploy_logger.h"
+#include "breeze_deploy_mat.h"
+#include "breeze_deploy/core/logger/breeze_deploy_logger.h"
 namespace breeze_deploy {
 BreezeDeployMat::BreezeDeployMat(const cv::Mat &mat) {
   mat_ = mat;
@@ -52,10 +52,10 @@ int BreezeDeployMat::GetMatType() {
   return mat_.type();
 }
 
-void BreezeDeployMat::SetDataFormat(BreezeDeployDataFormat format) {
+void BreezeDeployMat::SetDataFormat(BreezeDeployMatFormat format) {
   format_ = format;
 }
-BreezeDeployDataFormat BreezeDeployMat::GetMatDataFormat() const {
+BreezeDeployMatFormat BreezeDeployMat::GetMatDataFormat() const {
   return format_;
 }
 }

@@ -50,7 +50,7 @@ bool ClassificationModel::Preprocess(const cv::Mat &input_mat) {
   auto c = breeze_deploy_mat.GetChannel();
   auto h = breeze_deploy_mat.GetHeight();
   auto w = breeze_deploy_mat.GetWidth();
-  if (breeze_deploy_mat.GetMatDataFormat() == BreezeDeployDataFormat::CHW) {
+  if (breeze_deploy_mat.GetMatDataFormat() == BreezeDeployMatFormat::CHW) {
 	input_tensor_vector_[0].SetTensorData(tensor_data, {1, c, h, w}, tensor_data_type);
   } else {
 	input_tensor_vector_[0].SetTensorData(tensor_data, {1, h, w, c}, tensor_data_type);

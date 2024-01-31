@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include <iostream>
-#include "breeze_deploy/core/breeze_deploy_logger.h"
+#include "breeze_deploy_logger.h"
 namespace breeze_deploy {
 BreezeDeployLogger::BreezeDeployLogger() {
   auto color_stdout_sink = std::make_shared<spdlog::sinks::stdout_sink_st>();

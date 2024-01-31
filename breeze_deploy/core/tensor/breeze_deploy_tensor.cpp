@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "breeze_deploy/core/breeze_deploy_tensor.h"
-#include "breeze_deploy/core/breeze_deploy_logger.h"
+#include "breeze_deploy_tensor.h"
+#include "breeze_deploy/core/logger/breeze_deploy_logger.h"
 
 namespace breeze_deploy {
 BreezeDeployTensor::BreezeDeployTensor() = default;
@@ -36,9 +36,24 @@ size_t BreezeDeployTensor::GetTensorSize() const {
   return tensor_data_ptr_size_;
 }
 size_t BreezeDeployTensor::GetTensorDataByteSize() const {
-  return tensor_data_ptr_size_ * GetBreezeDeployDataTypeSize(tensor_info_.tensor_type);
+  return tensor_data_ptr_size_ * GetDataTypeSize(tensor_info_.tensor_type);
 }
 const BreezeDeployTensorInfo &BreezeDeployTensor::GetTensorInfo() {
   return tensor_info_;
+}
+size_t BreezeDeployTensor::GetDataTypeSize(BreezeDeployTensorDataType breeze_deploy_data_type) {
+  size_t size = 0;
+  switch (breeze_deploy_data_type) {
+	case BreezeDeployTensorDataType::UINT8:
+	  size = sizeof(uint8_t);
+	  break;
+	case BreezeDeployTensorDataType::FP32:
+	  size = sizeof(float);
+	  break;
+	case BreezeDeployTensorDataType::UNKNOWN:
+	  size = 0;
+	  break;
+  }
+  return size;
 }
 }

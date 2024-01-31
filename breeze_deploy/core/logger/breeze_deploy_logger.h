@@ -16,8 +16,8 @@
 #define BREEZE_DEPLOY_CORE_BREEZE_DEPLOY_LOGGER_H_
 
 #define SPDLOG_ACTIVE_LEVEL SPDLOG_LOGGER_TRACE
-#include <spdlog/spdlog.h>
-#include <spdlog/sinks/stdout_sinks.h>
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/stdout_sinks.h"
 
 namespace breeze_deploy {
 class BreezeDeployLogger {

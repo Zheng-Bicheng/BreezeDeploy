@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include "breeze_deploy/backends/breeze_deploy_backend_option.h"
-#include "breeze_deploy/core/breeze_deploy_logger.h"
+#include "breeze_deploy/core/logger/breeze_deploy_logger.h"
 
 namespace breeze_deploy {
 namespace backend {

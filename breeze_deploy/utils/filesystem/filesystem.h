@@ -1,4 +1,4 @@
-// Copyright (c) 2023/12/30 Zheng-Bicheng. All Rights Reserved.
+// Copyright (c) 2024/1/31 Zheng-Bicheng. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,20 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef BREEZE_DEPLOY_CORE_BREEZE_DEPLOY_TYPE_H_
-#define BREEZE_DEPLOY_CORE_BREEZE_DEPLOY_TYPE_H_
-#include <iostream>
+#ifndef BREEZE_DEPLOY_UTILS_FILESYSTEM_FILESYSTEM_H_
+#define BREEZE_DEPLOY_UTILS_FILESYSTEM_FILESYSTEM_H_
+#include "breeze_deploy/core/logger/breeze_deploy_logger.h"
 namespace breeze_deploy {
-enum class BreezeDeployDataFormat{
-  UNKNOWN,
-  CHW,
-  HWC
-};
-enum class BreezeDeployTensorDataType {
-  UNKNOWN,
-  UINT8,
-  FP32
-};
-size_t GetBreezeDeployDataTypeSize(BreezeDeployTensorDataType breeze_deploy_data_type);
+namespace utils {
+bool GetSubdirectories(const std::string& path, std::vector<std::string>& subdirectories);
+bool GetFiles(const std::string& path, std::vector<std::string>& files);
 }
-#endif //BREEZE_DEPLOY_CORE_BREEZE_DEPLOY_TYPE_H_
+}
+#endif //BREEZE_DEPLOY_UTILS_FILESYSTEM_FILESYSTEM_H_

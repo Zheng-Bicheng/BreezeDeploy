@@ -20,10 +20,10 @@
 #include <yaml-cpp/yaml.h>
 
 #include "breeze_deploy/backends/breeze_deploy_backend.h"
-#include "breeze_deploy/core/breeze_deploy_logger.h"
-#include "breeze_deploy/core/breeze_deploy_mat.h"
-#include "breeze_deploy/core/breeze_deploy_tensor.h"
-#include "breeze_deploy/core/breeze_deploy_time.h"
+#include "breeze_deploy/core/logger/breeze_deploy_logger.h"
+#include "breeze_deploy/core/mat/breeze_deploy_mat.h"
+#include "breeze_deploy/core/tensor/breeze_deploy_tensor.h"
+#include "breeze_deploy/core/time/breeze_deploy_time.h"
 #include "breeze_deploy/preprocess_function/preprocess_function.h"
 
 namespace breeze_deploy {

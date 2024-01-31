@@ -13,7 +13,7 @@
 // limitations under the License.
 #include <iostream>
 #include <string>
-#include "breeze_deploy/core/breeze_deploy_time.h"
+#include "breeze_deploy/core/time/breeze_deploy_time.h"
 #include "breeze_deploy/models/classification/ghostnet/ghost_net.h"
 
 using namespace breeze_deploy;

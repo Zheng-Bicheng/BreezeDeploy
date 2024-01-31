@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 #include <iostream>
-#include "breeze_deploy/core/breeze_deploy_time.h"
+#include "breeze_deploy_time.h"
 namespace breeze_deploy {
 
 void BreezeDeployTime::Start() {

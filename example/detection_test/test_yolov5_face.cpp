@@ -14,7 +14,7 @@
 
 #include <iostream>
 #include <string>
-#include "breeze_deploy/core/breeze_deploy_time.h"
+#include "breeze_deploy/core/time/breeze_deploy_time.h"
 #include "breeze_deploy/models/detection/yolov5_face/yolov_5_face.h"
 
 using namespace breeze_deploy;

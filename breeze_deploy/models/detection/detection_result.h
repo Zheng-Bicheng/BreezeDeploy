@@ -18,7 +18,7 @@
 #include <iostream>
 #include <opencv2/opencv.hpp>
 
-#include "breeze_deploy/core/breeze_deploy_logger.h"
+#include "breeze_deploy/core/logger/breeze_deploy_logger.h"
 
 namespace breeze_deploy {
 namespace models {

@@ -15,7 +15,7 @@
 #include <yaml-cpp/yaml.h>
 
 #include "breeze_deploy/backends/onnx_backend/onnx_backend.h"
-#include "breeze_deploy/core/breeze_deploy_logger.h"
+#include "breeze_deploy/core/logger/breeze_deploy_logger.h"
 #include "breeze_deploy/models/breeze_deploy_model.h"
 
 namespace breeze_deploy {

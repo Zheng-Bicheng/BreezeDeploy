@@ -15,8 +15,13 @@
 #ifndef BREEZE_DEPLOY_CORE_BREEZE_DEPLOY_MAT_H_
 #define BREEZE_DEPLOY_CORE_BREEZE_DEPLOY_MAT_H_
 #include <opencv2/opencv.hpp>
-#include "breeze_deploy/core/breeze_deploy_type.h"
+#include "breeze_deploy/core/tensor/breeze_deploy_tensor.h"
 namespace breeze_deploy {
+enum class BreezeDeployMatFormat{
+  UNKNOWN,
+  CHW,
+  HWC
+};
 class BreezeDeployMat {
  public:
   explicit BreezeDeployMat(const cv::Mat &mat);
@@ -36,11 +41,11 @@ class BreezeDeployMat {
   BreezeDeployTensorDataType GetMatDataType();
 
   // Data Format
-  BreezeDeployDataFormat GetMatDataFormat() const;
-  void SetDataFormat(BreezeDeployDataFormat format);
+  BreezeDeployMatFormat GetMatDataFormat() const;
+  void SetDataFormat(BreezeDeployMatFormat format);
  private:
   cv::Mat mat_{};
-  BreezeDeployDataFormat format_ = BreezeDeployDataFormat::HWC;
+  BreezeDeployMatFormat format_ = BreezeDeployMatFormat::HWC;
 };
 }
 #endif //BREEZE_DEPLOY_CORE_BREEZE_DEPLOY_MAT_H_

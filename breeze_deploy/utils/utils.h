@@ -14,11 +14,7 @@
 
 #ifndef BREEZE_DEPLOY_UTILS_UTILS_H_
 #define BREEZE_DEPLOY_UTILS_UTILS_H_
-#include "breeze_deploy/core/breeze_deploy_logger.h"
-namespace breeze_deploy {
-namespace utils {
-bool GetSubdirectories(const std::string& path, std::vector<std::string>& subdirectories);
-bool GetFiles(const std::string& path, std::vector<std::string>& files);
-}
-}
+
+#include "breeze_deploy/utils/filesystem/filesystem.h"
+
 #endif //BREEZE_DEPLOY_UTILS_UTILS_H_

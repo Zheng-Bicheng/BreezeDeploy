@@ -16,8 +16,8 @@
 #define BREEZE_DEPLOY_MODELS_PREPROCESS_FUNCTION_BASE_PREPROCESS_FUNCTION_H_
 
 #include <iostream>
-#include "breeze_deploy/core/breeze_deploy_mat.h"
-#include "breeze_deploy/core/breeze_deploy_logger.h"
+#include "breeze_deploy/core/mat/breeze_deploy_mat.h"
+#include "breeze_deploy/core/logger/breeze_deploy_logger.h"
 
 namespace breeze_deploy {
 namespace function {

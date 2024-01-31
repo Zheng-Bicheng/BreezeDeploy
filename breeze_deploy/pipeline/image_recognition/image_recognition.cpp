@@ -27,12 +27,13 @@ bool ImageRecognition::BuildDatabase(const std::string &image_folders_path, bool
 	return false;
   }
   if (image_folders.empty()) {
-	BREEZE_DEPLOY_LOGGER_ERROR("The folder does not exist in the current path.")
+	BREEZE_DEPLOY_LOGGER_ERROR("The folder({}) does not exist in the current path.", image_folders_path)
 	return false;
   }
 
   // 获取当前文件夹下的所有图片
   for (auto &image_folder : image_folders) {
+	BREEZE_DEPLOY_LOGGER_DEBUG("文件夹: {}", image_folder)
 	std::string image_folder_path = image_folders_path;
 	image_folder_path += "/";
 	image_folder_path += image_folder;
@@ -43,16 +44,10 @@ bool ImageRecognition::BuildDatabase(const std::string &image_folders_path, bool
 	  BREEZE_DEPLOY_LOGGER_ERROR("Failed to get image files.")
 	  return false;
 	}
+	for (auto &image_file : image_files) {
+	  BREEZE_DEPLOY_LOGGER_DEBUG("文件: {}", image_file)
+	}
   }
-
-  // 获取当前路径下的所有文件夹名称
-//  for (const auto& entry : std::file(currentPath)) {
-//	// 检查是否是一个目录
-//	if (fs::is_directory(entry.path())) {
-//	  // 输出目录名称
-//	  std::cout << "Folder: " << entry.path().filename() << std::endl;
-//	}
-//  }
   return true;
 }
 }

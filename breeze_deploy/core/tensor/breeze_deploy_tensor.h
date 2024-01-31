@@ -15,9 +15,14 @@
 #ifndef BREEZE_DEPLOY_MODELS_BREEZE_DEPLOY_TENSOR_H_
 #define BREEZE_DEPLOY_MODELS_BREEZE_DEPLOY_TENSOR_H_
 #include <opencv2/opencv.hpp>
-#include "breeze_deploy/core/breeze_deploy_type.h"
 
 namespace breeze_deploy {
+enum class BreezeDeployTensorDataType {
+  UNKNOWN,
+  UINT8,
+  FP32
+};
+
 struct BreezeDeployTensorInfo {
   BreezeDeployTensorInfo() = default;
   std::string tensor_name;
@@ -35,6 +40,8 @@ class BreezeDeployTensor {
   size_t GetTensorSize() const;
   size_t GetTensorDataByteSize() const;
   const BreezeDeployTensorInfo &GetTensorInfo();
+
+  static size_t GetDataTypeSize(BreezeDeployTensorDataType breeze_deploy_data_type);
 
  private:
   uint8_t *tensor_data_ptr_ = nullptr;

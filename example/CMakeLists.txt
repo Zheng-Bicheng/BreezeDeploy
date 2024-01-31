@@ -21,10 +21,10 @@ add_executable(test_yolov5_face detection_test/test_yolov5_face.cpp)
 target_link_libraries(test_yolov5_face breeze_deploy ${OpenCV_LIBS})
 list(APPEND INSTALL_APP_LIST test_yolov5_face)
 
-# test_yolov5_face_license_plate
-#add_executable(test_yolov5_face_license_plate pipeline/test_yolov5_face_license_plate.cpp)
-#target_link_libraries(test_yolov5_face_license_plate breeze_deploy ${OpenCV_LIBS})
-#list(APPEND INSTALL_APP_LIST test_yolov5_face_license_plate)
+# test_image_recognition
+add_executable(test_image_recognition pipeline/test_image_recognition.cpp)
+target_link_libraries(test_image_recognition breeze_deploy ${OpenCV_LIBS})
+list(APPEND INSTALL_APP_LIST test_image_recognition)
 
 # install
 install(TARGETS ${INSTALL_APP_LIST} DESTINATION bin)
