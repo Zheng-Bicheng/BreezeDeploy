@@ -26,7 +26,7 @@ bool DetectionModel::Preprocess(const cv::Mat &input_mat) {
   BreezeDeployMat breeze_deploy_mat(input_mat);
   for (const auto &preprocess_function : preprocess_functions_) {
 	if (!preprocess_function->Run(breeze_deploy_mat)) {
-	  BREEZE_DEPLOY_LOGGER_ERROR("Failed to run preprocess_function.")
+	  BREEZE_DEPLOY_LOGGER_ERROR("Failed to run preprocess.")
 	  return false;
 	}
   }

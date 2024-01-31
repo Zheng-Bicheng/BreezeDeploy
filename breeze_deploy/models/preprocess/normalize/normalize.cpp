@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "breeze_deploy/preprocess_function/normalize/normalize.h"
+#include "breeze_deploy/models/preprocess/normalize/normalize.h"
 namespace breeze_deploy {
-namespace function {
+namespace preprocess {
 Normalize::Normalize(const std::vector<float> &mean, const std::vector<float> &std) {
   std::vector<float> mean_(mean.begin(), mean.end());
   std::vector<float> std_(std.begin(), std.end());

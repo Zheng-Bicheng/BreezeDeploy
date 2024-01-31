@@ -17,8 +17,11 @@
 #include "breeze_deploy/core/logger/breeze_deploy_logger.h"
 namespace breeze_deploy {
 namespace utils {
-bool GetSubdirectories(const std::string& path, std::vector<std::string>& subdirectories);
+namespace filesystem{
+std::string JoinPath(const std::vector<std::string>& paths);
+bool GetFolders(const std::string& path, std::vector<std::string>& subdirectories);
 bool GetFiles(const std::string& path, std::vector<std::string>& files);
+}
 }
 }
 #endif //BREEZE_DEPLOY_UTILS_FILESYSTEM_FILESYSTEM_H_

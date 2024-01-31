@@ -14,9 +14,9 @@
 
 #ifndef BREEZE_DEPLOY_MODELS_PREPROCESS_FUNCTION_PREPROCESS_FUNCTION_H_
 #define BREEZE_DEPLOY_MODELS_PREPROCESS_FUNCTION_PREPROCESS_FUNCTION_H_
-#include "breeze_deploy/preprocess_function/normalize/normalize.h"
-#include "breeze_deploy/preprocess_function/resize/resize.h"
-#include "breeze_deploy/preprocess_function/bgr_to_rgb/bgr_to_rgb.h"
-#include "breeze_deploy/preprocess_function/hwc_to_chw/hwc_to_chw.h"
-#include "breeze_deploy/preprocess_function/letterbox/letter_box.h"
+#include "breeze_deploy/models/preprocess/normalize/normalize.h"
+#include "breeze_deploy/models/preprocess/resize/resize.h"
+#include "breeze_deploy/models/preprocess/bgr_to_rgb/bgr_to_rgb.h"
+#include "breeze_deploy/models/preprocess/hwc_to_chw/hwc_to_chw.h"
+#include "breeze_deploy/models/preprocess/letterbox/letter_box.h"
 #endif //BREEZE_DEPLOY_MODELS_PREPROCESS_FUNCTION_PREPROCESS_FUNCTION_H_

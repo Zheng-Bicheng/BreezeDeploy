@@ -13,10 +13,32 @@
 // limitations under the License.
 
 #include "breeze_deploy/utils/filesystem/filesystem.h"
+
 #include <dirent.h>
+#include <sstream>
+
 namespace breeze_deploy {
 namespace utils {
-bool GetSubdirectories(const std::string &path, std::vector<std::string> &subdirectories) {
+namespace filesystem {
+std::string JoinPath(const std::vector<std::string> &paths) {
+  if (paths.empty()) {
+	return ""; // 如果路径为空，直接返回空字符串
+  }
+  std::stringstream result;
+  // 遍历路径向量
+  for (const std::string &path : paths) {
+	// 检查路径分隔符，并确保路径之间只有一个分隔符
+	if (!result.str().empty() && result.str().back() != '/') {
+	  result << '/';
+	}
+
+	// 拼接路径
+	result << path;
+  }
+
+  return result.str();
+}
+bool GetFolders(const std::string &path, std::vector<std::string> &subdirectories) {
   subdirectories.clear();
   DIR *dir = opendir(path.c_str());
   if (dir == nullptr) {
@@ -64,6 +86,7 @@ bool GetFiles(const std::string &path, std::vector<std::string> &files) {
   }
   closedir(dir);
   return true;
+}
 }
 }
 }

@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "breeze_deploy/preprocess_function/hwc_to_chw/hwc_to_chw.h"
+#include "breeze_deploy/models/preprocess/hwc_to_chw/hwc_to_chw.h"
 namespace breeze_deploy {
-namespace function {
+namespace preprocess {
 bool HWCToCHW::Run(BreezeDeployMat &breeze_deploy_mat) {
   auto &hwc_mat = breeze_deploy_mat.GetMat();
   auto channel_mat_vector = std::vector<cv::Mat>(3);

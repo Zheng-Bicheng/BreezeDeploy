@@ -29,11 +29,17 @@ class ImageRecognition {
 	  : detection_model_{std::move(detection_model)}, classification_model_{std::move(classification_model)} {
   }
 
-  bool BuildDatabase(const std::string& image_folders_path, bool use_detection = true);
+  bool BuildDatabase(const std::string& database_path, bool use_detection = true);
 
  private:
   std::unique_ptr<DetectionModel> detection_model_;
   std::unique_ptr<ClassificationModel> classification_model_;
+
+  // 用于获取数据库文件夹
+  std::vector<std::string> GetDatabaseFolders(const std::string &database_path);
+  std::vector<std::string> GetDatabaseFiles(const std::string &database_folder_path);
+
+  bool Predict(const std::string& image_path, bool use_detection);
 };
 }
 }

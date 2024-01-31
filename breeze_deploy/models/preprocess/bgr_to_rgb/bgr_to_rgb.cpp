@@ -12,23 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef BREEZE_DEPLOY_PREPROCESS_FUNCTION_RESIZE_RESIZE_H_
-#define BREEZE_DEPLOY_PREPROCESS_FUNCTION_RESIZE_RESIZE_H_
-#include <vector>
-#include "breeze_deploy/preprocess_function/breeze_deploy_preprocess_function.h"
-
+#include "breeze_deploy/models/preprocess/bgr_to_rgb/bgr_to_rgb.h"
 namespace breeze_deploy {
-namespace function {
-class Resize : public BreezeDeployPreprocessFunction {
- public:
-  Resize(int width, int height);
-  std::string FunctionName() override { return "Resize"; }
-  bool Run(BreezeDeployMat &breeze_deploy_mat) override;
-
- private:
-  int width_ = 0;
-  int height_ = 0;
-};
+namespace preprocess {
+bool BGRToRGB::Run(BreezeDeployMat &breeze_deploy_mat) {
+  cv::Mat &opencv_mat = breeze_deploy_mat.GetMat();
+  cv::cvtColor(opencv_mat, opencv_mat, cv::COLOR_BGR2RGB);
+  return true;
 }
 }
-#endif //BREEZE_DEPLOY_PREPROCESS_FUNCTION_RESIZE_RESIZE_H_
+}

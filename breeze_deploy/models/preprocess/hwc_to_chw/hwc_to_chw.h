@@ -12,13 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "breeze_deploy/preprocess_function/bgr_to_rgb/bgr_to_rgb.h"
+#ifndef BREEZE_DEPLOY_PREPROCESS_FUNCTION_HWC_TO_CHW_HWC_TO_CHW_H_
+#define BREEZE_DEPLOY_PREPROCESS_FUNCTION_HWC_TO_CHW_HWC_TO_CHW_H_
+#include "breeze_deploy/models/preprocess/breeze_deploy_preprocess.h"
 namespace breeze_deploy {
-namespace function {
-bool BGRToRGB::Run(BreezeDeployMat &breeze_deploy_mat) {
-  cv::Mat &opencv_mat = breeze_deploy_mat.GetMat();
-  cv::cvtColor(opencv_mat, opencv_mat, cv::COLOR_BGR2RGB);
-  return true;
+namespace preprocess {
+class HWCToCHW : public BreezeDeployPreprocess {
+ public:
+  std::string FunctionName() override { return "HWCToCHW"; }
+  bool Run(BreezeDeployMat &breeze_deploy_mat) override;
+};
 }
 }
-}
+#endif //BREEZE_DEPLOY_PREPROCESS_FUNCTION_HWC_TO_CHW_HWC_TO_CHW_H_

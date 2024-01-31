@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "breeze_deploy/preprocess_function/letterbox/letter_box.h"
+#include "breeze_deploy/models/preprocess/letterbox/letter_box.h"
 namespace breeze_deploy {
-namespace function {
+namespace preprocess {
 LetterBox::LetterBox(int width, int height, std::array<float, 3> scalar)
 	: width_{width}, height_{height}, scalar_{scalar} {
 }

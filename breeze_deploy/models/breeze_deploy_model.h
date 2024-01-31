@@ -24,11 +24,11 @@
 #include "breeze_deploy/core/mat/breeze_deploy_mat.h"
 #include "breeze_deploy/core/tensor/breeze_deploy_tensor.h"
 #include "breeze_deploy/core/time/breeze_deploy_time.h"
-#include "breeze_deploy/preprocess_function/preprocess_function.h"
+#include "breeze_deploy/models/preprocess/preprocess_function.h"
 
 namespace breeze_deploy {
 namespace models {
-using namespace breeze_deploy::function;
+using namespace breeze_deploy::preprocess;
 using namespace breeze_deploy::backend;
 class BreezeDeployModel {
  public:
@@ -48,7 +48,7 @@ class BreezeDeployModel {
   virtual bool ReadPostprocessYAML() = 0;
 
   // Model Preprocess
-  std::vector<std::shared_ptr<BreezeDeployPreprocessFunction>> preprocess_functions_{};
+  std::vector<std::shared_ptr<BreezeDeployPreprocess>> preprocess_functions_{};
   virtual bool Preprocess(const cv::Mat &input_mat) = 0;
 
   // Model Infer

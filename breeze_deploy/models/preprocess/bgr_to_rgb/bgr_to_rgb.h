@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef BREEZE_DEPLOY_PREPROCESS_FUNCTION_HWC_TO_CHW_HWC_TO_CHW_H_
-#define BREEZE_DEPLOY_PREPROCESS_FUNCTION_HWC_TO_CHW_HWC_TO_CHW_H_
-#include "breeze_deploy/preprocess_function/breeze_deploy_preprocess_function.h"
+#ifndef BREEZE_DEPLOY_PREPROCESS_FUNCTION_BGR_TO_RGB_BGR_TO_RGB_H_
+#define BREEZE_DEPLOY_PREPROCESS_FUNCTION_BGR_TO_RGB_BGR_TO_RGB_H_
+#include "breeze_deploy/models/preprocess/breeze_deploy_preprocess.h"
 namespace breeze_deploy {
-namespace function {
-class HWCToCHW : public BreezeDeployPreprocessFunction {
+namespace preprocess {
+class BGRToRGB : public BreezeDeployPreprocess {
  public:
-  std::string FunctionName() override { return "HWCToCHW"; }
+  std::string FunctionName() override { return "BGRToRGB"; }
   bool Run(BreezeDeployMat &breeze_deploy_mat) override;
 };
 }
 }
-#endif //BREEZE_DEPLOY_PREPROCESS_FUNCTION_HWC_TO_CHW_HWC_TO_CHW_H_
+#endif //BREEZE_DEPLOY_PREPROCESS_FUNCTION_BGR_TO_RGB_BGR_TO_RGB_H_

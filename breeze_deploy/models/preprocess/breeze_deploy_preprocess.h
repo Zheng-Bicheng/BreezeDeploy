@@ -20,8 +20,8 @@
 #include "breeze_deploy/core/logger/breeze_deploy_logger.h"
 
 namespace breeze_deploy {
-namespace function {
-class BreezeDeployPreprocessFunction {
+namespace preprocess {
+class BreezeDeployPreprocess {
  public:
   virtual std::string FunctionName() = 0;
   virtual bool Run(BreezeDeployMat &breeze_deploy_mat) = 0;
