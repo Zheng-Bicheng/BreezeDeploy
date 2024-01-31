@@ -24,42 +24,6 @@ using namespace breeze_deploy::models;
 using cv::imread;
 
 int main(int argc, char *argv[]) {
-#if 0
-  if (argc < 3) {
-	std::cout << "Usage: test_image_recognition path/to/model /path/to/config_file path/to/image" << std::endl;
-	return -1;
-  }
-
-  std::string model_path = argv[1];
-  std::string config_path = argv[2];
-  YOLOV5 detect_model(model_path, config_path);
-  if (!detect_model.Initialize()) {
-	std::cout << "模型初始化失败" << std::endl;
-	return 1;
-  }
-
-  detect_model.SetConfidenceThreshold(0.5);
-  detect_model.SetNMSThreshold(0.5);
-
-  std::string image_path = argv[3];
-  auto mat = cv::imread(image_path);
-
-  BreezeDeployTime cost;
-  cost.Start();
-  if (!detect_model.Predict(mat)) {
-	std::cout << "模型推理失败" << std::endl;
-	return 1;
-  }
-  cost.End();
-  cost.PrintInfo("YOLOV5", 1.0, BreezeDeployTimeType::Milliseconds);
-
-  auto detection_results = detect_model.GetDetectionResults();
-  for (auto detection_result : detection_results) {
-	detection_result.PrintResult();
-  }
-  mat = DetectionModel::Draw(mat, detection_results);
-  cv::imwrite("./detect_result.png", mat);
-#endif
   if (argc < 4) {
 	std::cout
 		<< "Usage: test_image_recognition "
@@ -73,8 +37,15 @@ int main(int argc, char *argv[]) {
   std::string config_det_path = argv[2];
   std::string model_cls_path = argv[3];
   std::string config_cls_path = argv[4];
-  auto image_recognition = ImageRecognition(std::make_unique<YOLOV5Face>(model_det_path, config_det_path),
-											std::make_unique<ArcFace>(model_cls_path, config_cls_path));
+  auto image_recognition = ImageRecognition(std::make_unique<ArcFace>(model_cls_path, config_cls_path),
+											std::make_unique<YOLOV5Face>(model_det_path, config_det_path)
+  );
+
+  if (!image_recognition.Initialize()) {
+	std::cerr << "Initialization of Image Recognition failed. "
+				 "Please check the configuration parameters for the detection model or recognition model." << std::endl;
+	return -1;
+  }
 
   std::string data_base_path = argv[5];
   image_recognition.BuildDatabase(data_base_path, false);

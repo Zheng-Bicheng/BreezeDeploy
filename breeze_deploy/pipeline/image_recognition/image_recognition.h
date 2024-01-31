@@ -24,22 +24,25 @@ namespace breeze_deploy {
 namespace models {
 class ImageRecognition {
  public:
-  ImageRecognition(std::unique_ptr<DetectionModel> detection_model,
-				   std::unique_ptr<ClassificationModel> classification_model)
-	  : detection_model_{std::move(detection_model)}, classification_model_{std::move(classification_model)} {
-  }
+  ImageRecognition(std::unique_ptr<ClassificationModel> recognition_model,
+				   std::unique_ptr<DetectionModel> detection_model = nullptr);
 
-  bool BuildDatabase(const std::string& database_path, bool use_detection = true);
+  bool Initialize(const BreezeDeployBackendOption &rec_option = BreezeDeployBackendOption(),
+				  const BreezeDeployBackendOption &det_option = BreezeDeployBackendOption());
+
+  bool BuildDatabase(const std::string &database_path, bool use_detection = true);
 
  private:
   std::unique_ptr<DetectionModel> detection_model_;
-  std::unique_ptr<ClassificationModel> classification_model_;
+  std::unique_ptr<ClassificationModel> recognition_model_;
 
   // 用于获取数据库文件夹
   std::vector<std::string> GetDatabaseFolders(const std::string &database_path);
   std::vector<std::string> GetDatabaseFiles(const std::string &database_folder_path);
 
-  bool Predict(const std::string& image_path, bool use_detection);
+  std::vector<cv::Mat> DetectionPredict(const cv::Mat &input_image);
+  bool Predict(const std::string &image_path, bool use_detection);
+
 };
 }
 }

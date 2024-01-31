@@ -20,6 +20,27 @@
 namespace breeze_deploy {
 namespace utils {
 namespace filesystem {
+static std::vector<std::string> image_extension = {"jpg", "jpeg", "png"};
+bool IsImage(const std::string &file_name) {
+  size_t dot_pos = file_name.find_last_of('.');
+  if (dot_pos == std::string::npos) {
+	return false;
+  }
+
+  // 获取后缀名
+  auto extension = file_name.substr(dot_pos + 1);
+
+  // 将后缀名转换为小写字母（以防用户输入时使用大写）
+  for (char &c : extension) {
+	c = static_cast<char>(tolower(c));
+  }
+
+  auto it = std::find(image_extension.begin(), image_extension.end(), extension);
+  if (it == image_extension.end()) {
+	return false;
+  }
+  return true;
+}
 std::string JoinPath(const std::vector<std::string> &paths) {
   if (paths.empty()) {
 	return ""; // 如果路径为空，直接返回空字符串

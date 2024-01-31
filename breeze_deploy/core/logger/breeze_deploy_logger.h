@@ -33,31 +33,42 @@ class BreezeDeployLogger {
 
 extern BreezeDeployLogger breeze_deploy_logger;
 
-#define BREEZE_DEPLOY_LOGGER_INFO(...)                            \
-  {                                                         \
-    auto get_logger = breeze_deploy_logger.GetLogger(); \
-    SPDLOG_LOGGER_INFO(get_logger, __VA_ARGS__);            \
-  }
-#define BREEZE_DEPLOY_LOGGER_DEBUG(...)                           \
-  {                                                         \
-    auto get_logger = breeze_deploy_logger.GetLogger(); \
-    SPDLOG_LOGGER_DEBUG(get_logger, __VA_ARGS__);           \
-  }
-#define BREEZE_DEPLOY_LOGGER_WARN(...)                            \
-  {                                                         \
-    auto get_logger = breeze_deploy_logger.GetLogger(); \
-    SPDLOG_LOGGER_WARN(get_logger, __VA_ARGS__);            \
-  }
-#define BREEZE_DEPLOY_LOGGER_ERROR(...)                           \
-  {                                                         \
-    auto get_logger = breeze_deploy_logger.GetLogger(); \
-    SPDLOG_LOGGER_ERROR(get_logger, __VA_ARGS__);           \
-  }
-#define BREEZE_DEPLOY_MODEL_LOGGER_UN_SUPPORT_API BREEZE_DEPLOY_LOGGER_ERROR("{} don't support this api.", model_name_)
-#define BREEZE_DEPLOY_LOGGER_CRITICAL(...)                        \
-  {                                                         \
-    auto get_logger = breeze_deploy_logger.GetLogger(); \
-    SPDLOG_LOGGER_CRITICAL(get_logger, __VA_ARGS__);        \
-  }
+#define BREEZE_DEPLOY_LOGGER_INFO(...)                     	\
+{                                                         	\
+  auto get_logger = breeze_deploy_logger.GetLogger(); 		\
+  SPDLOG_LOGGER_INFO(get_logger, __VA_ARGS__);            	\
+}
+
+#define BREEZE_DEPLOY_LOGGER_DEBUG(...)                     \
+{                                                         	\
+  auto get_logger = breeze_deploy_logger.GetLogger(); 		\
+  SPDLOG_LOGGER_DEBUG(get_logger, __VA_ARGS__);           	\
+}
+
+#define BREEZE_DEPLOY_LOGGER_WARN(...)                      \
+{                                                         	\
+  auto get_logger = breeze_deploy_logger.GetLogger(); 		\
+  SPDLOG_LOGGER_WARN(get_logger, __VA_ARGS__);            	\
+}
+
+#define BREEZE_DEPLOY_LOGGER_ERROR(...)                     \
+{                                                         	\
+  auto get_logger = breeze_deploy_logger.GetLogger(); 		\
+  SPDLOG_LOGGER_ERROR(get_logger, __VA_ARGS__);           	\
+}
+
+#define BREEZE_DEPLOY_LOGGER_CRITICAL(...)               	\
+{                                                         	\
+  auto get_logger = breeze_deploy_logger.GetLogger(); 		\
+  SPDLOG_LOGGER_CRITICAL(get_logger, __VA_ARGS__);        	\
+}
+
+#define BREEZE_DEPLOY_LOGGER_ASSERT(flag, ...) 		\
+{                                             		\
+  if(!(flag)) {                                   	\
+    BREEZE_DEPLOY_LOGGER_CRITICAL(__VA_ARGS__)   	\
+  }                                            		\
+  assert(flag);                                     	\
+}
 }
 #endif //BREEZE_DEPLOY_CORE_BREEZE_DEPLOY_LOGGER_H_

@@ -12,17 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef BREEZE_DEPLOY_UTILS_FILESYSTEM_FILESYSTEM_H_
-#define BREEZE_DEPLOY_UTILS_FILESYSTEM_FILESYSTEM_H_
-#include "breeze_deploy/core/logger/breeze_deploy_logger.h"
+#ifndef BREEZE_DEPLOY_UTILS_IMAGE_PROCESS_CROP_CROP_H_
+#define BREEZE_DEPLOY_UTILS_IMAGE_PROCESS_CROP_CROP_H_
+#include <opencv2/opencv.hpp>
+#include "breeze_deploy/models/detection/detection_model.h"
+
 namespace breeze_deploy {
 namespace utils {
-namespace filesystem{
-bool IsImage(const std::string& file_path);
-std::string JoinPath(const std::vector<std::string>& paths);
-bool GetFolders(const std::string& path, std::vector<std::string>& subdirectories);
-bool GetFiles(const std::string& path, std::vector<std::string>& files);
+namespace image_process {
+using namespace breeze_deploy::models;
+std::vector<cv::Mat> CropImage(const cv::Mat &original_image,
+							   const DetectionResult &detection_result,
+							   const std::string &save_path = "");
+cv::Mat CropImage(const cv::Mat &original_image, const cv::Rect &roi_rect, const std::string &save_path = "");
 }
 }
 }
-#endif //BREEZE_DEPLOY_UTILS_FILESYSTEM_FILESYSTEM_H_
+#endif //BREEZE_DEPLOY_UTILS_IMAGE_PROCESS_CROP_CROP_H_
