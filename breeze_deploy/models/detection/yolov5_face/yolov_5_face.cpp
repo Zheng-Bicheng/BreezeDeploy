@@ -68,15 +68,17 @@ bool YOLOV5Face::Predict(const cv::Mat &input_mat, DetectionResult &result_with_
 	temp_box_vector.emplace_back(left, top, width, height);
   }
 
+  std::vector<int> index_vector;
   cv::dnn::NMSBoxes(temp_box_vector,
 					temp_confidence_vector,
 					confidence_threshold_,
 					nms_threshold_,
-					result_with_landmark.label_id_vector);
-  for (int idx : result_with_landmark.label_id_vector) {
-	result_with_landmark.rect_vector.emplace_back(temp_box_vector[idx]);
-	result_with_landmark.label_confidence_vector.emplace_back(temp_confidence_vector[idx]);
-	result_with_landmark.landmarks_vector.emplace_back(temp_landmark_vector[idx]);
+					index_vector);
+  for (int index : index_vector) {
+	result_with_landmark.label_id_vector.emplace_back(temp_class_id_vector[index]);
+	result_with_landmark.rect_vector.emplace_back(temp_box_vector[index]);
+	result_with_landmark.label_confidence_vector.emplace_back(temp_confidence_vector[index]);
+	result_with_landmark.landmarks_vector.emplace_back(temp_landmark_vector[index]);
   }
 
   // 恢复box到原坐标

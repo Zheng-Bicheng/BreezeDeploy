@@ -24,8 +24,9 @@ std::vector<cv::Mat> CropImage(const cv::Mat &original_image,
 	return {};
   }
 
-  std::vector<cv::Mat> cropped_image_vector(rect_vector.size());
-  for (auto rect : rect_vector) {
+  std::vector<cv::Mat> cropped_image_vector;
+  cropped_image_vector.reserve(rect_vector.size());
+for (auto rect : rect_vector) {
 	// TODO: The save_path needs to be modified to 'folder/number.png'.
 	cropped_image_vector.emplace_back(CropImage(original_image, rect, save_path));
   }

@@ -16,7 +16,7 @@
 #define BREEZE_DEPLOY_MODELS_CLASSIFICATION_POSTPROCESS_FUNCTION_H_
 
 #include <Eigen/Dense>
-#include "breeze_deploy/models/classification/classification_result.h"
+#include "breeze_deploy/models/classification/classification_model.h"
 
 namespace breeze_deploy {
 namespace models {
@@ -28,12 +28,12 @@ class TopK {
 				  size_t k,
 				  T min_confidence) {
 	// 使用最小堆来保存 TopK 元素，最小堆的每一个元素为{float confidence, int index}并将使用std::pair来表示
-	std::priority_queue<std::pair<T, size_t>, std::vector<std::pair<T, size_t>>, std::greater<>> min_heap;
+	std::priority_queue<std::pair<T, int64_t>, std::vector<std::pair<T, int64_t>>, std::greater<>> min_heap;
 
 	// 将数据插入到最小堆中
 	auto tensor_data_ptr = reinterpret_cast<T *>(tensor.GetTensorDataPointer());
 	auto tensor_data_size = tensor.GetTensorSize();
-	for (size_t i = 0; i < tensor_data_size; i++) {
+	for (int64_t i = 0; i < tensor_data_size; i++) {
 	  if (tensor_data_ptr[i] < min_confidence) {
 		continue;
 	  }

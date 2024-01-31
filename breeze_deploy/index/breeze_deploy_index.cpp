@@ -29,18 +29,40 @@ BreezeDeployIndex::BreezeDeployIndex(int feature_length,
   faiss_index_ = std::unique_ptr<faiss::Index>(faiss_index_pointer_);
   index_index_map_ = faiss::IndexIDMap(faiss_index_.get());
 }
-bool BreezeDeployIndex::AddFeature(const std::vector<float> &feature, int64_t label_id) {
+bool BreezeDeployIndex::AddFeature(const std::vector<float> &feature, const std::vector<int64_t> &label_id) {
   if (feature.empty()) {
 	BREEZE_DEPLOY_LOGGER_ERROR("The feature is empty.")
 	return false;
   }
 
-  if (feature.size() != feature_length_) {
-	BREEZE_DEPLOY_LOGGER_ERROR("The size of input feature != feature_length. Input size is {},feature_length is {}",
-							   feature.size(), feature_length_)
+  auto feature_size = feature.size();
+  if (feature_size % feature_length_ != 0) {
+	BREEZE_DEPLOY_LOGGER_ERROR("The size of input feature is error.")
 	return false;
   }
-  index_index_map_.add_with_ids(1, feature.data(), &label_id);
+
+  auto n = static_cast<int64_t>(feature_size / feature_length_);
+  if (n != label_id.size()) {
+	BREEZE_DEPLOY_LOGGER_ERROR("The size of input label_id != n.")
+	return false;
+  }
+  index_index_map_.add_with_ids(n, feature.data(), label_id.data());
+  return true;
+}
+bool BreezeDeployIndex::SearchIndex(const std::vector<float> &feature,
+									int64_t k,
+									std::vector<float> &distance,
+									std::vector<int64_t> &label_id) {
+  auto feature_size = feature.size();
+  if (feature_size % feature_length_ != 0) {
+	BREEZE_DEPLOY_LOGGER_ERROR("The size of input feature is error.")
+	return false;
+  }
+
+  auto n = static_cast<int64_t>(feature_size / feature_length_);
+  label_id.resize(n);
+  distance.resize(n);
+  index_index_map_.search(n, feature.data(), k, distance.data(), label_id.data());
   return true;
 }
 }

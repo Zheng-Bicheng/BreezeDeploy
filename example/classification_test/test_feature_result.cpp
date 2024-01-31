@@ -34,7 +34,7 @@ bool InferByONNX(ArcFace &arc_face, const std::string &image_path, Classificatio
 }
 
 int main(int argc, char *argv[]) {
-  if (argc < 4) {
+  if (argc != 5) {
 	std::cout << "Usage: test_feature_result path/to/model /path/to/config_file path/to/image_0 path/to/image_1"
 			  << std::endl;
 	return -1;

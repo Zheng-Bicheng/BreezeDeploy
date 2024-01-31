@@ -16,4 +16,4 @@ preprocess:
   - HWCToCHW:
 
 postprocess:
-  - landmark_num: 8
+  - landmark_num: 5

@@ -21,7 +21,7 @@ using namespace breeze_deploy::models;
 using cv::imread;
 
 int main(int argc, char *argv[]) {
-  if (argc < 4) {
+  if (argc != 5) {
 	std::cout << "Usage: test_label_result path/to/model /path/to/config_file path/to/image path/to/label" << std::endl;
 	return -1;
   }

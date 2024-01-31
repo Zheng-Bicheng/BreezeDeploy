@@ -35,7 +35,11 @@ class BreezeDeployIndex {
   BreezeDeployIndex(int feature_length,
 					const std::string &description,
 					BreezeDeployIndexMetricType metric = BreezeDeployIndexMetricType::METRIC_INNER_PRODUCT);
-  bool AddFeature(const std::vector<float> &feature, int64_t label_id);
+  bool AddFeature(const std::vector<float> &feature, const std::vector<int64_t> &label_id);
+  bool SearchIndex(const std::vector<float> &feature,
+				   int64_t k,
+				   std::vector<float> &distance,
+				   std::vector<int64_t> &label_id);
  private:
   int feature_length_ = 0;
   std::string description_;

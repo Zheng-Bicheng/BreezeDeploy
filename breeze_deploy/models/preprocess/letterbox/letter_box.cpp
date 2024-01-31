@@ -32,15 +32,14 @@ bool LetterBox::Run(BreezeDeployMat &breeze_deploy_mat) {
   int inside_w = static_cast<int>(round(mat_width * radio_));
   int inside_h = static_cast<int>(round(mat_height * radio_));
   cv::resize(src, src, cv::Size(inside_w, inside_h));
-
-  // Do pad
   pad_width_ = (width_ - inside_w) / 2;
   pad_height_ = (height_ - inside_h) / 2;
-  int top = int(round(pad_height_ - 0.1));
-  int bottom = int(round(pad_height_ + 0.1));
-  int left = int(round(pad_width_ - 0.1));
-  int right = int(round(pad_width_ + 0.1));
-  cv::copyMakeBorder(src, src, top, bottom, left, right, 0, cv::Scalar(scalar_[0], scalar_[1], scalar_[2]));
+
+  cv::Mat output_image(height_, width_, src.type(), cv::Scalar(scalar_[0], scalar_[1], scalar_[2])); // 用灰色进行填充
+
+  cv::Rect roi(pad_width_, pad_height_, src.cols, src.rows);
+  src.copyTo(output_image(roi));
+  src = output_image;
   return true;
 }
 }

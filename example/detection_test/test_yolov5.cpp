@@ -22,7 +22,7 @@ using namespace breeze_deploy::models;
 using cv::imread;
 
 int main(int argc, char *argv[]) {
-  if (argc < 3) {
+  if (argc != 4) {
 	std::cout << "Usage: test_yolov5 path/to/model /path/to/config_file path/to/image" << std::endl;
 	return -1;
   }

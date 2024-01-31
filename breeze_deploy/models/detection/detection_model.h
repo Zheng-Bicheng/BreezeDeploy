@@ -19,6 +19,7 @@
 namespace breeze_deploy {
 namespace models {
 struct DetectionResult {
+  DetectionResult() = default;
   virtual void Clear() {
 	label_id_vector.clear();
 	label_confidence_vector.clear();
@@ -27,7 +28,8 @@ struct DetectionResult {
   }
   bool Empty() const { return label_id_vector.empty(); }
   size_t GetSize() const { return label_id_vector.size(); }
-  std::vector<int> label_id_vector; // The 'indices' parameter of the cv::dnn::NMSBoxes() requires a std::vector<int>
+  std::vector<int64_t> label_id_vector; // The 'indices' parameter of the cv::dnn::NMSBoxes() requires a std::vector<int>
+  std::vector<std::string> label_name;
   std::vector<float> label_confidence_vector;
   std::vector<cv::Rect> rect_vector;
   std::vector<std::vector<cv::Point>> landmarks_vector;

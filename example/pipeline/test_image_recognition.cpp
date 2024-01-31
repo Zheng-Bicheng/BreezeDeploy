@@ -24,12 +24,12 @@ using namespace breeze_deploy::models;
 using cv::imread;
 
 int main(int argc, char *argv[]) {
-  if (argc < 4) {
+  if (argc != 7) {
 	std::cout
 		<< "Usage: test_image_recognition "
 		   "path/to/model_det /path/to/config_det "
 		   "path/to/model_cls /path/to/config_cls "
-		   "path/to/data_base" << std::endl;
+		   "path/to/data_base path/to/rec_image" << std::endl;
 	return -1;
   }
 
@@ -50,5 +50,16 @@ int main(int argc, char *argv[]) {
   std::string data_base_path = argv[5];
   image_recognition.BuildDatabase(data_base_path, false);
 
+  std::string image_path = argv[6];
+  auto mat = cv::imread(image_path);
+  ImageRecognitionResult image_recognition_result;
+  image_recognition.Predict(mat, image_recognition_result, false);
+
+  auto &classification_label_result = image_recognition_result.classification_label_result;
+  for (int i = 0; i < classification_label_result.GetSize(); ++i) {
+	printf("label_id: %lld, label_confidence: %f\n",
+		   classification_label_result.label_id_vector[i],
+		   classification_label_result.confidence_vector[i]);
+  }
   return 0;
 }

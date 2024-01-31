@@ -23,6 +23,12 @@
 namespace breeze_deploy {
 namespace models {
 using namespace breeze_deploy::index;
+struct ImageRecognitionResult {
+  // Detection Result
+  DetectionResult detection_result;
+  // Classification Result
+  ClassificationLabelResult classification_label_result;
+};
 class ImageRecognition {
  public:
   explicit ImageRecognition(std::unique_ptr<ClassificationModel> recognition_model,
@@ -30,6 +36,7 @@ class ImageRecognition {
   bool Initialize(const BreezeDeployBackendOption &rec_option = BreezeDeployBackendOption(),
 				  const BreezeDeployBackendOption &det_option = BreezeDeployBackendOption());
   bool BuildDatabase(const std::string &database_path, bool use_detection = true);
+  bool Predict(const cv::Mat &image, ImageRecognitionResult &image_recognition_result, bool use_detection = true);
 
  private:
   std::unique_ptr<DetectionModel> detection_model_;
@@ -41,10 +48,11 @@ class ImageRecognition {
   // 用于获取数据库文件夹
   std::vector<std::string> GetDatabaseFolders(const std::string &database_path);
   std::vector<std::string> GetDatabaseFiles(const std::string &database_folder_path);
-
   std::vector<cv::Mat> DetectionPredict(const cv::Mat &input_image);
+  std::vector<cv::Mat> DetectionPredict(const cv::Mat &input_image, DetectionResult &detection_result);
   std::vector<std::vector<float>> RecognitionPredict(const std::vector<cv::Mat> &input_image_vector);
   std::vector<std::vector<float>> GetFeature(const std::string &image_path, bool use_detection);
+  std::vector<std::vector<float>> GetFeature(const cv::Mat &input_image, bool use_detection);
 };
 }
 }

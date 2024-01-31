@@ -63,15 +63,22 @@ std::vector<std::string> ImageRecognition::GetDatabaseFiles(const std::string &d
   }
   return std::move(database_files);
 }
-std::vector<cv::Mat> ImageRecognition::DetectionPredict(const cv::Mat &input_image) {
+std::vector<cv::Mat> ImageRecognition::DetectionPredict(const cv::Mat &input_image, DetectionResult &detection_result) {
+  if (input_image.empty()) {
+	BREEZE_DEPLOY_LOGGER_ERROR("The input image is empty.")
+	return {};
+  }
   BREEZE_DEPLOY_LOGGER_ASSERT(detection_model_ != nullptr, "The detection model does not exist, "
 														   "and the inference operation for the detection model cannot be executed.")
-  DetectionResult detection_result;
   if (!detection_model_->Predict(input_image, detection_result)) {
 	BREEZE_DEPLOY_LOGGER_ERROR("During the prediction process, an error occurred in the detection model.")
 	return {};
   }
   return utils::image_process::CropImage(input_image, detection_result);
+}
+std::vector<cv::Mat> ImageRecognition::DetectionPredict(const cv::Mat &input_image) {
+  DetectionResult detection_result;
+  return DetectionPredict(input_image, detection_result);
 }
 std::vector<std::vector<float>> ImageRecognition::RecognitionPredict(const std::vector<cv::Mat> &input_image_vector) {
   std::vector<std::vector<float>> temp_feature_vector;
@@ -91,20 +98,25 @@ std::vector<std::vector<float>> ImageRecognition::GetFeature(const std::string &
 	BREEZE_DEPLOY_LOGGER_WARN("Failed to read image. Please check if the path({}) is correct.", image_path)
 	return {};
   }
-
-  std::vector<cv::Mat> rec_image_vector;
-  if (use_detection) {
-	rec_image_vector = DetectionPredict(input_image);
-  } else {
-	rec_image_vector.emplace_back(input_image);
-  }
-
-  if (rec_image_vector.empty()) {
+  return GetFeature(input_image, use_detection);
+}
+std::vector<std::vector<float>> ImageRecognition::GetFeature(const cv::Mat &input_image, bool use_detection) {
+  if (input_image.empty()) {
 	BREEZE_DEPLOY_LOGGER_ERROR("The array for recognizing images is empty, "
 							   "possibly due to the detection model not producing output or an error in the input image path.")
 	return {};
   }
 
+  std::vector<cv::Mat> rec_image_vector;
+  rec_image_vector.emplace_back(input_image);
+  if (detection_model_ != nullptr && use_detection) {
+	rec_image_vector = DetectionPredict(input_image);
+  }
+  if (rec_image_vector.empty()) {
+	BREEZE_DEPLOY_LOGGER_WARN("The detection model did not detect the target in the image. "
+							  "The original image will be used instead for feature extraction.")
+	rec_image_vector.emplace_back(input_image);
+  }
   return std::move(RecognitionPredict(rec_image_vector));
 }
 bool ImageRecognition::BuildDatabase(const std::string &database_path, bool use_detection) {
@@ -152,8 +164,48 @@ bool ImageRecognition::BuildDatabase(const std::string &database_path, bool use_
 		BREEZE_DEPLOY_LOGGER_WARN("Detecting multiple objects in an image.")
 		continue;
 	  }
-	  index_system_->AddFeature(feature_vector[0], folder_index);
+
+	  if (!index_system_->AddFeature(feature_vector[0], {folder_index})) {
+		BREEZE_DEPLOY_LOGGER_ERROR("Failed to add feature.");
+		continue;
+	  }
 	}
+  }
+  return true;
+}
+bool ImageRecognition::Predict(const cv::Mat &image,
+							   ImageRecognitionResult &image_recognition_result,
+							   bool use_detection) {
+  if (image.empty()) {
+	BREEZE_DEPLOY_LOGGER_ERROR("The input image is empty.");
+	return false;
+  }
+
+  std::vector<cv::Mat> rec_image_vector;
+  auto &detection_result = image_recognition_result.detection_result;
+  if (use_detection) {
+	rec_image_vector = DetectionPredict(image, detection_result);
+  } else {
+	rec_image_vector.emplace_back(image);
+  }
+  if (rec_image_vector.empty()) {
+	BREEZE_DEPLOY_LOGGER_ERROR("The array for recognizing images is empty, "
+							   "possibly due to the detection model not producing output or an error in the input image path.")
+	return false;
+  }
+
+  auto feature_vector = RecognitionPredict(rec_image_vector);
+  if (feature_vector.empty()) {
+	BREEZE_DEPLOY_LOGGER_ERROR("The feature vector is empty")
+	return false;
+  }
+
+  auto &classification_label_result = image_recognition_result.classification_label_result;
+  for (auto &feature : feature_vector) {
+	index_system_->SearchIndex(feature,
+							   1,
+							   classification_label_result.confidence_vector,
+							   classification_label_result.label_id_vector);
   }
   return true;
 }
