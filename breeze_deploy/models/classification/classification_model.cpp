@@ -31,29 +31,31 @@ bool ClassificationModel::ReadLabelFile(const std::string &label_file_path) {
   input_file.close();
   return true;
 }
-bool ClassificationModel::Preprocess(const cv::Mat &input_mat) {
-  if (input_mat.empty()) {
-	BREEZE_DEPLOY_LOGGER_ERROR("input_mat is empty.")
+bool ClassificationModel::InitializeBackend(const BreezeDeployBackendOption &breeze_deploy_backend_option) {
+  auto result_init = BreezeDeployModel::InitializeBackend(breeze_deploy_backend_option);
+  if (!result_init) {
+	BREEZE_DEPLOY_LOGGER_ERROR("Failed to initialize the backend. "
+							   "Please check if the backend configuration parameters are correct.");
 	return false;
   }
 
-  BreezeDeployMat breeze_deploy_mat(input_mat);
-  for (const auto &preprocess_function : preprocess_functions_) {
-	if (!preprocess_function->Run(breeze_deploy_mat)) {
-	  BREEZE_DEPLOY_LOGGER_ERROR("Failed to run preprocess.")
-	  return false;
-	}
+  auto input_tensor_size = breeze_deploy_backend_->GetInputTensorSize();
+  auto output_tensor_size = breeze_deploy_backend_->GetOutputTensorSize();
+  if ((input_tensor_size != 1) || (output_tensor_size != 1)) {
+	BREEZE_DEPLOY_LOGGER_ERROR(
+		"The classification model only supports input and output tensor with a size of 1. "
+		"However, the input tensor is of size {}, and the output tensor is of size {}.",
+		input_tensor_size,
+		output_tensor_size)
+	return false;
   }
 
-  auto tensor_data = breeze_deploy_mat.GetMat().data;
-  auto tensor_data_type = breeze_deploy_mat.GetMatDataType();
-  auto c = breeze_deploy_mat.GetChannel();
-  auto h = breeze_deploy_mat.GetHeight();
-  auto w = breeze_deploy_mat.GetWidth();
-  if (breeze_deploy_mat.GetMatDataFormat() == BreezeDeployMatFormat::CHW) {
-	input_tensor_vector_[0].SetTensorData(tensor_data, {1, c, h, w}, tensor_data_type);
-  } else {
-	input_tensor_vector_[0].SetTensorData(tensor_data, {1, h, w, c}, tensor_data_type);
+  auto input_batch = breeze_deploy_backend_->GetOutputTensorInfo()[0].tensor_shape[0];
+  if (input_batch != 1) {
+	BREEZE_DEPLOY_LOGGER_ERROR(
+		"The current classification model only supports input and output vectors with a batch of 1. However, the batch is {}.",
+		input_batch)
+	return false;
   }
   return true;
 }
@@ -107,6 +109,32 @@ bool ClassificationModel::ReadPostprocessYAML() {
   }
   return true;
 }
+bool ClassificationModel::Preprocess(const cv::Mat &input_mat) {
+  if (input_mat.empty()) {
+	BREEZE_DEPLOY_LOGGER_ERROR("input_mat is empty.")
+	return false;
+  }
+
+  BreezeDeployMat breeze_deploy_mat(input_mat);
+  for (const auto &preprocess_function : preprocess_functions_) {
+	if (!preprocess_function->Run(breeze_deploy_mat)) {
+	  BREEZE_DEPLOY_LOGGER_ERROR("Failed to run preprocess.")
+	  return false;
+	}
+  }
+
+  auto tensor_data = breeze_deploy_mat.GetMat().data;
+  auto tensor_data_type = breeze_deploy_mat.GetMatDataType();
+  auto c = breeze_deploy_mat.GetChannel();
+  auto h = breeze_deploy_mat.GetHeight();
+  auto w = breeze_deploy_mat.GetWidth();
+  if (breeze_deploy_mat.GetMatDataFormat() == BreezeDeployMatFormat::CHW) {
+	input_tensor_vector_[0].SetTensorData(tensor_data, {1, c, h, w}, tensor_data_type);
+  } else {
+	input_tensor_vector_[0].SetTensorData(tensor_data, {1, h, w, c}, tensor_data_type);
+  }
+  return true;
+}
 bool ClassificationModel::Postprocess() {
   // 判断是否需要进行Softmax
   if (need_softmax_) {
@@ -155,7 +183,7 @@ bool ClassificationModel::Predict(const cv::Mat &input_mat, ClassificationFeatur
 }
 
 double ClassificationModel::CosineSimilarity(const ClassificationFeatureResult &a,
-											const ClassificationFeatureResult &b) {
+											 const ClassificationFeatureResult &b) {
   if (a.feature_vector_.size() != b.feature_vector_.size()) {
 	BREEZE_DEPLOY_LOGGER_ERROR(
 		"The size of Vector A and B must be equal. The size of vector A is {}, while the size of vector B is also {}.",
@@ -177,6 +205,20 @@ double ClassificationModel::CosineSimilarity(const ClassificationFeatureResult &
   Eigen::Map<Eigen::VectorXf> eigen_vector_a(feature_vector_a.data(), static_cast<long>(feature_vector_a.size()));
   Eigen::Map<Eigen::VectorXf> eigen_vector_b(feature_vector_b.data(), static_cast<long>(feature_vector_b.size()));
   return eigen_vector_a.dot(eigen_vector_b) / (eigen_vector_a.norm() * eigen_vector_b.norm());
+}
+size_t ClassificationModel::GetFeatureVectorLength() {
+  if (breeze_deploy_backend_ == nullptr) {
+	BREEZE_DEPLOY_LOGGER_ERROR("This model uses a null pointer for the inference backend. "
+							   "Please check if the model backend has been initialized.")
+	return false;
+  }
+  auto tensor_info = breeze_deploy_backend_->GetOutputTensorInfo()[0];
+
+  size_t tensor_length = 1;
+  for (auto shape : tensor_info.tensor_shape) {
+	tensor_length *= shape;
+  }
+  return tensor_length;
 }
 }
 }

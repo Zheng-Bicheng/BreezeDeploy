@@ -63,12 +63,23 @@ extern BreezeDeployLogger breeze_deploy_logger;
   SPDLOG_LOGGER_CRITICAL(get_logger, __VA_ARGS__);        	\
 }
 
+#ifdef NDEBUG
+#define BREEZE_DEPLOY_LOGGER_ASSERT(flag, ...) 		\
+{                                             		\
+  if(!(flag)) {                                   	\
+    BREEZE_DEPLOY_LOGGER_CRITICAL(__VA_ARGS__)   	\
+	exit(-1)										\
+  }                                            		\
+}
+#else
 #define BREEZE_DEPLOY_LOGGER_ASSERT(flag, ...) 		\
 {                                             		\
   if(!(flag)) {                                   	\
     BREEZE_DEPLOY_LOGGER_CRITICAL(__VA_ARGS__)   	\
   }                                            		\
-  assert(flag);                                     	\
+  assert(flag);                                  	\
 }
+#endif
+
 }
 #endif //BREEZE_DEPLOY_CORE_BREEZE_DEPLOY_LOGGER_H_

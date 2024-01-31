@@ -32,6 +32,7 @@ bool ImageRecognition::Initialize(const breeze_deploy::backend::BreezeDeployBack
 							   "Please check the configuration parameters of the recognition model.")
 	return false;
   }
+  feature_vector_length_ = static_cast<int>(recognition_model_->GetFeatureVectorLength());
 
   if (detection_model_ != nullptr) {
 	if (!detection_model_->Initialize(det_option)) {
@@ -63,6 +64,8 @@ std::vector<std::string> ImageRecognition::GetDatabaseFiles(const std::string &d
   return std::move(database_files);
 }
 std::vector<cv::Mat> ImageRecognition::DetectionPredict(const cv::Mat &input_image) {
+  BREEZE_DEPLOY_LOGGER_ASSERT(detection_model_ != nullptr, "The detection model does not exist, "
+														   "and the inference operation for the detection model cannot be executed.")
   DetectionResult detection_result;
   if (!detection_model_->Predict(input_image, detection_result)) {
 	BREEZE_DEPLOY_LOGGER_ERROR("During the prediction process, an error occurred in the detection model.")
@@ -70,20 +73,27 @@ std::vector<cv::Mat> ImageRecognition::DetectionPredict(const cv::Mat &input_ima
   }
   return utils::image_process::CropImage(input_image, detection_result);
 }
-bool ImageRecognition::Predict(const std::string &image_path, bool use_detection) {
+std::vector<std::vector<float>> ImageRecognition::RecognitionPredict(const std::vector<cv::Mat> &input_image_vector) {
+  std::vector<std::vector<float>> temp_feature_vector;
+  for (const auto &input_image : input_image_vector) {
+	ClassificationFeatureResult feature_result;
+	if (!recognition_model_->Predict(input_image, feature_result)) {
+	  BREEZE_DEPLOY_LOGGER_ERROR("Image feature extraction model prediction failure.")
+	  continue;
+	}
+	temp_feature_vector.emplace_back(feature_result.feature_vector_);
+  }
+  return std::move(temp_feature_vector);
+}
+std::vector<std::vector<float>> ImageRecognition::GetFeature(const std::string &image_path, bool use_detection) {
   auto input_image = cv::imread(image_path);
   if (input_image.empty()) {
 	BREEZE_DEPLOY_LOGGER_WARN("Failed to read image. Please check if the path({}) is correct.", image_path)
-	return false;
+	return {};
   }
 
   std::vector<cv::Mat> rec_image_vector;
   if (use_detection) {
-	if (detection_model_ == nullptr) {
-	  BREEZE_DEPLOY_LOGGER_ERROR("The detection model does not exist, "
-								 "and the inference operation for the detection model cannot be executed.")
-	  return false;
-	}
 	rec_image_vector = DetectionPredict(input_image);
   } else {
 	rec_image_vector.emplace_back(input_image);
@@ -92,11 +102,14 @@ bool ImageRecognition::Predict(const std::string &image_path, bool use_detection
   if (rec_image_vector.empty()) {
 	BREEZE_DEPLOY_LOGGER_ERROR("The array for recognizing images is empty, "
 							   "possibly due to the detection model not producing output or an error in the input image path.")
-	return false;
+	return {};
   }
-  return true;
+
+  return std::move(RecognitionPredict(rec_image_vector));
 }
 bool ImageRecognition::BuildDatabase(const std::string &database_path, bool use_detection) {
+  index_system_ = std::make_unique<BreezeDeployIndex>(feature_vector_length_, "Flat");
+
   // 获取当前路径下的所有文件夹
   std::vector<std::string> database_folders = GetDatabaseFolders(database_path);
   if (database_folders.empty()) {
@@ -104,7 +117,8 @@ bool ImageRecognition::BuildDatabase(const std::string &database_path, bool use_
 	return false;
   }
 
-  for (auto &database_folder : database_folders) {
+  for (int folder_index = 0; folder_index < database_folders.size(); folder_index++) {
+	auto &database_folder = database_folders[folder_index];
 	// 获取当前文件夹下的所有图片
 	std::string database_folder_path = utils::filesystem::JoinPath({database_path, database_folder});
 	std::vector<std::string> image_file_names = GetDatabaseFiles(database_folder_path);
@@ -114,16 +128,31 @@ bool ImageRecognition::BuildDatabase(const std::string &database_path, bool use_
 	  continue;
 	}
 
-	for (auto &image_file_name : image_file_names) {
+	for (int file_index = 0; file_index < image_file_names.size(); file_index++) {
+	  auto &image_file_name = image_file_names[file_index];
+	  std::string image_file_path = utils::filesystem::JoinPath({database_folder_path, image_file_name});
+	  BREEZE_DEPLOY_LOGGER_DEBUG("Predict: [{}/{}] [{}/{}] [{}]",
+								 folder_index,
+								 database_folders.size(),
+								 file_index,
+								 image_file_names.size(),
+								 image_file_path)
 	  if (!utils::filesystem::IsImage(image_file_name)) {
 		BREEZE_DEPLOY_LOGGER_WARN("Based on the image extension, this file({}) may not be an image. "
 								  "Please modify it to an appropriate file extension.", image_file_name)
 		continue;
 	  }
 
-	  std::string image_file_path = utils::filesystem::JoinPath({database_folder_path, image_file_name});
-	  auto temp = Predict(image_file_path, use_detection);
-	  BREEZE_DEPLOY_LOGGER_DEBUG("文件: {};推理状态: {}", image_file_name, temp)
+	  auto feature_vector = GetFeature(image_file_path, use_detection);
+	  if (feature_vector.empty()) {
+		BREEZE_DEPLOY_LOGGER_WARN("No target detected in the image.")
+		continue;
+	  }
+	  if (feature_vector.size() > 1) {
+		BREEZE_DEPLOY_LOGGER_WARN("Detecting multiple objects in an image.")
+		continue;
+	  }
+	  index_system_->AddFeature(feature_vector[0], folder_index);
 	}
   }
   return true;

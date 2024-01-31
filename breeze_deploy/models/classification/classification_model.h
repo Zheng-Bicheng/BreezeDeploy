@@ -27,16 +27,20 @@ class ClassificationModel : public BreezeDeployModel {
   std::string ModelName() override { return "ClassificationModel"; }
   virtual bool Predict(const cv::Mat &input_mat, ClassificationLabelResult &label_result);
   virtual bool Predict(const cv::Mat &input_mat, ClassificationFeatureResult &label_result);
-  static double CosineSimilarity(const ClassificationFeatureResult &a,
-								const ClassificationFeatureResult &b);
+  virtual size_t GetFeatureVectorLength();
+
+  static double CosineSimilarity(const ClassificationFeatureResult &a, const ClassificationFeatureResult &b);
 
  protected:
+  // Model Initialize
+  bool ReadPostprocessYAML() override;
+  bool InitializeBackend(const BreezeDeployBackendOption &breeze_deploy_backend_option) override;
+
+
   bool Preprocess(const cv::Mat &input_mat) override;
   bool Postprocess() override;
 
   std::vector<std::string> labels_;
-
-  bool ReadPostprocessYAML() override;
   // For Softmax
   bool need_softmax_ = false;
   // For TopK

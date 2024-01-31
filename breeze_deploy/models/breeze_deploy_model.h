@@ -44,8 +44,9 @@ class BreezeDeployModel {
 
   // Model Initialize
   std::string config_file_path_;
-  bool ReadPreprocessYAML();
+  virtual bool ReadPreprocessYAML();
   virtual bool ReadPostprocessYAML() = 0;
+  virtual bool InitializeBackend(const BreezeDeployBackendOption &breeze_deploy_backend_option);
 
   // Model Preprocess
   std::vector<std::shared_ptr<BreezeDeployPreprocess>> preprocess_functions_{};
