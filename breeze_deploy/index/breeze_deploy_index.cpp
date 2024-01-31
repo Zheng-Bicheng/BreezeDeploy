@@ -12,8 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <faiss/utils/distances.h>
+#include <faiss/IndexFlat.h>
 #include "breeze_deploy/core/logger/breeze_deploy_logger.h"
 #include "breeze_deploy/index/breeze_deploy_index.h"
+#include "breeze_deploy/utils/data_process/normalize_l2/normalize_l2.h"
 
 namespace breeze_deploy {
 namespace index {
@@ -46,7 +49,14 @@ bool BreezeDeployIndex::AddFeature(const std::vector<float> &feature, const std:
 	BREEZE_DEPLOY_LOGGER_ERROR("The size of input label_id != n.")
 	return false;
   }
-  index_index_map_.add_with_ids(n, feature.data(), label_id.data());
+
+  if (use_normalize_) {
+	std::vector<float> normalize_feature = feature;
+	utils::data_process::Normalize<float>(normalize_feature);
+	index_index_map_.add_with_ids(n, normalize_feature.data(), label_id.data());
+  } else {
+	index_index_map_.add_with_ids(n, feature.data(), label_id.data());
+  }
   return true;
 }
 bool BreezeDeployIndex::SearchIndex(const std::vector<float> &feature,
@@ -62,7 +72,13 @@ bool BreezeDeployIndex::SearchIndex(const std::vector<float> &feature,
   auto n = static_cast<int64_t>(feature_size / feature_length_);
   label_id.resize(n);
   distance.resize(n);
-  index_index_map_.search(n, feature.data(), k, distance.data(), label_id.data());
+  if (use_normalize_) {
+	std::vector<float> normalize_feature = feature;
+	utils::data_process::Normalize<float>(normalize_feature);
+	index_index_map_.search(n, normalize_feature.data(), k, distance.data(), label_id.data());
+  } else {
+	index_index_map_.search(n, feature.data(), k, distance.data(), label_id.data());
+  }
   return true;
 }
 }
