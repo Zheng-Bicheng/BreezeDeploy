@@ -31,7 +31,6 @@ double CosineSimilarity(const std::vector<T> &a, const std::vector<T> &b) {
 
   Eigen::Map<const Eigen::VectorXf> eigen_vector_a(a.data(), static_cast<long>(a.size()));
   Eigen::Map<const Eigen::VectorXf> eigen_vector_b(b.data(), static_cast<long>(b.size()));
-  Eigen::VectorXd vector(10);
   return eigen_vector_a.dot(eigen_vector_b) / (eigen_vector_a.norm() * eigen_vector_b.norm());
 }
 

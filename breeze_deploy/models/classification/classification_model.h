@@ -24,13 +24,15 @@ class ClassificationModel : public BreezeDeployModel {
   ClassificationModel(const std::string &model_path, const std::string &config_file_path)
 	  : BreezeDeployModel(model_path, config_file_path) {}
   std::string ModelName() override { return "ClassificationModel"; }
-  virtual bool Predict(const cv::Mat &input_mat, ClassificationResult &label_result, size_t k, float min_confidence);
+  virtual bool Predict(const cv::Mat &input_mat,
+					   ClassificationResult &label_result,
+					   size_t k = 1,
+					   float min_confidence = 0.5);
 
  protected:
   // Model Initialize
   bool ReadPostprocessYAML() override;
   bool InitializeBackend(const BreezeDeployBackendOption &breeze_deploy_backend_option) override;
-
 
   bool Preprocess(const cv::Mat &input_mat) override;
   bool Postprocess() override;
