@@ -2,7 +2,7 @@
 
 <p align="center">
     <a href="./LICENSE"><img src="https://img.shields.io/badge/license-Apache%202-dfd.svg"></a>
-    <a href="https://github.com/Zheng-Bicheng/BreezeDeploy/releases"><img src="https://img.shields.io/badge/release-release%2F0.0.1-yellow"></a>
+    <a href="https://github.com/Zheng-Bicheng/BreezeDeploy/releases"><img src="https://img.shields.io/badge/release-release%2F0.2.0-yellow"></a>
     <a href=""><img src="https://img.shields.io/badge/os-win,linux-pink.svg"></a>
 </p>
 
