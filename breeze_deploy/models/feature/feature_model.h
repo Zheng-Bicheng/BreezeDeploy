@@ -38,6 +38,8 @@ class FeatureModel : public BreezeDeployModel {
 
   // For Softmax
   bool need_softmax_ = false;
+  // For NormalizeL2
+  bool need_normalize_l2_ = false;
 };
 }
 }

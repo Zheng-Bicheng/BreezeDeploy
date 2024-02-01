@@ -50,17 +50,11 @@ bool BreezeDeployIndex::AddFeature(const std::vector<float> &feature, const std:
 	return false;
   }
 
-  if (use_normalize_) {
-	std::vector<float> normalize_feature = feature;
-	utils::data_process::Normalize<float>(normalize_feature);
-	index_index_map_.add_with_ids(n, normalize_feature.data(), label_id.data());
-  } else {
-	index_index_map_.add_with_ids(n, feature.data(), label_id.data());
-  }
+  index_index_map_.add_with_ids(n, feature.data(), label_id.data());
   return true;
 }
 bool BreezeDeployIndex::SearchIndex(const std::vector<float> &feature,
-									int64_t k,
+									size_t k,
 									std::vector<float> &topk_distance,
 									std::vector<int64_t> &topk_label_id) {
   auto feature_size = feature.size();
@@ -69,16 +63,11 @@ bool BreezeDeployIndex::SearchIndex(const std::vector<float> &feature,
 	return false;
   }
 
-  auto n = static_cast<int64_t>(feature_size / feature_length_);
-  topk_label_id.resize(n);
-  topk_distance.resize(n);
-  if (use_normalize_) {
-	std::vector<float> normalize_feature = feature;
-	utils::data_process::Normalize<float>(normalize_feature);
-	index_index_map_.search(n, normalize_feature.data(), k, topk_distance.data(), topk_label_id.data());
-  } else {
-	index_index_map_.search(n, feature.data(), k, topk_distance.data(), topk_label_id.data());
-  }
+  auto temp_n = static_cast<int64_t>(feature_size / feature_length_);
+  topk_label_id.resize(temp_n);
+  topk_distance.resize(temp_n);
+  auto temp_k = static_cast<faiss::idx_t>(k);
+  index_index_map_.search(temp_n, feature.data(), temp_k, topk_distance.data(), topk_label_id.data());
   return true;
 }
 }

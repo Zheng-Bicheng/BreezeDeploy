@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "breeze_deploy/models/feature/feature_model.h"
+#include "breeze_deploy/utils/data_process/normalize_l2/normalize_l2.h"
 
 namespace breeze_deploy {
 namespace models {
@@ -53,12 +54,19 @@ bool FeatureModel::ReadPostprocessYAML() {
 	if (function_name == "Softmax") {
 	  auto &need_node = postprocess_function_config.begin()->second;
 	  if (!need_node) {
-		BREEZE_DEPLOY_LOGGER_ERROR("The function(TopK) must have a need(bool) node.")
+		BREEZE_DEPLOY_LOGGER_ERROR("The function(TopK) must have a value.")
 		return false;
 	  }
 	  need_softmax_ = need_node.as<bool>();
+	} else if (function_name == "NormalizeL2") {
+	  auto &need_node = postprocess_function_config.begin()->second;
+	  if (!need_node) {
+		BREEZE_DEPLOY_LOGGER_ERROR("The function(NormalizeL2) must have a value.")
+		return false;
+	  }
+	  need_normalize_l2_ = need_node.as<bool>();
 	} else {
-	  BREEZE_DEPLOY_LOGGER_ERROR("The postprocess name only supports [Softmax], "
+	  BREEZE_DEPLOY_LOGGER_ERROR("The postprocess name only supports [NormalizeL2, Softmax], "
 								 "but now it is called {}.", function_name)
 	  return false;
 	}
@@ -108,6 +116,10 @@ bool FeatureModel::Predict(const cv::Mat &input_mat, FeatureResult &label_result
   auto tensor_data_ptr = reinterpret_cast<float *>(tensor.GetTensorDataPointer());
   auto tensor_data_size = tensor.GetTensorSize();
   label_result.feature_vector = std::vector<float>(tensor_data_ptr, tensor_data_ptr + tensor_data_size);
+  if (need_normalize_l2_){
+	utils::data_process::NormalizeL2(label_result.feature_vector);
+  }
+
   return true;
 }
 size_t FeatureModel::GetFeatureLength() {

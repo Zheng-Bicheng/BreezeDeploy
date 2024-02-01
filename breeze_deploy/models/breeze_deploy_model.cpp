@@ -102,7 +102,7 @@ bool BreezeDeployModel::ReadPreprocessYAML() {
 																  target_scalar_size));
 	} else {
 	  BREEZE_DEPLOY_LOGGER_ERROR(
-		  "The preprocess function name only supports [Resize, BGRToRGB, Normalize, HWCToCHW, LetterBox], "
+		  "The preprocess function name only supports [Resize, BGRToRGB, NormalizeL2, HWCToCHW, LetterBox], "
 		  "but now it is called {}.",
 		  function_name)
 	  return false;

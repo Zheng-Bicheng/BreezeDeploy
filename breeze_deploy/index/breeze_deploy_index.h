@@ -35,11 +35,9 @@ class BreezeDeployIndex {
   BreezeDeployIndex(int feature_length,
 					const std::string &description,
 					BreezeDeployIndexMetricType metric = BreezeDeployIndexMetricType::METRIC_INNER_PRODUCT);
-  void SetUseNormalize(bool use_normalize) { use_normalize_ = use_normalize; }
-  bool GetUseNormalize() { return use_normalize_; }
   bool AddFeature(const std::vector<float> &feature, const std::vector<int64_t> &label_id);
   bool SearchIndex(const std::vector<float> &feature,
-				   int64_t k,
+				   size_t k,
 				   std::vector<float> &topk_distance,
 				   std::vector<int64_t> &topk_label_id);
  private:
@@ -48,7 +46,6 @@ class BreezeDeployIndex {
   BreezeDeployIndexMetricType metric_;
   std::unique_ptr<faiss::Index> faiss_index_;
   faiss::IndexIDMap index_index_map_;
-  bool use_normalize_ = true;
 };
 }
 }
