@@ -24,7 +24,7 @@ class ClassificationModel : public BreezeDeployModel {
   ClassificationModel(const std::string &model_path, const std::string &config_file_path)
 	  : BreezeDeployModel(model_path, config_file_path) {}
   std::string ModelName() override { return "ClassificationModel"; }
-  virtual bool Predict(const cv::Mat &input_mat, ClassificationResult &label_result);
+  virtual bool Predict(const cv::Mat &input_mat, ClassificationResult &label_result, size_t k, float min_confidence);
 
  protected:
   // Model Initialize
@@ -37,10 +37,6 @@ class ClassificationModel : public BreezeDeployModel {
 
   // For Softmax
   bool need_softmax_ = false;
-  // For TopK
-  size_t k_ = 0;
-  float min_confidence_ = 0;
-  bool need_topk_ = false;
 };
 }
 }

@@ -24,8 +24,3 @@ postprocess:
   # You also need to apply the Softmax operation to the top K elements.
   - Softmax:
       need: false
-  # Select the top K elements with the highest confidence from the model's output.
-  - TopK:
-      need: true
-      min_confidence: 0.5
-      k: 5

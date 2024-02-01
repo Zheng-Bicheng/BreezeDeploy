@@ -51,28 +51,7 @@ bool ClassificationModel::ReadPostprocessYAML() {
   // Traverse postprocess root node branches
   for (const auto &postprocess_function_config : postprocess_config) {
 	auto function_name = postprocess_function_config.begin()->first.as<std::string>();
-	if (function_name == "TopK") {
-	  auto &need_node = postprocess_function_config.begin()->second["need"];
-	  if (!need_node) {
-		BREEZE_DEPLOY_LOGGER_ERROR("The function(TopK) must have a need(bool) node.")
-		return false;
-	  }
-	  need_topk_ = need_node.as<bool>();
-
-	  auto &k_node = postprocess_function_config.begin()->second["k"];
-	  if (!k_node) {
-		BREEZE_DEPLOY_LOGGER_ERROR("The function(TopK) must have a k(size_t) node.")
-		return false;
-	  }
-	  k_ = k_node.as<size_t>();
-
-	  auto &min_confidence_node = postprocess_function_config.begin()->second["min_confidence"];
-	  if (!min_confidence_node) {
-		BREEZE_DEPLOY_LOGGER_ERROR("The function(TopK) must have a min_confidence(float) node.")
-		return false;
-	  }
-	  min_confidence_ = min_confidence_node.as<float>();
-	} else if (function_name == "Softmax") {
+	if (function_name == "Softmax") {
 	  auto &need_node = postprocess_function_config.begin()->second["need"];
 	  if (!need_node) {
 		BREEZE_DEPLOY_LOGGER_ERROR("The function(TopK) must have a need(bool) node.")
@@ -80,7 +59,7 @@ bool ClassificationModel::ReadPostprocessYAML() {
 	  }
 	  need_softmax_ = need_node.as<bool>();
 	} else {
-	  BREEZE_DEPLOY_LOGGER_ERROR("The postprocess name only supports [TopK,Softmax], "
+	  BREEZE_DEPLOY_LOGGER_ERROR("The postprocess name only supports [Softmax], "
 								 "but now it is called {}.", function_name)
 	  return false;
 	}
@@ -120,7 +99,10 @@ bool ClassificationModel::Postprocess() {
   }
   return true;
 }
-bool ClassificationModel::Predict(const cv::Mat &input_mat, ClassificationResult &classification_result) {
+bool ClassificationModel::Predict(const cv::Mat &input_mat,
+								  ClassificationResult &classification_result,
+								  size_t k,
+								  float min_confidence) {
   auto result_predict = BreezeDeployModel::Predict(input_mat);
   if (!result_predict) {
 	return false;
@@ -130,11 +112,10 @@ bool ClassificationModel::Predict(const cv::Mat &input_mat, ClassificationResult
   classification_result.Clear();
 
   // 先判断是否需要进行TopK
-  if (need_topk_) {
-	auto result_topk = utils::data_process::TopK<float>(output_tensor_vector_[0], classification_result, k_, min_confidence_);
-	if (!result_topk) {
-	  return false;
-	}
+  auto result_topk =
+	  utils::data_process::TopK<float>(output_tensor_vector_[0], classification_result, k, min_confidence);
+  if (!result_topk) {
+	return false;
   }
   return true;
 }
