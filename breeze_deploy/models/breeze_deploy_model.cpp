@@ -121,6 +121,16 @@ bool BreezeDeployModel::InitializeBackend(const BreezeDeployBackendOption &breez
   }
   input_tensor_vector_.resize(breeze_deploy_backend_->GetInputTensorSize());
   output_tensor_vector_.resize(breeze_deploy_backend_->GetOutputTensorSize());
+
+  for (auto &tensor_info : breeze_deploy_backend_->GetOutputTensorInfo()) {
+	auto input_batch = tensor_info.tensor_shape[0];
+	if (input_batch != 1 && input_batch != -1) {
+	  BREEZE_DEPLOY_LOGGER_ERROR(
+		  "The current classification model only supports input and output vectors with a batch of 1. However, the batch is {}.",
+		  input_batch)
+	  return false;
+	}
+  }
   return true;
 }
 bool BreezeDeployModel::Initialize(const BreezeDeployBackendOption &breeze_deploy_backend_option) {

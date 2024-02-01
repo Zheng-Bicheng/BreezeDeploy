@@ -16,35 +16,19 @@
 #define BREEZE_DEPLOY_MODELS_CLASSIFICATION_CLASSIFICATION_MODEL_H_
 #include <utility>
 #include "breeze_deploy/models/breeze_deploy_model.h"
+#include "breeze_deploy/core/result/breeze_deploy_result.h"
 namespace breeze_deploy {
 namespace models {
-struct ClassificationFeatureResult {
-  size_t GetSize() { return feature_vector_.size(); }
-  std::vector<float> feature_vector_;
-};
-struct ClassificationLabelResult {
-  std::vector<std::string> label_name_vector;
-  std::vector<int64_t> label_id_vector;
-  std::vector<float> confidence_vector;
-  void Clear() {
-	label_name_vector.clear();
-	label_id_vector.clear();
-	confidence_vector.clear();
-  }
-  size_t GetSize() { return label_id_vector.size(); }
-};
 class ClassificationModel : public BreezeDeployModel {
  public:
   ClassificationModel(const std::string &model_path, const std::string &config_file_path)
 	  : BreezeDeployModel(model_path, config_file_path) {}
-  bool ReadLabelFile(const std::string &label_file_path);
   std::string ModelName() override { return "ClassificationModel"; }
-  virtual bool Predict(const cv::Mat &input_mat, ClassificationLabelResult &label_result);
-  virtual bool Predict(const cv::Mat &input_mat, ClassificationFeatureResult &label_result);
+  virtual bool Predict(const cv::Mat &input_mat, ClassificationResult &label_result);
   virtual size_t GetFeatureVectorLength();
-
-  static double CosineSimilarity(const ClassificationFeatureResult &a, const ClassificationFeatureResult &b);
-
+#if 0
+  static double CosineSimilarity(const ClassificationResult &a, const ClassificationResult &b);
+#endif
  protected:
   // Model Initialize
   bool ReadPostprocessYAML() override;
@@ -54,7 +38,6 @@ class ClassificationModel : public BreezeDeployModel {
   bool Preprocess(const cv::Mat &input_mat) override;
   bool Postprocess() override;
 
-  std::vector<std::string> labels_;
   // For Softmax
   bool need_softmax_ = false;
   // For TopK

@@ -66,7 +66,7 @@ bool YOLOV5::Predict(const cv::Mat &input_mat, DetectionResult &result_without_l
   for (int index : index_vector) {
 	result_without_landmark.label_id_vector.emplace_back(temp_class_id_vector[index]);
 	result_without_landmark.rect_vector.emplace_back(temp_box_vector[index]);
-	result_without_landmark.label_confidence_vector.emplace_back(temp_confidence_vector[index]);
+	result_without_landmark.confidence_vector.emplace_back(temp_confidence_vector[index]);
   }
 
   // 恢复box到原坐标

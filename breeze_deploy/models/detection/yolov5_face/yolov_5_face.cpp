@@ -77,7 +77,7 @@ bool YOLOV5Face::Predict(const cv::Mat &input_mat, DetectionResult &result_with_
   for (int index : index_vector) {
 	result_with_landmark.label_id_vector.emplace_back(temp_class_id_vector[index]);
 	result_with_landmark.rect_vector.emplace_back(temp_box_vector[index]);
-	result_with_landmark.label_confidence_vector.emplace_back(temp_confidence_vector[index]);
+	result_with_landmark.confidence_vector.emplace_back(temp_confidence_vector[index]);
 	result_with_landmark.landmarks_vector.emplace_back(temp_landmark_vector[index]);
   }
 

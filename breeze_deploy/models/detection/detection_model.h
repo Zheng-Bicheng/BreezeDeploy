@@ -16,24 +16,9 @@
 #define BREEZE_DEPLOY_MODELS_DETECTION_DETECTION_MODEL_H_
 #include <utility>
 #include "breeze_deploy/models/breeze_deploy_model.h"
+#include "breeze_deploy/core/result/breeze_deploy_result.h"
 namespace breeze_deploy {
 namespace models {
-struct DetectionResult {
-  DetectionResult() = default;
-  virtual void Clear() {
-	label_id_vector.clear();
-	label_confidence_vector.clear();
-	rect_vector.clear();
-	landmarks_vector.clear();
-  }
-  bool Empty() const { return label_id_vector.empty(); }
-  size_t GetSize() const { return label_id_vector.size(); }
-  std::vector<int64_t> label_id_vector; // The 'indices' parameter of the cv::dnn::NMSBoxes() requires a std::vector<int>
-  std::vector<std::string> label_name;
-  std::vector<float> label_confidence_vector;
-  std::vector<cv::Rect> rect_vector;
-  std::vector<std::vector<cv::Point>> landmarks_vector;
-};
 class DetectionModel : public BreezeDeployModel {
  public:
   DetectionModel(const std::string &model_path, const std::string &config_file_path)

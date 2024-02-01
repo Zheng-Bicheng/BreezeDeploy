@@ -36,7 +36,10 @@ class BreezeDeployTensor {
   void SetTensorData(uint8_t *tensor_data_ptr,
 					 const std::vector<int64_t> &tensor_shape,
 					 BreezeDeployTensorDataType tensor_data_type);
+
   uint8_t *GetTensorDataPointer();
+  const uint8_t *GetConstTensorDataPointer() const;
+
   size_t GetTensorSize() const;
   size_t GetTensorDataByteSize() const;
   const BreezeDeployTensorInfo &GetTensorInfo();

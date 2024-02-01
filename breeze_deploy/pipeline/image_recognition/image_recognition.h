@@ -23,12 +23,7 @@
 namespace breeze_deploy {
 namespace models {
 using namespace breeze_deploy::index;
-struct ImageRecognitionResult {
-  // Detection Result
-  DetectionResult detection_result;
-  // Classification Result
-  ClassificationLabelResult classification_label_result;
-};
+#if 0
 class ImageRecognition {
  public:
   explicit ImageRecognition(std::unique_ptr<ClassificationModel> recognition_model,
@@ -54,6 +49,7 @@ class ImageRecognition {
   std::vector<std::vector<float>> GetFeature(const std::string &image_path, bool use_detection);
   std::vector<std::vector<float>> GetFeature(const cv::Mat &input_image, bool use_detection);
 };
+#endif
 }
 }
 #endif //BREEZE_DEPLOY_PIPELINE_IMAGE_RECOGNITION_IMAGE_RECOGNITION_H_

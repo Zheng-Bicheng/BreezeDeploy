@@ -19,6 +19,7 @@
 #include "breeze_deploy/utils/image_process/crop/crop.h"
 namespace breeze_deploy {
 namespace models {
+#if 0
 ImageRecognition::ImageRecognition(std::unique_ptr<ClassificationModel> recognition_model,
 								   std::unique_ptr<DetectionModel> detection_model)
 	: detection_model_{std::move(detection_model)}, recognition_model_{std::move(recognition_model)} {
@@ -83,12 +84,12 @@ std::vector<cv::Mat> ImageRecognition::DetectionPredict(const cv::Mat &input_ima
 std::vector<std::vector<float>> ImageRecognition::RecognitionPredict(const std::vector<cv::Mat> &input_image_vector) {
   std::vector<std::vector<float>> temp_feature_vector;
   for (const auto &input_image : input_image_vector) {
-	ClassificationFeatureResult feature_result;
+	ClassificationResult feature_result;
 	if (!recognition_model_->Predict(input_image, feature_result)) {
 	  BREEZE_DEPLOY_LOGGER_ERROR("Image feature extraction model prediction failure.")
 	  continue;
 	}
-	temp_feature_vector.emplace_back(feature_result.feature_vector_);
+	temp_feature_vector.emplace_back(feature_result.feature_vector);
   }
   return std::move(temp_feature_vector);
 }
@@ -204,11 +205,12 @@ bool ImageRecognition::Predict(const cv::Mat &image,
   for (auto &feature : feature_vector) {
 	index_system_->SearchIndex(feature,
 							   1,
-							   classification_label_result.confidence_vector,
+							   classification_label_result.topk_confidence_vector,
 							   classification_label_result.label_id_vector);
   }
   return true;
 }
+#endif
 }
 }
 

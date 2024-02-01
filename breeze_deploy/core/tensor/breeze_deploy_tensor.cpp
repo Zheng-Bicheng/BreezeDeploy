@@ -32,6 +32,9 @@ void BreezeDeployTensor::SetTensorData(uint8_t *tensor_data_ptr,
 uint8_t *BreezeDeployTensor::GetTensorDataPointer() {
   return tensor_data_ptr_;
 }
+const uint8_t *BreezeDeployTensor::GetConstTensorDataPointer() const {
+  return tensor_data_ptr_;
+}
 size_t BreezeDeployTensor::GetTensorSize() const {
   return tensor_data_ptr_size_;
 }

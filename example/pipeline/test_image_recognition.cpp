@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if 0
 #include <iostream>
 #include <string>
 #include "breeze_deploy/core/time/breeze_deploy_time.h"
@@ -63,3 +64,4 @@ int main(int argc, char *argv[]) {
   }
   return 0;
 }
+#endif

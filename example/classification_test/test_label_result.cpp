@@ -34,14 +34,15 @@ int main(int argc, char *argv[]) {
 	std::cout << "模型初始化失败" << std::endl;
 	return 1;
   }
+
+  // TODO: Read label
   std::string label_file_path = argv[4];
-  label_model.ReadLabelFile(label_file_path);
 
   std::string image_path = argv[3];
   auto mat = cv::imread(image_path);
   BreezeDeployTime cost;
   cost.Start();
-  ClassificationLabelResult result;
+  ClassificationResult result;
   for (int i = 0; i < 100; ++i) {
 	if (!label_model.Predict(mat, result)) {
 	  std::cout << "模型推理失败" << std::endl;
@@ -53,8 +54,7 @@ int main(int argc, char *argv[]) {
 
   printf("TopK: %zu\n", result.GetSize());
   for (int i = 0; i < result.GetSize(); ++i) {
-	printf("Label ID is %zu, Label name is %s, confidence is %f\n",
-		   result.label_id_vector[i], result.label_name_vector[i].c_str(), result.confidence_vector[i]);
+	printf("Label ID is %lld, confidence is %f\n", result.label_id_vector[i], result.topk_confidence_vector[i]);
   }
   return 0;
 }
