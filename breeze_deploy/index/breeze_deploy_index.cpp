@@ -61,8 +61,8 @@ bool BreezeDeployIndex::AddFeature(const std::vector<float> &feature, const std:
 }
 bool BreezeDeployIndex::SearchIndex(const std::vector<float> &feature,
 									int64_t k,
-									std::vector<float> &distance,
-									std::vector<int64_t> &label_id) {
+									std::vector<float> &topk_distance,
+									std::vector<int64_t> &topk_label_id) {
   auto feature_size = feature.size();
   if (feature_size % feature_length_ != 0) {
 	BREEZE_DEPLOY_LOGGER_ERROR("The size of input feature is error.")
@@ -70,14 +70,14 @@ bool BreezeDeployIndex::SearchIndex(const std::vector<float> &feature,
   }
 
   auto n = static_cast<int64_t>(feature_size / feature_length_);
-  label_id.resize(n);
-  distance.resize(n);
+  topk_label_id.resize(n);
+  topk_distance.resize(n);
   if (use_normalize_) {
 	std::vector<float> normalize_feature = feature;
 	utils::data_process::Normalize<float>(normalize_feature);
-	index_index_map_.search(n, normalize_feature.data(), k, distance.data(), label_id.data());
+	index_index_map_.search(n, normalize_feature.data(), k, topk_distance.data(), topk_label_id.data());
   } else {
-	index_index_map_.search(n, feature.data(), k, distance.data(), label_id.data());
+	index_index_map_.search(n, feature.data(), k, topk_distance.data(), topk_label_id.data());
   }
   return true;
 }

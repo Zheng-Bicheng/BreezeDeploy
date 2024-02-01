@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
 
   printf("TopK: %zu\n", result.GetSize());
   for (int i = 0; i < result.GetSize(); ++i) {
-	printf("Label ID is %lld, confidence is %f\n", result.label_id_vector[i], result.topk_confidence_vector[i]);
+	printf("Label ID is %lld, confidence is %f\n", result.topk_label_id_vector[i], result.topk_confidence_vector[i]);
   }
   return 0;
 }

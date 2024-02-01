@@ -40,8 +40,8 @@ class BreezeDeployIndex {
   bool AddFeature(const std::vector<float> &feature, const std::vector<int64_t> &label_id);
   bool SearchIndex(const std::vector<float> &feature,
 				   int64_t k,
-				   std::vector<float> &distance,
-				   std::vector<int64_t> &label_id);
+				   std::vector<float> &topk_distance,
+				   std::vector<int64_t> &topk_label_id);
  private:
   int feature_length_ = 0;
   std::string description_;

@@ -73,7 +73,7 @@ bool TopK(const BreezeDeployTensor &input_tensor,
 		  T min_confidence) {
   return TopK(input_tensor.GetConstTensorDataPointer(),
 			  input_tensor.GetTensorSize(),
-			  classification_result.label_id_vector,
+			  classification_result.topk_label_id_vector,
 			  classification_result.topk_confidence_vector,
 			  k,
 			  min_confidence);

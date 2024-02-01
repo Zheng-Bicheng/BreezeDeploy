@@ -17,28 +17,30 @@
 
 #include <utility>
 #include "breeze_deploy/index/breeze_deploy_index.h"
-#include "breeze_deploy/models/classification/classification_model.h"
+#include "breeze_deploy/models/feature/feature_model.h"
 #include "breeze_deploy/models/detection/detection_model.h"
 
 namespace breeze_deploy {
 namespace models {
 using namespace breeze_deploy::index;
-#if 0
 class ImageRecognition {
  public:
-  explicit ImageRecognition(std::unique_ptr<ClassificationModel> recognition_model,
+  explicit ImageRecognition(std::unique_ptr<FeatureModel> recognition_model,
 							std::unique_ptr<DetectionModel> detection_model = nullptr);
   bool Initialize(const BreezeDeployBackendOption &rec_option = BreezeDeployBackendOption(),
 				  const BreezeDeployBackendOption &det_option = BreezeDeployBackendOption());
   bool BuildDatabase(const std::string &database_path, bool use_detection = true);
-  bool Predict(const cv::Mat &image, ImageRecognitionResult &image_recognition_result, bool use_detection = true);
+  bool Predict(const cv::Mat &image,
+			   ImageRecognitionResult &image_recognition_result,
+			   size_t k = 1,
+			   bool use_detection = true);
 
  private:
   std::unique_ptr<DetectionModel> detection_model_;
-  std::unique_ptr<ClassificationModel> recognition_model_;
+  std::unique_ptr<FeatureModel> recognition_model_;
   std::unique_ptr<BreezeDeployIndex> index_system_;
 
-  int feature_vector_length_ = 0;
+  size_t feature_vector_length_ = 0;
 
   // 用于获取数据库文件夹
   std::vector<std::string> GetDatabaseFolders(const std::string &database_path);
@@ -49,7 +51,6 @@ class ImageRecognition {
   std::vector<std::vector<float>> GetFeature(const std::string &image_path, bool use_detection);
   std::vector<std::vector<float>> GetFeature(const cv::Mat &input_image, bool use_detection);
 };
-#endif
 }
 }
 #endif //BREEZE_DEPLOY_PIPELINE_IMAGE_RECOGNITION_IMAGE_RECOGNITION_H_

@@ -12,11 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if 0
 #include <iostream>
 #include <string>
 #include "breeze_deploy/core/time/breeze_deploy_time.h"
-#include "breeze_deploy/models/classification/arcface/arc_face.h"
+#include "breeze_deploy/models/feature/feature_model.h"
 #include "breeze_deploy/models/detection/yolov5_face/yolov_5_face.h"
 #include "breeze_deploy/pipeline/image_recognition/image_recognition.h"
 
@@ -38,7 +37,7 @@ int main(int argc, char *argv[]) {
   std::string config_det_path = argv[2];
   std::string model_cls_path = argv[3];
   std::string config_cls_path = argv[4];
-  auto image_recognition = ImageRecognition(std::make_unique<ArcFace>(model_cls_path, config_cls_path),
+  auto image_recognition = ImageRecognition(std::make_unique<FeatureModel>(model_cls_path, config_cls_path),
 											std::make_unique<YOLOV5Face>(model_det_path, config_det_path)
   );
 
@@ -54,14 +53,15 @@ int main(int argc, char *argv[]) {
   std::string image_path = argv[6];
   auto mat = cv::imread(image_path);
   ImageRecognitionResult image_recognition_result;
-  image_recognition.Predict(mat, image_recognition_result, false);
+  image_recognition.Predict(mat, image_recognition_result, 1, false);
 
-  auto &classification_label_result = image_recognition_result.classification_label_result;
-  for (int i = 0; i < classification_label_result.GetSize(); ++i) {
-	printf("label_id: %lld, label_confidence: %f\n",
-		   classification_label_result.label_id_vector[i],
-		   classification_label_result.confidence_vector[i]);
+  auto &classification_results = image_recognition_result.classification_results;
+  for (auto &classification_result : classification_results) {
+	for (int k = 0; k < classification_result.topk_label_id_vector.size(); k++) {
+	  printf("label_id: %lld, label_confidence: %f\n",
+			 classification_result.topk_label_id_vector[k],
+			 classification_result.topk_confidence_vector[k]);
+	}
   }
   return 0;
 }
-#endif

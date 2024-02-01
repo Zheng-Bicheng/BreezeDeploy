@@ -18,13 +18,13 @@
 namespace breeze_deploy {
 namespace models {
 struct ClassificationResult {
-  std::vector<int64_t> label_id_vector;
+  std::vector<int64_t> topk_label_id_vector;
   std::vector<float> topk_confidence_vector;
 
-  size_t GetSize() const { return label_id_vector.size(); }
-  bool Empty() const { return label_id_vector.empty(); }
+  size_t GetSize() const { return topk_label_id_vector.size(); }
+  bool Empty() const { return topk_label_id_vector.empty(); }
   void Clear() {
-	label_id_vector.clear();
+	topk_label_id_vector.clear();
 	topk_confidence_vector.clear();
   }
 };
@@ -53,13 +53,13 @@ struct ImageRecognitionResult {
   DetectionResult detection_result;
 
   // 一个DetectionResult内有多个目标，每个目标都有一个ClassificationResult结果
-  std::vector<ClassificationResult> classification_label_result;
+  std::vector<ClassificationResult> classification_results;
 
   size_t GetSize() const { return detection_result.label_id_vector.size(); }
   bool Empty() const { return detection_result.label_id_vector.empty(); }
   void Clear() {
 	detection_result.Clear();
-	classification_label_result.clear();
+	classification_results.clear();
   }
 };
 }
