@@ -7,8 +7,8 @@ add_executable(test_label_result classification_test/test_label_result.cpp)
 target_link_libraries(test_label_result breeze_deploy ${OpenCV_LIBS})
 list(APPEND INSTALL_APP_LIST test_label_result)
 
-# test_label_result
-add_executable(test_feature_result classification_test/test_feature_result.cpp)
+# test_feature_result
+add_executable(test_feature_result feature_test/test_feature_result.cpp)
 target_link_libraries(test_feature_result breeze_deploy ${OpenCV_LIBS})
 list(APPEND INSTALL_APP_LIST test_feature_result)
 
@@ -23,7 +23,7 @@ target_link_libraries(test_yolov5_face breeze_deploy ${OpenCV_LIBS})
 list(APPEND INSTALL_APP_LIST test_yolov5_face)
 
 # test_image_recognition
-add_executable(test_image_recognition pipeline/test_image_recognition.cpp)
+add_executable(test_image_recognition pipeline_test/test_image_recognition.cpp)
 target_link_libraries(test_image_recognition breeze_deploy ${OpenCV_LIBS})
 list(APPEND INSTALL_APP_LIST test_image_recognition)
 
