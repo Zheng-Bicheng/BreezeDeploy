@@ -24,7 +24,7 @@ class Resnet : public ClassificationModel {
  public:
   Resnet(const std::string &model_path, const std::string &config_file_path)
 	  : ClassificationModel(model_path, config_file_path) {};
-  std::string ModelName() override { return "Resnet"; }
+  std::string ModelName() override { return "ResnetClassification"; }
 };
 }
 }

@@ -21,7 +21,7 @@ class GhostNet : public ClassificationModel {
  public:
   GhostNet(const std::string &model_path, const std::string &config_file_path)
 	  : ClassificationModel(model_path, config_file_path) {};
-  std::string ModelName() override { return "GhostNet"; }
+  std::string ModelName() override { return "GhostNetClassification"; }
 };
 }
 }
