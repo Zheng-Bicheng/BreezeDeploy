@@ -14,13 +14,14 @@
 #include <iostream>
 #include <string>
 #include "breeze_deploy/core/time/breeze_deploy_time.h"
-#include "breeze_deploy/models/classification/arcface/arc_face.h"
+#include "breeze_deploy/models/feature/arcface/arc_face.h"
+#include "breeze_deploy/utils/data_process/cosine_similarity/cosine_similarity.h"
 
 using namespace breeze_deploy;
 using namespace breeze_deploy::models;
 using cv::imread;
 
-bool InferByONNX(ArcFace &arc_face, const std::string &image_path, ClassificationFeatureResult &result) {
+bool InferByONNX(ArcFace &arc_face, const std::string &image_path, FeatureResult &result) {
   auto image = cv::imread(image_path);
   BreezeDeployTime cost;
   cost.Start();
@@ -49,10 +50,10 @@ int main(int argc, char *argv[]) {
 	return 1;
   }
 
-  ClassificationFeatureResult result0, result1;
+  FeatureResult result0, result1;
   InferByONNX(feature_model, argv[3], result0);
   InferByONNX(feature_model, argv[4], result1);
 
-  printf("相似度为: %lf\n", ClassificationModel::CosineSimilarity(result0, result1));
+  printf("相似度为: %lf\n", utils::data_process::CosineSimilarity(result0, result1));
   return 0;
 }

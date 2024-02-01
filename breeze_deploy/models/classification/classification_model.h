@@ -25,10 +25,7 @@ class ClassificationModel : public BreezeDeployModel {
 	  : BreezeDeployModel(model_path, config_file_path) {}
   std::string ModelName() override { return "ClassificationModel"; }
   virtual bool Predict(const cv::Mat &input_mat, ClassificationResult &label_result);
-  virtual size_t GetFeatureVectorLength();
-#if 0
-  static double CosineSimilarity(const ClassificationResult &a, const ClassificationResult &b);
-#endif
+
  protected:
   // Model Initialize
   bool ReadPostprocessYAML() override;

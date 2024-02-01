@@ -138,57 +138,5 @@ bool ClassificationModel::Predict(const cv::Mat &input_mat, ClassificationResult
   }
   return true;
 }
-#if 0
-bool ClassificationModel::Predict(const cv::Mat &input_mat, ClassificationFeatureResult &label_result) {
-  auto result_predict = BreezeDeployModel::Predict(input_mat);
-  if (!result_predict) {
-	return false;
-  }
-
-  auto &tensor = output_tensor_vector_[0];
-  auto tensor_data_ptr = reinterpret_cast<float *>(tensor.GetTensorDataPointer());
-  auto tensor_data_size = tensor.GetTensorSize();
-  label_result.feature_vector = std::vector<float>(tensor_data_ptr, tensor_data_ptr + tensor_data_size);
-  return true;
-}
-double ClassificationModel::CosineSimilarity(const ClassificationFeatureResult &a,
-											 const ClassificationFeatureResult &b) {
-  if (a.feature_vector.size() != b.feature_vector.size()) {
-	BREEZE_DEPLOY_LOGGER_ERROR(
-		"The size of Vector A and B must be equal. The size of vector A is {}, while the size of vector B is also {}.",
-		a.feature_vector.size(),
-		b.feature_vector.size())
-	return 0;
-  }
-
-  if ((a.feature_vector.empty()) || (b.feature_vector.empty())) {
-	BREEZE_DEPLOY_LOGGER_ERROR(
-		"The size of vectors A and B must be greater than 0. The size of vector A is {}, while the size of vector B is also {}.",
-		a.feature_vector.size(),
-		b.feature_vector.size())
-	return 0;
-  }
-
-  auto feature_vector_a = a.feature_vector;
-  auto feature_vector_b = b.feature_vector;
-  Eigen::Map<Eigen::VectorXf> eigen_vector_a(feature_vector_a.data(), static_cast<long>(feature_vector_a.size()));
-  Eigen::Map<Eigen::VectorXf> eigen_vector_b(feature_vector_b.data(), static_cast<long>(feature_vector_b.size()));
-  return eigen_vector_a.dot(eigen_vector_b) / (eigen_vector_a.norm() * eigen_vector_b.norm());
-}
-#endif
-size_t ClassificationModel::GetFeatureVectorLength() {
-  if (breeze_deploy_backend_ == nullptr) {
-	BREEZE_DEPLOY_LOGGER_ERROR("This model uses a null pointer for the inference backend. "
-							   "Please check if the model backend has been initialized.")
-	return false;
-  }
-  auto tensor_info = breeze_deploy_backend_->GetOutputTensorInfo()[0];
-
-  size_t tensor_length = 1;
-  for (auto shape : tensor_info.tensor_shape) {
-	tensor_length *= shape;
-  }
-  return tensor_length;
-}
 }
 }
