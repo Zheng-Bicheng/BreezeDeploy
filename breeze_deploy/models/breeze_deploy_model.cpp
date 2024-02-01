@@ -15,7 +15,7 @@
 #include <yaml-cpp/yaml.h>
 
 #include "breeze_deploy/backends/onnx_backend/onnx_backend.h"
-#include "breeze_deploy/core/breeze_deploy_logger.h"
+#include "breeze_deploy/core/logger/breeze_deploy_logger.h"
 #include "breeze_deploy/models/breeze_deploy_model.h"
 
 namespace breeze_deploy {
@@ -102,9 +102,32 @@ bool BreezeDeployModel::ReadPreprocessYAML() {
 																  target_scalar_size));
 	} else {
 	  BREEZE_DEPLOY_LOGGER_ERROR(
-		  "The preprocess function name only supports [Resize, BGRToRGB, Normalize, HWCToCHW, LetterBox], "
+		  "The preprocess function name only supports [Resize, BGRToRGB, NormalizeL2, HWCToCHW, LetterBox], "
 		  "but now it is called {}.",
 		  function_name)
+	  return false;
+	}
+  }
+  return true;
+}
+bool BreezeDeployModel::InitializeBackend(const BreezeDeployBackendOption &breeze_deploy_backend_option) {
+  breeze_deploy_backend_option_ = breeze_deploy_backend_option;
+  breeze_deploy_backend_option_.SetModelPath(model_path_);
+  breeze_deploy_backend_ = std::make_unique<ONNXBackend>();
+  auto result_init = breeze_deploy_backend_->Initialize(breeze_deploy_backend_option_);
+  if (!result_init) {
+	BREEZE_DEPLOY_LOGGER_ERROR("Failed to initialize backend.")
+	return false;
+  }
+  input_tensor_vector_.resize(breeze_deploy_backend_->GetInputTensorSize());
+  output_tensor_vector_.resize(breeze_deploy_backend_->GetOutputTensorSize());
+
+  for (auto &tensor_info : breeze_deploy_backend_->GetOutputTensorInfo()) {
+	auto input_batch = tensor_info.tensor_shape[0];
+	if (input_batch != 1 && input_batch != -1) {
+	  BREEZE_DEPLOY_LOGGER_ERROR(
+		  "The current classification model only supports input and output vectors with a batch of 1. However, the batch is {}.",
+		  input_batch)
 	  return false;
 	}
   }
@@ -124,19 +147,18 @@ bool BreezeDeployModel::Initialize(const BreezeDeployBackendOption &breeze_deplo
   }
 
   // Copy backend option and set model_path.
-  breeze_deploy_backend_option_ = breeze_deploy_backend_option;
-  breeze_deploy_backend_option_.SetModelPath(model_path_);
-  breeze_deploy_backend_ = std::make_unique<ONNXBackend>();
-  auto result_init = breeze_deploy_backend_->Initialize(breeze_deploy_backend_option_);
-  if(!result_init){
+  if (!InitializeBackend(breeze_deploy_backend_option)) {
 	BREEZE_DEPLOY_LOGGER_ERROR("Failed to initialize backend.")
 	return false;
   }
-  input_tensor_vector_.resize(breeze_deploy_backend_->GetInputTensorSize());
-  output_tensor_vector_.resize(breeze_deploy_backend_->GetOutputTensorSize());
   return true;
 }
 bool BreezeDeployModel::Infer() {
+  if (breeze_deploy_backend_ == nullptr) {
+	BREEZE_DEPLOY_LOGGER_ERROR("This model uses a null pointer for the inference backend. "
+							   "Please check if the model backend has been initialized.")
+	return false;
+  }
   return breeze_deploy_backend_->Infer(input_tensor_vector_, output_tensor_vector_);
 }
 bool BreezeDeployModel::Predict(const cv::Mat &input_mat) {

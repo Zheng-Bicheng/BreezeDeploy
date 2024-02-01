@@ -20,12 +20,6 @@ preprocess:
 # After the inference, we obtain an output vector of [1, 1000], and we need to perform post-processing on the vector.
 # The following parameters are for post-processing.
 postprocess:
-  # Select the top K elements with the highest confidence from the model's output.
-  - TopK:
-      need: true
-      min_confidence: 0.5
-      k: 5
   # If the Softmax operator is missing from your model's output, the top K elements may not represent confidence.
   # You also need to apply the Softmax operation to the top K elements.
-  - Softmax:
-      need: false
+  - Softmax: true

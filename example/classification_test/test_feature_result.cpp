@@ -13,14 +13,15 @@
 // limitations under the License.
 #include <iostream>
 #include <string>
-#include "breeze_deploy/core/breeze_deploy_time.h"
-#include "breeze_deploy/models/classification/arcface/arc_face.h"
+#include "breeze_deploy/core/time/breeze_deploy_time.h"
+#include "breeze_deploy/models/feature/feature_model.h"
+#include "breeze_deploy/utils/data_process/cosine_similarity/cosine_similarity.h"
 
 using namespace breeze_deploy;
 using namespace breeze_deploy::models;
 using cv::imread;
 
-bool InferByONNX(ArcFace &arc_face, const std::string &image_path, ClassificationFeatureResult &result) {
+bool InferByONNX(FeatureModel &arc_face, const std::string &image_path, FeatureResult &result) {
   auto image = cv::imread(image_path);
   BreezeDeployTime cost;
   cost.Start();
@@ -30,10 +31,11 @@ bool InferByONNX(ArcFace &arc_face, const std::string &image_path, Classificatio
   }
   cost.End();
   cost.PrintInfo("FeatureModel", 1.0, BreezeDeployTimeType::Milliseconds);
+  return true;
 }
 
 int main(int argc, char *argv[]) {
-  if (argc < 4) {
+  if (argc != 5) {
 	std::cout << "Usage: test_feature_result path/to/model /path/to/config_file path/to/image_0 path/to/image_1"
 			  << std::endl;
 	return -1;
@@ -42,16 +44,16 @@ int main(int argc, char *argv[]) {
   std::string model_path = argv[1];
   std::string config_path = argv[2];
 
-  ArcFace feature_model(model_path, config_path);
+  FeatureModel feature_model(model_path, config_path);
   if (!feature_model.Initialize()) {
 	std::cout << "模型初始化失败" << std::endl;
 	return 1;
   }
 
-  ClassificationFeatureResult result0, result1;
+  FeatureResult result0, result1;
   InferByONNX(feature_model, argv[3], result0);
   InferByONNX(feature_model, argv[4], result1);
 
-  printf("相似度为: %lf\n", ClassificationModel::CosineSimilarity(result0, result1));
+  printf("相似度为: %lf\n", utils::data_process::CosineSimilarity(result0, result1));
   return 0;
 }

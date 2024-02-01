@@ -16,33 +16,29 @@
 #define BREEZE_DEPLOY_MODELS_CLASSIFICATION_CLASSIFICATION_MODEL_H_
 #include <utility>
 #include "breeze_deploy/models/breeze_deploy_model.h"
-#include "breeze_deploy/models/classification/classification_result.h"
+#include "breeze_deploy/core/result/breeze_deploy_result.h"
 namespace breeze_deploy {
 namespace models {
 class ClassificationModel : public BreezeDeployModel {
  public:
   ClassificationModel(const std::string &model_path, const std::string &config_file_path)
 	  : BreezeDeployModel(model_path, config_file_path) {}
-  bool ReadLabelFile(const std::string &label_file_path);
   std::string ModelName() override { return "ClassificationModel"; }
-  virtual bool Predict(const cv::Mat &input_mat, ClassificationLabelResult &label_result);
-  virtual bool Predict(const cv::Mat &input_mat, ClassificationFeatureResult &label_result);
-  static double CosineSimilarity(const ClassificationFeatureResult &a,
-								const ClassificationFeatureResult &b);
+  virtual bool Predict(const cv::Mat &input_mat,
+					   ClassificationResult &label_result,
+					   size_t k = 1,
+					   float min_confidence = 0.5);
 
  protected:
+  // Model Initialize
+  bool ReadPostprocessYAML() override;
+  bool InitializeBackend(const BreezeDeployBackendOption &breeze_deploy_backend_option) override;
+
   bool Preprocess(const cv::Mat &input_mat) override;
   bool Postprocess() override;
 
-  std::vector<std::string> labels_;
-
-  bool ReadPostprocessYAML() override;
   // For Softmax
   bool need_softmax_ = false;
-  // For TopK
-  size_t k_ = 0;
-  float min_confidence_ = 0;
-  bool need_topk_ = false;
 };
 }
 }

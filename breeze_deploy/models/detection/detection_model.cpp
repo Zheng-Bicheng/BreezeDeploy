@@ -26,7 +26,7 @@ bool DetectionModel::Preprocess(const cv::Mat &input_mat) {
   BreezeDeployMat breeze_deploy_mat(input_mat);
   for (const auto &preprocess_function : preprocess_functions_) {
 	if (!preprocess_function->Run(breeze_deploy_mat)) {
-	  BREEZE_DEPLOY_LOGGER_ERROR("Failed to run preprocess_function.")
+	  BREEZE_DEPLOY_LOGGER_ERROR("Failed to run preprocess.")
 	  return false;
 	}
   }
@@ -37,7 +37,7 @@ bool DetectionModel::Preprocess(const cv::Mat &input_mat) {
   auto c = breeze_deploy_mat.GetChannel();
   auto h = breeze_deploy_mat.GetHeight();
   auto w = breeze_deploy_mat.GetWidth();
-  if (breeze_deploy_mat.GetMatDataFormat() == BreezeDeployDataFormat::CHW) {
+  if (breeze_deploy_mat.GetMatDataFormat() == BreezeDeployMatFormat::CHW) {
 	input_tensor_vector_[0].SetTensorData(tensor_data, {1, c, h, w}, tensor_data_type);
   } else {
 	input_tensor_vector_[0].SetTensorData(tensor_data, {1, h, w, c}, tensor_data_type);
@@ -86,8 +86,7 @@ bool DetectionModel::ReadPostprocessYAML() {
 bool DetectionModel::Postprocess() {
   return true;
 }
-cv::Mat DetectionModelWithoutLandmark::Draw(const cv::Mat &mat,
-											const DetectionResultWithoutLandmark &detection_result) {
+cv::Mat DetectionModel::Draw(const cv::Mat &mat, const DetectionResult &detection_result) {
   if (detection_result.GetSize() == 0) {
 	return {};
   }
@@ -96,10 +95,11 @@ cv::Mat DetectionModelWithoutLandmark::Draw(const cv::Mat &mat,
 	auto rect_vector = detection_result.rect_vector[i];
 	cv::rectangle(mat, rect_vector, cv::Scalar(0, 0, 255), 1);
   }
-  return mat;
-}
-cv::Mat DetectionModelWithLandmark::Draw(const cv::Mat &mat, const DetectionResultWithLandmark &detection_result) {
-  DetectionModelWithoutLandmark::Draw(mat, *dynamic_cast<const DetectionResultWithoutLandmark *>(&detection_result));
+
+  if (detection_result.landmarks_vector.empty()) {
+	return mat;
+  }
+
   for (int i = 0; i < detection_result.GetSize(); ++i) {
 	auto landmarks_vector = detection_result.landmarks_vector[i];
 	for (const auto &landmark : landmarks_vector) {

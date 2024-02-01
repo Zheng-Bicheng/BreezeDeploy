@@ -13,15 +13,15 @@
 // limitations under the License.
 #include <iostream>
 #include <string>
-#include "breeze_deploy/core/breeze_deploy_time.h"
-#include "breeze_deploy/models/classification/ghostnet/ghost_net.h"
+#include "breeze_deploy/core/time/breeze_deploy_time.h"
+#include "breeze_deploy/models/classification/classification_model.h"
 
 using namespace breeze_deploy;
 using namespace breeze_deploy::models;
 using cv::imread;
 
 int main(int argc, char *argv[]) {
-  if (argc < 4) {
+  if (argc != 5) {
 	std::cout << "Usage: test_label_result path/to/model /path/to/config_file path/to/image path/to/label" << std::endl;
 	return -1;
   }
@@ -29,19 +29,20 @@ int main(int argc, char *argv[]) {
   std::string model_path = argv[1];
   std::string config_path = argv[2];
 
-  GhostNet label_model(model_path, config_path);
+  ClassificationModel label_model(model_path, config_path);
   if (!label_model.Initialize()) {
 	std::cout << "模型初始化失败" << std::endl;
 	return 1;
   }
+
+  // TODO: Read label
   std::string label_file_path = argv[4];
-  label_model.ReadLabelFile(label_file_path);
 
   std::string image_path = argv[3];
   auto mat = cv::imread(image_path);
   BreezeDeployTime cost;
   cost.Start();
-  ClassificationLabelResult result;
+  ClassificationResult result;
   for (int i = 0; i < 100; ++i) {
 	if (!label_model.Predict(mat, result)) {
 	  std::cout << "模型推理失败" << std::endl;
@@ -53,8 +54,7 @@ int main(int argc, char *argv[]) {
 
   printf("TopK: %zu\n", result.GetSize());
   for (int i = 0; i < result.GetSize(); ++i) {
-	printf("Label ID is %zu, Label name is %s, confidence is %f\n",
-		   result.label_id_vector[i], result.label_name_vector[i].c_str(), result.confidence_vector[i]);
+	printf("Label ID is %lld, confidence is %f\n", result.topk_label_id_vector[i], result.topk_confidence_vector[i]);
   }
   return 0;
 }

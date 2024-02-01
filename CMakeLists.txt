@@ -4,16 +4,22 @@ PROJECT(breeze_deploy LANGUAGES C CXX VERSION 0.0.1)
 set(CMAKE_CXX_STANDARD 11)
 
 include(cmake/opencv.cmake)
-include(cmake/onnxruntime.cmake)
-include(cmake/eigen.cmake)
-include(cmake/spdlog.cmake)
-include(cmake/yaml_cpp.cmake)
-
 INCLUDE_DIRECTORIES(${OPENCV_INCLUDE_DIRS})
+
+include(cmake/onnxruntime.cmake)
 INCLUDE_DIRECTORIES(${ONNX_RUNTIME_INCLUDE_DIRS})
+
+include(cmake/eigen.cmake)
 INCLUDE_DIRECTORIES(${EIGEN3_INCLUDE_DIRS})
+
+include(cmake/spdlog.cmake)
 INCLUDE_DIRECTORIES(${SPDLOG_INCLUDE_DIRS})
-INCLUDE_DIRECTORIES(${YAML_CPP_INCLUDE_DIR})
+
+include(cmake/yaml_cpp.cmake)
+INCLUDE_DIRECTORIES(${YAML_CPP_INCLUDE_DIRS})
+
+include(cmake/faiss.cmake)
+INCLUDE_DIRECTORIES(${FAISS_INCLUDE_DIRS})
 
 # 设置编译对象
 set(BREEZE_DEPLOY_SOURCE_DIRECTORY ${PROJECT_SOURCE_DIR}/breeze_deploy)
@@ -21,7 +27,7 @@ INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR})
 file(GLOB_RECURSE BREEZE_DEPLOY_HEADS ${BREEZE_DEPLOY_SOURCE_DIRECTORY}/*.h)
 file(GLOB_RECURSE BREEZE_DEPLOY_SOURCES ${BREEZE_DEPLOY_SOURCE_DIRECTORY}/*.cpp)
 add_library(${CMAKE_PROJECT_NAME} SHARED ${BREEZE_DEPLOY_SOURCES})
-target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC ${OPENCV_LIBRARIES} ${ONNX_RUNTIME_LIBRARIES} ${YAML_CPP_LIBRARIES})
+target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC ${OPENCV_LIBRARIES} ${ONNX_RUNTIME_LIBRARIES} ${YAML_CPP_LIBRARIES} ${FAISS_LIBRARIES})
 
 # TODO: 判断编译时是否开启example
 add_subdirectory(example)

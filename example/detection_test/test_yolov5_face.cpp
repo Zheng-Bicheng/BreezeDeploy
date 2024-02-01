@@ -14,7 +14,7 @@
 
 #include <iostream>
 #include <string>
-#include "breeze_deploy/core/breeze_deploy_time.h"
+#include "breeze_deploy/core/time/breeze_deploy_time.h"
 #include "breeze_deploy/models/detection/yolov5_face/yolov_5_face.h"
 
 using namespace breeze_deploy;
@@ -22,7 +22,7 @@ using namespace breeze_deploy::models;
 using cv::imread;
 
 int main(int argc, char *argv[]) {
-  if (argc < 3) {
+  if (argc != 4) {
 	std::cout << "Usage: test_yolov5_face path/to/model /path/to/config_file path/to/image" << std::endl;
 	return -1;
   }
@@ -43,14 +43,14 @@ int main(int argc, char *argv[]) {
 
   BreezeDeployTime cost;
   cost.Start();
-  DetectionResultWithLandmark result_with_landmark;
+  DetectionResult result_with_landmark;
   if (!detect_model.Predict(mat, result_with_landmark)) {
 	std::cout << "模型推理失败" << std::endl;
 	return 1;
   }
   cost.End();
   cost.PrintInfo("YOLOV5Face", 1.0, BreezeDeployTimeType::Milliseconds);
-  mat = DetectionModelWithLandmark::Draw(mat, result_with_landmark);
+  mat = DetectionModel::Draw(mat, result_with_landmark);
   cv::imwrite("./detect_result.png", mat);
   return 0;
 }

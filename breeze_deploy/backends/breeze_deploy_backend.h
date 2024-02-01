@@ -15,7 +15,7 @@
 #ifndef BREEZE_DEPLOY_BACKENDS_BREEZE_DEPLOY_BACKEND_H_
 #define BREEZE_DEPLOY_BACKENDS_BREEZE_DEPLOY_BACKEND_H_
 
-#include "breeze_deploy/core/breeze_deploy_tensor.h"
+#include "breeze_deploy/core/tensor/breeze_deploy_tensor.h"
 #include "breeze_deploy/backends/breeze_deploy_backend_option.h"
 
 namespace breeze_deploy {

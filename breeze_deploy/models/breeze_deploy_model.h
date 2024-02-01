@@ -20,19 +20,20 @@
 #include <yaml-cpp/yaml.h>
 
 #include "breeze_deploy/backends/breeze_deploy_backend.h"
-#include "breeze_deploy/core/breeze_deploy_logger.h"
-#include "breeze_deploy/core/breeze_deploy_mat.h"
-#include "breeze_deploy/core/breeze_deploy_tensor.h"
-#include "breeze_deploy/core/breeze_deploy_time.h"
-#include "breeze_deploy/preprocess_function/preprocess_function.h"
+#include "breeze_deploy/core/logger/breeze_deploy_logger.h"
+#include "breeze_deploy/core/mat/breeze_deploy_mat.h"
+#include "breeze_deploy/core/tensor/breeze_deploy_tensor.h"
+#include "breeze_deploy/core/time/breeze_deploy_time.h"
+#include "breeze_deploy/models/preprocess/preprocess_function.h"
 
 namespace breeze_deploy {
 namespace models {
-using namespace breeze_deploy::function;
+using namespace breeze_deploy::preprocess;
 using namespace breeze_deploy::backend;
 class BreezeDeployModel {
  public:
   BreezeDeployModel(const std::string &model_path, const std::string &config_file_path);
+  virtual ~BreezeDeployModel() = default;
   bool Initialize(const BreezeDeployBackendOption &breeze_deploy_backend_option = BreezeDeployBackendOption());
   virtual std::string ModelName() { return "BreezeDeployModel"; }
 
@@ -43,11 +44,12 @@ class BreezeDeployModel {
 
   // Model Initialize
   std::string config_file_path_;
-  bool ReadPreprocessYAML();
+  virtual bool ReadPreprocessYAML();
   virtual bool ReadPostprocessYAML() = 0;
+  virtual bool InitializeBackend(const BreezeDeployBackendOption &breeze_deploy_backend_option);
 
   // Model Preprocess
-  std::vector<std::shared_ptr<BreezeDeployPreprocessFunction>> preprocess_functions_{};
+  std::vector<std::shared_ptr<BreezeDeployPreprocess>> preprocess_functions_{};
   virtual bool Preprocess(const cv::Mat &input_mat) = 0;
 
   // Model Infer
