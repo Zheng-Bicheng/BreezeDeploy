@@ -23,7 +23,7 @@ target_link_libraries(test_yolov5_face breeze_deploy ${OpenCV_LIBS})
 list(APPEND INSTALL_APP_LIST test_yolov5_face)
 
 # test_image_recognition
-add_executable(test_image_recognition pipeline/test_image_recognition.cpp)
+add_executable(test_image_recognition pipeline_test/test_image_recognition.cpp)
 target_link_libraries(test_image_recognition breeze_deploy ${OpenCV_LIBS})
 list(APPEND INSTALL_APP_LIST test_image_recognition)
 

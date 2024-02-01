@@ -9,7 +9,7 @@
 <p align="center">
     <a href=""><b> 驱动安装文档 </b></a>
     |
-    <a href=""><b> 二次开发例程文档 </b></a>
+    <a href="./example/README.md"><b> 二次开发例程文档 </b></a>
     |
     <a href=""><b> 二次开发API文档 </b></a>
 </p>
@@ -41,19 +41,6 @@ cmake .. -DCMAKE_INSTALL_PREFIX=${PWD}/breeze_deploy
 make -j8
 make install
 ```
-
-# 🌰 边端测部署能力速览
-
-BreezeDeploy目前已经支持了**通用目标分类**、**通用目标检测**、**人脸检测模型**、**人脸特征提取模型**的部署。
-
-(1) ✅ : 已经支持; (2) ❔: 正在进行中; (3) N/A : 暂不支持.
-
-| 任务场景 | 操作系统  | RK356X | RK3588 | 例程链接                                   |
-|------|-------|--------|--------|----------------------------------------|
-| 通用分类 | Linux | 🏃     | ✅      | [C++代码](./example/classification_test) |
-| 人脸识别 | Linux | 🏃     | ✅      | [C++代码](./example/classification_test) |
-| 通用检测 | Linux | 🏃     | ✅      | [C++代码](./example/detection_test)      |
-| 人脸检测 | Linux | 🏃     | ✅      | [C++代码](./example/detection_test)      |
 
 # 🐛 Bug反馈
 
