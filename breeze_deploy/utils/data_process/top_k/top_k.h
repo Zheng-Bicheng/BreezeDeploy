@@ -12,16 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef BREEZE_DEPLOY_UTILS_DATA_PROCESS_NORMALIZE_L2_NORMALIZE_L2_H_
-#define BREEZE_DEPLOY_UTILS_DATA_PROCESS_NORMALIZE_L2_NORMALIZE_L2_H_
+#ifndef BREEZE_DEPLOY_UTILS_DATA_PROCESS_TOP_K_TOP_K_H_
+#define BREEZE_DEPLOY_UTILS_DATA_PROCESS_TOP_K_TOP_K_H_
+
 #include <vector>
 
 namespace breeze_deploy {
 namespace utils {
 namespace data_process {
 template<typename T>
-bool Normalize(std::vector<T> &input_data);
+bool TopK(const std::vector<T> &input_tensor,
+		  std::vector<int64_t> &output_index,
+		  std::vector<float> &output_tensor,
+		  size_t k,
+		  T min_confidence);
 }
 }
 }
-#endif //BREEZE_DEPLOY_UTILS_DATA_PROCESS_NORMALIZE_L2_NORMALIZE_L2_H_
+#endif //BREEZE_DEPLOY_UTILS_DATA_PROCESS_TOP_K_TOP_K_H_

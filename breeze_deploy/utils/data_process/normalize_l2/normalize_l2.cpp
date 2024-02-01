@@ -12,16 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef BREEZE_DEPLOY_UTILS_DATA_PROCESS_NORMALIZE_L2_NORMALIZE_L2_H_
-#define BREEZE_DEPLOY_UTILS_DATA_PROCESS_NORMALIZE_L2_NORMALIZE_L2_H_
-#include <vector>
+#include <Eigen/Dense>
+#include "breeze_deploy/utils/data_process/normalize_l2/normalize_l2.h"
 
 namespace breeze_deploy {
 namespace utils {
 namespace data_process {
 template<typename T>
-bool Normalize(std::vector<T> &input_data);
+bool Normalize(std::vector<T> &input_data) {
+  if (input_data.empty()) {
+	return false;
+  }
+  // 将std::vector<float> 转换为 Eigen::Map
+  Eigen::Map<Eigen::VectorXf> eigen_vector(input_data.data(), input_data.size());
+  // 计算L2范数
+  float l2_norm = eigen_vector.norm();
+  // 归一化
+  eigen_vector /= l2_norm;
+  return true;
 }
 }
 }
-#endif //BREEZE_DEPLOY_UTILS_DATA_PROCESS_NORMALIZE_L2_NORMALIZE_L2_H_
+}
