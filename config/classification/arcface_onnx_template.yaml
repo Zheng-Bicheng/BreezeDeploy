@@ -22,5 +22,4 @@ preprocess:
 postprocess:
   # If the Softmax operator is missing from your model's output, the top K elements may not represent confidence.
   # You also need to apply the Softmax operation to the top K elements.
-  - Softmax:
-      need: false
+  - Softmax: true

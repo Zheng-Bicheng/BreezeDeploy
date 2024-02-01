@@ -52,7 +52,7 @@ bool ClassificationModel::ReadPostprocessYAML() {
   for (const auto &postprocess_function_config : postprocess_config) {
 	auto function_name = postprocess_function_config.begin()->first.as<std::string>();
 	if (function_name == "Softmax") {
-	  auto &need_node = postprocess_function_config.begin()->second["need"];
+	  auto &need_node = postprocess_function_config.begin()->second;
 	  if (!need_node) {
 		BREEZE_DEPLOY_LOGGER_ERROR("The function(TopK) must have a need(bool) node.")
 		return false;
