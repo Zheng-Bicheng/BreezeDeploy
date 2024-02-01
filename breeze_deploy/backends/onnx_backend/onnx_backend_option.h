@@ -15,8 +15,11 @@
 #ifndef BREEZE_DEPLOY_BACKENDS_ONNX_RUNTIME_ONNX_BACKEND_OPTION_H_
 #define BREEZE_DEPLOY_BACKENDS_ONNX_RUNTIME_ONNX_BACKEND_OPTION_H_
 
+#ifdef __linux__
+#include "onnxruntime_cxx_api.h"
+#elif __APPLE__
 #include "onnxruntime/onnxruntime_cxx_api.h"
-
+#endif
 namespace breeze_deploy {
 namespace backend {
 class ONNXBackendOption {

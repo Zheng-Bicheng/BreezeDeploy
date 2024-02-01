@@ -35,6 +35,10 @@ BreezeDeploy最新的稳定版本为**release/0.2.0**
 # 🚤 快速编译
 
 ```bash
+git clone https://gitee.com/BreezeDeploy/BreezeDeploy.git
+cd BreezeDeploy
+git submodule init
+git submodule update
 mkdir build
 cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=${PWD}/breeze_deploy
