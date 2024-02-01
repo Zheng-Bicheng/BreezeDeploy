@@ -7,8 +7,8 @@ add_executable(test_label_result classification_test/test_label_result.cpp)
 target_link_libraries(test_label_result breeze_deploy ${OpenCV_LIBS})
 list(APPEND INSTALL_APP_LIST test_label_result)
 
-# test_label_result
-add_executable(test_feature_result classification_test/test_feature_result.cpp)
+# test_feature_result
+add_executable(test_feature_result feature_test/test_feature_result.cpp)
 target_link_libraries(test_feature_result breeze_deploy ${OpenCV_LIBS})
 list(APPEND INSTALL_APP_LIST test_feature_result)
 
