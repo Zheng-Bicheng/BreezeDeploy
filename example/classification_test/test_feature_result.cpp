@@ -14,14 +14,14 @@
 #include <iostream>
 #include <string>
 #include "breeze_deploy/core/time/breeze_deploy_time.h"
-#include "breeze_deploy/models/feature/arcface/arc_face.h"
+#include "breeze_deploy/models/feature/feature_model.h"
 #include "breeze_deploy/utils/data_process/cosine_similarity/cosine_similarity.h"
 
 using namespace breeze_deploy;
 using namespace breeze_deploy::models;
 using cv::imread;
 
-bool InferByONNX(ArcFace &arc_face, const std::string &image_path, FeatureResult &result) {
+bool InferByONNX(FeatureModel &arc_face, const std::string &image_path, FeatureResult &result) {
   auto image = cv::imread(image_path);
   BreezeDeployTime cost;
   cost.Start();
@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
   std::string model_path = argv[1];
   std::string config_path = argv[2];
 
-  ArcFace feature_model(model_path, config_path);
+  FeatureModel feature_model(model_path, config_path);
   if (!feature_model.Initialize()) {
 	std::cout << "模型初始化失败" << std::endl;
 	return 1;

@@ -14,7 +14,7 @@
 #include <iostream>
 #include <string>
 #include "breeze_deploy/core/time/breeze_deploy_time.h"
-#include "breeze_deploy/models/classification/ghostnet/ghost_net.h"
+#include "breeze_deploy/models/classification/classification_model.h"
 
 using namespace breeze_deploy;
 using namespace breeze_deploy::models;
@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
   std::string model_path = argv[1];
   std::string config_path = argv[2];
 
-  GhostNet label_model(model_path, config_path);
+  ClassificationModel label_model(model_path, config_path);
   if (!label_model.Initialize()) {
 	std::cout << "模型初始化失败" << std::endl;
 	return 1;
