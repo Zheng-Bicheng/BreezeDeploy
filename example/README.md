@@ -1,6 +1,6 @@
 <h1 align="center">BreezeDeploy例程文档</h1>
 
-**example**目录下存放了BreezeDeploy的例程。为了能够将编译测试例程，请确保您在编译BreezeDeploy时打开了BUILD_TEST选项。
+**example**目录下存放了BreezeDeploy的例程。为了能够正确的编译测试例程，请确保您在编译BreezeDeploy时打开了BUILD_TEST选项。
 
 # 1 ⬇️ 下载BreezeDeployModelZoo
 
