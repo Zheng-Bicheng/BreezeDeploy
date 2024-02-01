@@ -1,1 +1,2 @@
-find_package(Eigen3 REQUIRED)
+set(EIGEN3_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/third_party/eigen")
+set(EIGEN3_INCLUDE_DIRS "${EIGEN3_ROOT}")
