@@ -6,9 +6,6 @@ set(CMAKE_CXX_STANDARD 11)
 include(cmake/opencv.cmake)
 INCLUDE_DIRECTORIES(${OPENCV_INCLUDE_DIRS})
 
-include(cmake/onnxruntime.cmake)
-INCLUDE_DIRECTORIES(${ONNX_RUNTIME_INCLUDE_DIRS})
-
 include(cmake/eigen.cmake)
 INCLUDE_DIRECTORIES(${EIGEN3_INCLUDE_DIRS})
 
@@ -20,6 +17,9 @@ INCLUDE_DIRECTORIES(${YAML_CPP_INCLUDE_DIRS})
 
 include(cmake/faiss.cmake)
 INCLUDE_DIRECTORIES(${FAISS_INCLUDE_DIRS})
+
+include(cmake/onnxruntime.cmake)
+INCLUDE_DIRECTORIES(${ONNX_RUNTIME_INCLUDE_DIRS})
 
 # 设置编译对象
 set(BREEZE_DEPLOY_SOURCE_DIRECTORY ${PROJECT_SOURCE_DIR}/breeze_deploy)
