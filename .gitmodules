@@ -1,8 +1,4 @@
-[submodule "third_party/spdlog"]
-	path = third_party/spdlog
-	url = https://gitee.com/BreezeDeploy/spdlog.git
-	tag = v1.13.0
-[submodule "third_party/eigen"]
-	path = third_party/eigen
-	url = https://gitee.com/BreezeDeploy/eigen.git
-    tag = 3.4.0
+[submodule "third_party/vcpkg"]
+	path = third_party/vcpkg
+	url = https://github.com/microsoft/vcpkg.git
+	tag = 2024.01.12
