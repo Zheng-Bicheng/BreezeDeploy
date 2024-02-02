@@ -31,4 +31,6 @@
 *.out
 *.app
 
-/example/model/*
+# For VSCode
+build
+.idea
