@@ -3,6 +3,9 @@ PROJECT(breeze_deploy LANGUAGES C CXX VERSION 0.0.1)
 
 set(CMAKE_CXX_STANDARD 11)
 
+option(BREEZE_DEPLOY_ENABLE_ONNX_RUNTIME "Enable support for onnx runtime." ON)
+option(BREEZE_DEPLOY_ENABLE_RKNN_RUNTIME "Enable support for rknn runtime." OFF)
+
 include(cmake/opencv.cmake)
 INCLUDE_DIRECTORIES(${OPENCV_INCLUDE_DIRS})
 
@@ -18,8 +21,17 @@ INCLUDE_DIRECTORIES(${YAML_CPP_INCLUDE_DIRS})
 include(cmake/faiss.cmake)
 INCLUDE_DIRECTORIES(${FAISS_INCLUDE_DIRS})
 
-include(cmake/onnxruntime.cmake)
-INCLUDE_DIRECTORIES(${ONNX_RUNTIME_INCLUDE_DIRS})
+if (BREEZE_DEPLOY_ENABLE_ONNX_RUNTIME)
+    add_definitions()
+    include(cmake/onnx_runtime.cmake)
+    INCLUDE_DIRECTORIES(${ONNX_RUNTIME_INCLUDE_DIRS})
+endif ()
+
+if (BREEZE_DEPLOY_ENABLE_RKNN_RUNTIME)
+    add_definitions()
+    include(cmake/rknn_runtime.cmake)
+    INCLUDE_DIRECTORIES(${ONNX_RUNTIME_INCLUDE_DIRS})
+endif ()
 
 # 设置编译对象
 set(BREEZE_DEPLOY_SOURCE_DIRECTORY ${PROJECT_SOURCE_DIR}/breeze_deploy)
