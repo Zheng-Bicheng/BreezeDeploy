@@ -1,4 +1,5 @@
-find_package(yaml-cpp REQUIRED)
+find_package(yaml-cpp CONFIG REQUIRED)
+
 if(CMAKE_SYSTEM_NAME MATCHES "Darwin")
     set(YAML_CPP_LIBRARIES "yaml-cpp::yaml-cpp")
 endif ()

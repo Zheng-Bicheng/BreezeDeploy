@@ -1,3 +1,4 @@
+set(OpenCV_DIR "${VCPKG_INSTALLED_DIR}/x64-linux/share/opencv4")
 find_package(OpenCV REQUIRED)
 set(OPENCV_INCLUDE_DIRS ${INCLUDE_DIRS})
 set(OPENCV_LIBRARIES ${OpenCV_LIBS})
