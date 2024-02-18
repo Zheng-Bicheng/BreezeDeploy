@@ -30,10 +30,10 @@ sudo apt install autoconf libtool
 sudo apt-get install nasm
 
 # For amd64-linux
-./vcpkg/vcpkg install --triplet=x64-linux spdlog
-./vcpkg/vcpkg install --triplet=x64-linux faiss
-./vcpkg/vcpkg install --triplet=x64-linux eigen3
-./vcpkg/vcpkg install --triplet=x64-linux opencv4[core,eigen,dnn,jpeg,png]
+./vcpkg/vcpkg install --triplet=x64-linux spdlog eigen3 opencv4[core,eigen,dnn,jpeg,png] yaml-cpp faiss
+
+# For arm64-linux
+./vcpkg/vcpkg install --triplet=arm64-cross-compilation spdlog eigen3 opencv4[core,eigen,dnn,jpeg,png] yaml-cpp faiss
 ```
 
 ## 

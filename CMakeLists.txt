@@ -1,7 +1,12 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
 
-set(VCPKG_ROOT "${CMAKE_SOURCE_DIR}/third_party/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE PATH "")
-set(CMAKE_TOOLCHAIN_FILE ${VCPKG_ROOT})
+#set(VCPKG_TARGET_TRIPLET "x64-linux")
+set(VCPKG_TARGET_TRIPLET "arm64-cross-compilation")
+set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE "")
+
+set(VCPKG_ROOT "${CMAKE_SOURCE_DIR}/third_party/vcpkg" CACHE PATH "")
+set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/toolchains/arm64-cross-compilation-toolchain.cmake")
+set(CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")
 
 PROJECT(breeze_deploy LANGUAGES C CXX VERSION 0.0.1)
 
