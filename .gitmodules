@@ -2,3 +2,7 @@
 	path = third_party/vcpkg
 	url = https://gitee.com/BreezeDeploy/vcpkg.git
 	branch = breeze_deploy
+[submodule "third_party/rknpu2_runtime"]
+	path = third_party/rknpu2_runtime
+	url = https://gitee.com/BreezeDeploy/rknpu2_runtime.git
+	branch = v1.6.1b10
