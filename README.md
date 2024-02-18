@@ -9,6 +9,8 @@
 <p align="center">
     <a href=""><b> 驱动安装文档 </b></a>
     |
+    <a href="./docs/build.md"><b> 编译文档 </b></a>
+    |
     <a href="./example/README.md"><b> 二次开发例程文档 </b></a>
     |
     <a href=""><b> 二次开发API文档 </b></a>
@@ -31,20 +33,6 @@ BreezeDeploy最新的稳定版本为**release/0.2.0**
 在FastDeploy的基础上， BreezeDeploy充分利用了部署平台的优势，对**内存拷贝**、**前后处理**、**模型推理**
 等多个方面进行了优化，可以支持在RK平台上以较高的效率部署市面上常见的视觉算法。
 希望它能够帮你实现快速且友好的模型部署体验。
-
-# 🚤 快速编译
-
-```bash
-git clone https://gitee.com/BreezeDeploy/BreezeDeploy.git
-cd BreezeDeploy
-git submodule init
-git submodule update
-mkdir build
-cd build
-cmake .. -DCMAKE_INSTALL_PREFIX=${PWD}/breeze_deploy
-make -j8
-make install
-```
 
 # 🐛 Bug反馈
 
