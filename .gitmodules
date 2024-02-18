@@ -1,0 +1,4 @@
+[submodule "third_party/vcpkg"]
+	path = third_party/vcpkg
+	url = https://gitee.com/BreezeDeploy/vcpkg.git
+	branch = breeze_deploy

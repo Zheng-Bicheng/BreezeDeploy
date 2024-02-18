@@ -15,7 +15,7 @@
 #ifndef BREEZE_DEPLOY_BACKENDS_ONNX_RUNTIME_ONNX_BACKEND_OPTION_H_
 #define BREEZE_DEPLOY_BACKENDS_ONNX_RUNTIME_ONNX_BACKEND_OPTION_H_
 
-#include "onnxruntime/onnxruntime_cxx_api.h"
+#include "onnxruntime_cxx_api.h"
 
 namespace breeze_deploy {
 namespace backend {

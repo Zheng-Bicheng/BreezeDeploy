@@ -2,12 +2,14 @@
 
 <p align="center">
     <a href="./LICENSE"><img src="https://img.shields.io/badge/license-Apache%202-dfd.svg"></a>
-    <a href="https://github.com/Zheng-Bicheng/BreezeDeploy/releases"><img src="https://img.shields.io/badge/release-release%2F0.0.1-yellow"></a>
+    <a href="https://github.com/Zheng-Bicheng/BreezeDeploy/releases"><img src="https://img.shields.io/badge/release-release%2F0.2.0-yellow"></a>
     <a href=""><img src="https://img.shields.io/badge/os-win,linux-pink.svg"></a>
 </p>
 
 <p align="center">
     <a href=""><b> 驱动安装文档 </b></a>
+    |
+    <a href="./docs/build.md"><b> 编译文档 </b></a>
     |
     <a href="./example/README.md"><b> 二次开发例程文档 </b></a>
     |
@@ -32,17 +34,28 @@ BreezeDeploy最新的稳定版本为**release/0.2.0**
 等多个方面进行了优化，可以支持在RK平台上以较高的效率部署市面上常见的视觉算法。
 希望它能够帮你实现快速且友好的模型部署体验。
 
-# 🚤 快速编译
-
-```bash
-mkdir build
-cd build
-cmake .. -DCMAKE_INSTALL_PREFIX=${PWD}/breeze_deploy
-make -j8
-make install
-```
-
 # 🐛 Bug反馈
 
 非常感谢您使用BreezeDeploy仓库！目前我们仍处于研发阶段，可能会遇到一些Bug。
 如果您在使用过程中发现任何问题，请前往Issues页面反馈，我们将尽力解决并改进。感谢您的理解和支持！
+
+# 💐 Acknowledge
+
+本项目中使用和参考了多个由开源社区提供的性能优异的库，在此列出表示感谢:
+
+* ⭐ [eigen](https://gitlab.com/libeigen/eigen): Eigen is a C++ template library for linear algebra: matrices, vectors,
+  numerical solvers, and related algorithms.
+* ⭐ [FastDeploy](https://github.com/PaddlePaddle/FastDeploy): ⚡️An Easy-to-use and Fast Deep Learning Model Deployment
+  Toolkit for ☁️Cloud 📱Mobile and 📹Edge. Including Image, Video, Text and Audio 20+ main stream scenarios and 150+ SOTA
+  models with end-to-end optimization, multi-platform and multi-framework support.
+* ⭐ [faiss](https://github.com/facebookresearch/faiss): A library for efficient similarity search and clustering of
+  dense vectors.
+* ⭐ [onnxruntime](https://github.com/microsoft/onnxruntime): ONNX Runtime: cross-platform, high performance ML
+  inferencing and training accelerator.
+* ⭐ [opencv](https://github.com/opencv/opencv): Open Source Computer Vision Library.
+* ⭐ [spdlog](https://github.com/gabime/spdlog): Fast C++ logging library.
+* ⭐ [yaml-cpp](https://github.com/jbeder/yaml-cpp): A YAML parser and emitter in C++.
+
+# ©️ License
+
+本仓库遵循[Apache-2.0开源协议](./LICENSE)。
