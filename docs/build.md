@@ -39,6 +39,9 @@ sudo apt-get install nasm
 ## 
 
 ```bash
+# 普通编译
 cmake .. -DCMAKE_INSTALL_PREFIX=${PWD}/breeze_deploy
 
+# 交叉编译
+cmake .. -DVCPKG_TARGET_TRIPLET="arm64-cross-compilation" -DCMAKE_INSTALL_PREFIX="${PWD}/breeze_deploy"
 ```
