@@ -58,7 +58,7 @@ int main(int argc, char *argv[]) {
   auto &classification_results = image_recognition_result.classification_results;
   for (auto &classification_result : classification_results) {
 	for (int k = 0; k < classification_result.topk_label_id_vector.size(); k++) {
-	  printf("label_id: %lld, label_confidence: %f\n",
+	  printf("label_id: %ld, label_confidence: %f\n",
 			 classification_result.topk_label_id_vector[k],
 			 classification_result.topk_confidence_vector[k]);
 	}
