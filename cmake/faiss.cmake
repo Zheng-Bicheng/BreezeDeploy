@@ -1,6 +1,6 @@
 if (CMAKE_SYSTEM_NAME MATCHES "Linux")
-    find_package(Faiss REQUIRED)
-    set(FAISS_LIBRARIES faiss)
+    find_package(Faiss CONFIG REQUIRED)
+    set(FAISS_LIBRARIES "faiss")
 elseif (CMAKE_SYSTEM_NAME MATCHES "Darwin")
     set(FAISS_ROOT "/opt/homebrew/Cellar/faiss/1.7.4")
     set(FAISS_INCLUDE_DIRS "${FAISS_ROOT}/include")

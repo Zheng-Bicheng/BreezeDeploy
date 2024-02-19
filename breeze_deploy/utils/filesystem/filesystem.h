@@ -14,7 +14,13 @@
 
 #ifndef BREEZE_DEPLOY_UTILS_FILESYSTEM_FILESYSTEM_H_
 #define BREEZE_DEPLOY_UTILS_FILESYSTEM_FILESYSTEM_H_
-#include "breeze_deploy/core/logger/breeze_deploy_logger.h"
+
+#include <dirent.h>
+#include <iostream>
+#include <string>
+#include <vector>
+#include <sstream>
+
 namespace breeze_deploy {
 namespace utils {
 namespace filesystem{

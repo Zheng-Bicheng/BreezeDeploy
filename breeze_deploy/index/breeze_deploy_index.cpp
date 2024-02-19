@@ -12,11 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "breeze_deploy/index/breeze_deploy_index.h"
 #include <faiss/utils/distances.h>
 #include <faiss/IndexFlat.h>
 #include "breeze_deploy/core/logger/breeze_deploy_logger.h"
-#include "breeze_deploy/index/breeze_deploy_index.h"
-#include "breeze_deploy/utils/data_process/normalize_l2/normalize_l2.h"
 
 namespace breeze_deploy {
 namespace index {
