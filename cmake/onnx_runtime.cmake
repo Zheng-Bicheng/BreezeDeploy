@@ -34,6 +34,9 @@ function(GetONNXRuntime ONNX_RUNTIME_ROOT)
 
     execute_process(
             COMMAND ${CMAKE_COMMAND} -E tar zxf ${ONNX_RUNTIME_TGZ_NAME}
+            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    )
+    execute_process(
             COMMAND ${CMAKE_COMMAND} -E copy_directory ${ONNX_RUNTIME_FILE_NAME} ${ONNX_RUNTIME_ROOT}
             WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     )
