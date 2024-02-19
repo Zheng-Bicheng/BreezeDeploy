@@ -17,6 +17,7 @@ function(GetONNXRuntime ONNX_RUNTIME_ROOT)
         endif ()
     else ()
         message(FATAL_ERROR "ONNX_RUNTIME don't supported this system [${CMAKE_SYSTEM_NAME}:${CMAKE_SYSTEM_PROCESSOR}]")
+        exit()
     endif ()
     set(ONNX_RUNTIME_FILE_NAME "onnxruntime-${ONNX_RUNTIME_SYSTEM_NAME}-${ONNX_RUNTIME_SYSTEM_PROCESSOR}-${ONNX_RUNTIME_VERSION}")
     set(ONNX_RUNTIME_TGZ_NAME "${ONNX_RUNTIME_FILE_NAME}.tgz")
@@ -31,9 +32,11 @@ function(GetONNXRuntime ONNX_RUNTIME_ROOT)
         message(FATAL_ERROR "Failed to download ONNX Runtime. Error: ${download_result}")
     endif ()
 
-    execute_process(COMMAND ${CMAKE_COMMAND} -E tar zxf ${ONNX_RUNTIME_TGZ_NAME}
+    execute_process(
+            COMMAND ${CMAKE_COMMAND} -E tar zxf ${ONNX_RUNTIME_TGZ_NAME}
             COMMAND ${CMAKE_COMMAND} -E copy_directory ${ONNX_RUNTIME_FILE_NAME} ${ONNX_RUNTIME_ROOT}
-            WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    )
 endfunction()
 
 if (NOT EXISTS ${ONNX_RUNTIME_ROOT})
