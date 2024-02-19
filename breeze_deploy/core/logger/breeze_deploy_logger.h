@@ -15,6 +15,8 @@
 #ifndef BREEZE_DEPLOY_CORE_BREEZE_DEPLOY_LOGGER_H_
 #define BREEZE_DEPLOY_CORE_BREEZE_DEPLOY_LOGGER_H_
 
+#define FMT_HEADER_ONLY
+#define SPDLOG_HEADER_ONLY
 #define SPDLOG_ACTIVE_LEVEL SPDLOG_LOGGER_TRACE
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_sinks.h"
@@ -68,7 +70,7 @@ extern BreezeDeployLogger breeze_deploy_logger;
 {                                             		\
   if(!(flag)) {                                   	\
     BREEZE_DEPLOY_LOGGER_CRITICAL(__VA_ARGS__)   	\
-	exit(-1)										\
+	exit(-1);										\
   }                                            		\
 }
 #else
