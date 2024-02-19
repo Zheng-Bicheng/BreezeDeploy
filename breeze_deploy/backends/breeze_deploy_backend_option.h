@@ -17,6 +17,7 @@
 
 #include <string>
 #include "breeze_deploy/backends/onnx_backend/onnx_backend_option.h"
+#include "breeze_deploy/backends/rknpu_backend/rknpu_backend_option.h"
 
 namespace breeze_deploy {
 namespace backend {
@@ -24,20 +25,40 @@ namespace backend {
 class BreezeDeployBackendOption {
  public:
   BreezeDeployBackendOption() = default;
-  BreezeDeployBackendOption(const BreezeDeployBackendOption &c);
-  BreezeDeployBackendOption &operator=(const BreezeDeployBackendOption &breeze_deploy_backend_option);
+  BreezeDeployBackendOption(const BreezeDeployBackendOption &breeze_deploy_backend_option) {
+    model_path_ = breeze_deploy_backend_option.model_path_;
+    onnx_backend_option_ = breeze_deploy_backend_option.onnx_backend_option_;
+    rknpu_backend_option_ = breeze_deploy_backend_option.rknpu_backend_option_;
+  }
+  BreezeDeployBackendOption &operator=(const BreezeDeployBackendOption &breeze_deploy_backend_option){
+    if (this != &breeze_deploy_backend_option) {
+      model_path_ = breeze_deploy_backend_option.model_path_;
+      onnx_backend_option_ = breeze_deploy_backend_option.onnx_backend_option_;
+      rknpu_backend_option_ = breeze_deploy_backend_option.rknpu_backend_option_;
+    }
+    return *this;
+  }
   ~BreezeDeployBackendOption() = default;
 
-  const std::string &GetModelPath() const;
-  void SetModelPath(const std::string &model_path);
+  const std::string &GetModelPath() const{
+    return model_path_;
+  }
+  void SetModelPath(const std::string &model_path) {
+    model_path_ = model_path;
+  }
 
-  const ONNXBackendOption &GetONNXBackendOption();
+  const ONNXBackendOption &GetONNXBackendOption(){
+    return onnx_backend_option_;
+  }
+  const RKNPUBackendOption &GetRKNPUBackendOption(){
+    return rknpu_backend_option_;
+  }
 
  private:
   std::string model_path_;
 
   ONNXBackendOption onnx_backend_option_{};
-
+  RKNPUBackendOption rknpu_backend_option_{};
 };
 }
 }

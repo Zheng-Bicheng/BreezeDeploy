@@ -15,7 +15,7 @@
 #ifndef BREEZE_DEPLOY_BACKENDS_ONNXRUNTIME_ONNX_BACKEND_H_
 #define BREEZE_DEPLOY_BACKENDS_ONNXRUNTIME_ONNX_BACKEND_H_
 
-#include "onnxruntime_cxx_api.h"
+#include <onnxruntime_cxx_api.h>
 #include "breeze_deploy/backends/breeze_deploy_backend.h"
 
 namespace breeze_deploy {
@@ -32,21 +32,17 @@ class ONNXBackend : public BreezeDeployBackend {
   ~ONNXBackend() override = default;
   bool Initialize(const BreezeDeployBackendOption &breeze_deploy_backend_option) override;
   bool Infer(std::vector<BreezeDeployTensor> &input_tensor, std::vector<BreezeDeployTensor> &output_tensor) override;
-  std::vector<BreezeDeployTensorInfo> GetInputTensorInfo() override;
-  std::vector<BreezeDeployTensorInfo> GetOutputTensorInfo() override;
-  size_t GetInputTensorSize() override { return input_tensor_info_vector_.size(); }
-  size_t GetOutputTensorSize() override { return output_tensor_info_vector_.size(); }
 
  private:
   Ort::Env env_{};
   Ort::SessionOptions session_options_{};
   Ort::Session session_{nullptr};
 
-  std::vector<ONNXTensorInfo> input_tensor_info_vector_{};
+  std::vector<ONNXTensorInfo> onnx_input_tensor_info_vector_{};
   std::vector<const char *> input_node_vector_{};
   void SetInputTensorInfo();
 
-  std::vector<ONNXTensorInfo> output_tensor_info_vector_{};
+  std::vector<ONNXTensorInfo> onnx_output_tensor_info_vector_{};
   std::vector<const char *> output_node_vector_{};
   void SetOutputTensorInfo();
 

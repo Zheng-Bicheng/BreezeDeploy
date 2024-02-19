@@ -20,7 +20,12 @@ namespace breeze_deploy {
 enum class BreezeDeployTensorDataType {
   UNKNOWN,
   UINT8,
-  FP32
+  FP32,
+  INT8,
+  INT16,
+  INT32,
+  INT64,
+  BOOL
 };
 
 struct BreezeDeployTensorInfo {

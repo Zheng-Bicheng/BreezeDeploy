@@ -16,7 +16,6 @@ include(cmake/spdlog.cmake)
 include(cmake/yaml_cpp.cmake)
 include(cmake/faiss.cmake)
 
-
 option(ENABLE_ONNX_RUNTIME "Enable support for onnx runtime." ON)
 if (ENABLE_ONNX_RUNTIME)
     add_definitions(-DENABLE_ONNX_RUNTIME)
@@ -24,11 +23,11 @@ if (ENABLE_ONNX_RUNTIME)
     INCLUDE_DIRECTORIES(${ONNX_RUNTIME_INCLUDE_DIRS})
 endif ()
 
-option(ENABLE_RKNN_RUNTIME "Enable support for rknn runtime." OFF)
+option(ENABLE_RKNN_RUNTIME "Enable support for rknn runtime." ON)
 if (ENABLE_RKNN_RUNTIME)
     add_definitions(-DENABLE_RKNN_RUNTIME)
     include(cmake/rknn_runtime.cmake)
-    INCLUDE_DIRECTORIES(${ONNX_RUNTIME_INCLUDE_DIRS})
+    INCLUDE_DIRECTORIES(${RKNN_RUNTIME_INCLUDE_DIRS})
 endif ()
 
 # 设置编译对象
@@ -39,7 +38,7 @@ file(GLOB_RECURSE BREEZE_DEPLOY_SOURCES ${BREEZE_DEPLOY_SOURCE_DIRECTORY}/*.cpp)
 add_library(${CMAKE_PROJECT_NAME} SHARED ${BREEZE_DEPLOY_SOURCES})
 target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC
         ${SPDLOG_LIBRARIES} ${FAISS_LIBRARIES} ${EIGEN_LIBRARIES}
-        ${OPENCV_LIBRARIES} ${ONNX_RUNTIME_LIBRARIES} ${YAML_CPP_LIBRARIES}
+        ${OPENCV_LIBRARIES} ${ONNX_RUNTIME_LIBRARIES} ${YAML_CPP_LIBRARIES} ${RKNN_RUNTIME_LIBRARIES}
 )
 
 # TODO: 判断编译时是否开启example
