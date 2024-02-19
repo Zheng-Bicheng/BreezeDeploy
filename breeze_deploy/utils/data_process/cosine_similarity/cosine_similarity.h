@@ -14,7 +14,7 @@
 
 #ifndef BREEZE_DEPLOY_UTILS_DATA_PROCESS_COSINE_SIMILARITY_H_
 #define BREEZE_DEPLOY_UTILS_DATA_PROCESS_COSINE_SIMILARITY_H_
-#include <Eigen/Eigen>
+#include "Eigen/Eigen"
 #include "breeze_deploy/core/result/breeze_deploy_result.h"
 namespace breeze_deploy {
 namespace utils {

@@ -14,7 +14,7 @@
 
 #ifndef BREEZE_DEPLOY_UTILS_IMAGE_PROCESS_CROP_CROP_H_
 #define BREEZE_DEPLOY_UTILS_IMAGE_PROCESS_CROP_CROP_H_
-#include <opencv2/opencv.hpp>
+#include "opencv2/opencv.hpp"
 #include "breeze_deploy/models/detection/detection_model.h"
 
 namespace breeze_deploy {

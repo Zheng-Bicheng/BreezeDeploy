@@ -13,8 +13,8 @@
 // limitations under the License.
 
 #include "breeze_deploy/index/breeze_deploy_index.h"
-#include <faiss/utils/distances.h>
-#include <faiss/IndexFlat.h>
+#include "faiss/utils/distances.h"
+#include "faiss/IndexFlat.h"
 #include "breeze_deploy/core/logger/breeze_deploy_logger.h"
 
 namespace breeze_deploy {

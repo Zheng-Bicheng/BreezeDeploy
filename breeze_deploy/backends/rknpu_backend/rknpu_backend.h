@@ -18,7 +18,7 @@
 #define BREEZE_DEPLOY_RKNPU_BACKEND_H
 
 #include "breeze_deploy/backends/breeze_deploy_backend.h"
-#include <rknn_api.h>
+#include "rknn_api.h"
 
 
 namespace breeze_deploy {

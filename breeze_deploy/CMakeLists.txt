@@ -9,6 +9,7 @@ set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES VISIBILITY_INLINES_HIDDEN
 set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES C_VISIBILITY_PRESET hidden)
 set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
 find_package(OpenBLAS REQUIRED)
+target_link_options(${CMAKE_PROJECT_NAME} PRIVATE "-Wl,-Bsymbolic")
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE -Wl,--whole-archive ${FAISS_LIBRARIES} OpenBLAS::OpenBLAS ${SPDLOG_LIBRARIES} ${EIGEN_LIBRARIES} ${YAML_CPP_LIBRARIES})
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE -Wl,--no-whole-archive ${OPENCV_LIBRARIES})
 

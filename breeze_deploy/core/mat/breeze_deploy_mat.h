@@ -14,7 +14,7 @@
 
 #ifndef BREEZE_DEPLOY_CORE_BREEZE_DEPLOY_MAT_H_
 #define BREEZE_DEPLOY_CORE_BREEZE_DEPLOY_MAT_H_
-#include <opencv2/opencv.hpp>
+#include "opencv2/opencv.hpp"
 #include "breeze_deploy/core/tensor/breeze_deploy_tensor.h"
 namespace breeze_deploy {
 enum class BreezeDeployMatFormat{

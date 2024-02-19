@@ -14,8 +14,8 @@
 
 #ifndef BREEZE_DEPLOY_INDEX_BREEZE_DEPLOY_INDEX_H_
 #define BREEZE_DEPLOY_INDEX_BREEZE_DEPLOY_INDEX_H_
-#include <faiss/index_factory.h>
-#include <faiss/IndexIDMap.h>
+#include "faiss/index_factory.h"
+#include "faiss/IndexIDMap.h"
 #include <memory>
 namespace breeze_deploy {
 namespace index {
