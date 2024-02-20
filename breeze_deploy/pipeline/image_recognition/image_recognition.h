@@ -23,7 +23,7 @@
 namespace breeze_deploy {
 namespace models {
 using namespace breeze_deploy::index;
-class ImageRecognition {
+class BREEZE_DEPLOY_EXPORT ImageRecognition {
  public:
   explicit ImageRecognition(std::unique_ptr<FeatureModel> recognition_model,
 							std::unique_ptr<DetectionModel> detection_model = nullptr);
@@ -48,7 +48,6 @@ class ImageRecognition {
   std::vector<cv::Mat> DetectionPredict(const cv::Mat &input_image);
   std::vector<cv::Mat> DetectionPredict(const cv::Mat &input_image, DetectionResult &detection_result);
   std::vector<std::vector<float>> RecognitionPredict(const std::vector<cv::Mat> &input_image_vector);
-  std::vector<std::vector<float>> GetFeature(const std::string &image_path, bool use_detection);
   std::vector<std::vector<float>> GetFeature(const cv::Mat &input_image, bool use_detection);
 };
 }

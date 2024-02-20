@@ -21,7 +21,7 @@ namespace breeze_deploy {
 namespace utils {
 namespace data_process {
 template<typename T>
-bool NormalizeL2(std::vector<T> &input_data) {
+BREEZE_DEPLOY_EXPORT bool NormalizeL2(std::vector<T> &input_data) {
   if (input_data.empty()) {
 	return false;
   }

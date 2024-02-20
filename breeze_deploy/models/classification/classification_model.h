@@ -19,7 +19,7 @@
 #include "breeze_deploy/core/result/breeze_deploy_result.h"
 namespace breeze_deploy {
 namespace models {
-class ClassificationModel : public BreezeDeployModel {
+class BREEZE_DEPLOY_EXPORT ClassificationModel : public BreezeDeployModel {
  public:
   ClassificationModel(const std::string &model_path, const std::string &config_file_path)
 	  : BreezeDeployModel(model_path, config_file_path) {}

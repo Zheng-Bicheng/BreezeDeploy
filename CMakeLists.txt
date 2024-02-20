@@ -56,6 +56,10 @@ endif ()
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/config DESTINATION .)
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/config DESTINATION bin)
 
+# 安装Vcpkg第三方库到third_party/vcpkg目录(全为静态库，因此只需要拷贝头文件)
+install(DIRECTORY ${VCPKG_INCLUDE_ROOT} DESTINATION third_party/vcpkg)
+install(DIRECTORY ${VCPKG_LIBRARY_ROOT} DESTINATION third_party/vcpkg)
+
 add_subdirectory(breeze_deploy)
 
 # TODO: 判断编译时是否开启example

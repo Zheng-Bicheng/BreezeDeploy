@@ -8,11 +8,12 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${RUNTIME_INCLUDE_DIRS}
 set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES VISIBILITY_INLINES_HIDDEN TRUE)
 set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES C_VISIBILITY_PRESET hidden)
 set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
-find_package(OpenBLAS REQUIRED)
-target_link_options(${CMAKE_PROJECT_NAME} PRIVATE "-Wl,-Bsymbolic")
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE -Wl,--whole-archive ${FAISS_LIBRARIES} OpenBLAS::OpenBLAS ${SPDLOG_LIBRARIES} ${EIGEN_LIBRARIES} ${YAML_CPP_LIBRARIES})
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE -Wl,--no-whole-archive ${OPENCV_LIBRARIES})
 
+target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE -fvisibility=hidden)
+
+find_package(OpenBLAS REQUIRED)
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE -Wl,--whole-archive -Wl,-Bsymbolic ${FAISS_LIBRARIES} OpenBLAS::OpenBLAS ${SPDLOG_LIBRARIES} ${EIGEN_LIBRARIES} ${YAML_CPP_LIBRARIES})
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE -Wl,--no-whole-archive -Wl,-Bsymbolic ${OPENCV_LIBRARIES})
 # 安装头文件
 install(DIRECTORY ${BREEZE_DEPLOY_SOURCE_DIRECTORY}
         DESTINATION ${CMAKE_INSTALL_PREFIX}/include
@@ -21,6 +22,3 @@ install(DIRECTORY ${BREEZE_DEPLOY_SOURCE_DIRECTORY}
 # 安装动态库
 install(TARGETS ${CMAKE_PROJECT_NAME} DESTINATION lib)
 install(TARGETS ${CMAKE_PROJECT_NAME} DESTINATION bin)
-
-# 安装Vcpkg第三方库到third_party/vcpkg目录(全为静态库，因此只需要拷贝头文件)
-install(DIRECTORY ${VCPKG_INCLUDE_ROOT} DESTINATION third_party/vcpkg)
