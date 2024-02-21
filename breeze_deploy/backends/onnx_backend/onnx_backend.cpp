@@ -44,6 +44,8 @@ bool ONNXBackend::Initialize(const BreezeDeployBackendOption &breeze_deploy_back
 
   // 获取输出Tensor信息
   SetOutputTensorInfo();
+
+
   return true;
 }
 
@@ -54,7 +56,7 @@ bool ONNXBackend::Infer(std::vector<BreezeDeployTensor> &input_tensor, std::vect
 	auto p_data = reinterpret_cast<float *>(input_tensor[i].GetTensorDataPointer());
 	auto p_data_element_count = input_tensor[i].GetTensorSize();
 	auto shape = input_tensor[i].GetTensorInfo().tensor_shape.data();
-	auto shape_len = input_tensor_info_vector_[i].shape.size();
+	auto shape_len = onnx_input_tensor_info_vector_[i].shape.size();
 	input_tensors.emplace_back(Ort::Value::CreateTensor<float>(
 		memory_info,
 		p_data,
@@ -85,11 +87,12 @@ void ONNXBackend::SetInputTensorInfo() {
   Ort::AllocatorWithDefaultOptions allocator;
   // 获取输入Tensor个数
   size_t num_input_nodes = session_.GetInputCount();
+  onnx_input_tensor_info_vector_.resize(num_input_nodes);
   input_tensor_info_vector_.resize(num_input_nodes);
 
   // 设置输入Tensor参数
   for (int i = 0; i < num_input_nodes; ++i) {
-	auto &input_tensor_info = input_tensor_info_vector_[i];
+	auto &input_tensor_info = onnx_input_tensor_info_vector_[i];
 
 	// copy tensor name
 	auto input_tensor_node_name = session_.GetInputNameAllocated(i, allocator);
@@ -100,13 +103,16 @@ void ONNXBackend::SetInputTensorInfo() {
 	auto tensor_type_and_shape_info = input_type_info.GetTensorTypeAndShapeInfo();
 	input_tensor_info.type = tensor_type_and_shape_info.GetElementType();
 	input_tensor_info.shape = tensor_type_and_shape_info.GetShape();
+
+    input_tensor_info_vector_[i].tensor_shape = onnx_input_tensor_info_vector_[i].shape;
+    input_tensor_info_vector_[i].tensor_name = onnx_input_tensor_info_vector_[i].name;
   }
 
   // 设置输入Tensor名称列表
   input_node_vector_.resize(num_input_nodes);
   for (int i = 0; i < num_input_nodes; ++i) {
 	auto &input_node_name = input_node_vector_[i];
-	auto &input_tensor_info = input_tensor_info_vector_[i];
+	auto &input_tensor_info = onnx_input_tensor_info_vector_[i];
 	input_node_name = input_tensor_info.name.c_str();
   }
 }
@@ -115,11 +121,11 @@ void ONNXBackend::SetOutputTensorInfo() {
   Ort::AllocatorWithDefaultOptions allocator;
   // 获取输出Tensor个数
   size_t num_output_nodes = session_.GetOutputCount();
+  onnx_output_tensor_info_vector_.resize(num_output_nodes);
   output_tensor_info_vector_.resize(num_output_nodes);
-
   // 设置输出Tensor参数
   for (int i = 0; i < num_output_nodes; ++i) {
-	auto &output_tensor_info = output_tensor_info_vector_[i];
+	auto &output_tensor_info = onnx_output_tensor_info_vector_[i];
 
 	// copy tensor name
 	auto output_tensor_node_name = session_.GetOutputNameAllocated(i, allocator);
@@ -130,30 +136,17 @@ void ONNXBackend::SetOutputTensorInfo() {
 	auto tensor_type_and_shape_info = output_type_info.GetTensorTypeAndShapeInfo();
 	output_tensor_info.type = tensor_type_and_shape_info.GetElementType();
 	output_tensor_info.shape = tensor_type_and_shape_info.GetShape();
+
+    output_tensor_info_vector_[i].tensor_shape = onnx_output_tensor_info_vector_[i].shape;
+    output_tensor_info_vector_[i].tensor_name = onnx_output_tensor_info_vector_[i].name;
   }
 
   output_node_vector_.resize(num_output_nodes);
   for (int i = 0; i < num_output_nodes; ++i) {
 	auto &output_node_name = output_node_vector_[i];
-	auto &output_tensor_info = output_tensor_info_vector_[i];
+	auto &output_tensor_info = onnx_output_tensor_info_vector_[i];
 	output_node_name = output_tensor_info.name.c_str();
   }
-}
-std::vector<BreezeDeployTensorInfo> ONNXBackend::GetInputTensorInfo() {
-  std::vector<BreezeDeployTensorInfo> tensor_info(input_tensor_info_vector_.size());
-  for (int i = 0; i < input_tensor_info_vector_.size(); ++i) {
-	tensor_info[i].tensor_shape = input_tensor_info_vector_[i].shape;
-	tensor_info[i].tensor_name = input_tensor_info_vector_[i].name;
-  }
-  return std::move(tensor_info);
-}
-std::vector<BreezeDeployTensorInfo> ONNXBackend::GetOutputTensorInfo() {
-  std::vector<BreezeDeployTensorInfo> tensor_info(output_tensor_info_vector_.size());
-  for (int i = 0; i < output_tensor_info_vector_.size(); ++i) {
-	tensor_info[i].tensor_shape = output_tensor_info_vector_[i].shape;
-	tensor_info[i].tensor_name = output_tensor_info_vector_[i].name;
-  }
-  return std::move(tensor_info);
 }
 }
 }

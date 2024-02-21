@@ -14,8 +14,10 @@
 
 #ifndef BREEZE_DEPLOY_INDEX_BREEZE_DEPLOY_INDEX_H_
 #define BREEZE_DEPLOY_INDEX_BREEZE_DEPLOY_INDEX_H_
-#include <faiss/index_factory.h>
-#include <faiss/IndexIDMap.h>
+#include <memory>
+#include "faiss/index_factory.h"
+#include "faiss/IndexIDMap.h"
+#include "breeze_deploy/core/logger/breeze_deploy_logger.h"
 namespace breeze_deploy {
 namespace index {
 enum class BreezeDeployIndexMetricType {
@@ -30,7 +32,7 @@ enum class BreezeDeployIndexMetricType {
   METRIC_Jaccard = faiss::METRIC_Jaccard,
 };
 
-class BreezeDeployIndex {
+class BREEZE_DEPLOY_EXPORT BreezeDeployIndex {
  public:
   BreezeDeployIndex(int feature_length,
 					const std::string &description,

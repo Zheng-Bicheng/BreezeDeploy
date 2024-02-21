@@ -26,15 +26,35 @@ class BreezeDeployBackend {
   virtual ~BreezeDeployBackend() = default;
   virtual bool Initialize(const BreezeDeployBackendOption &breeze_deploy_backend_option) = 0;
   virtual bool Infer(std::vector<BreezeDeployTensor> &input_tensor, std::vector<BreezeDeployTensor> &output_tensor) = 0;
-  virtual std::vector<BreezeDeployTensorInfo> GetInputTensorInfo() = 0;
-  virtual std::vector<BreezeDeployTensorInfo> GetOutputTensorInfo() = 0;
-  virtual size_t GetInputTensorSize() = 0;
-  virtual size_t GetOutputTensorSize() = 0;
-
-//  virtual bool PrintBackendTensorInfo();
+  const std::vector<BreezeDeployTensorInfo>& GetInputTensorInfo() {
+    return input_tensor_info_vector_;
+  }
+  const std::vector<BreezeDeployTensorInfo>& GetOutputTensorInfo() {
+    return output_tensor_info_vector_;
+  }
+  virtual size_t GetInputTensorSize() {
+    return input_tensor_info_vector_.size();
+  }
+  virtual size_t GetOutputTensorSize() {
+    return output_tensor_info_vector_.size();
+  }
+//  bool PrintBackendTensorInfo() {
+//    for (int i = 0; i < input_tensor_info_vector_.size(); ++i) {
+//      auto &input_tensor_info = input_tensor_info_vector_[i];
+//      BREEZE_DEPLOY_LOGGER_INFO("Input Tensor[{},{}]: [{},{},{},{}]",
+//                                i,
+//                                input_tensor_info.tensor_name,
+//                                input_tensor_info.tensor_shape[0],
+//                                input_tensor_info.tensor_shape[1],
+//                                input_tensor_info.tensor_shape[2],
+//                                input_tensor_info.tensor_shape[3])
+//    }
+//  }
 
  protected:
   BreezeDeployBackendOption breeze_deploy_backend_option_;
+  std::vector<BreezeDeployTensorInfo> input_tensor_info_vector_;
+  std::vector<BreezeDeployTensorInfo> output_tensor_info_vector_;
 };
 }
 }

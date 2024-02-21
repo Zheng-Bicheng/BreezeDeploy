@@ -22,14 +22,43 @@ namespace backend {
 class ONNXBackendOption {
  public:
   ONNXBackendOption() = default;
-  ONNXBackendOption(const ONNXBackendOption& onnx_backend_option);
-  ONNXBackendOption &operator=(const ONNXBackendOption &breeze_deploy_backend_option);
+  ONNXBackendOption(const ONNXBackendOption &onnx_backend_option) {
+    ort_logging_level_ = onnx_backend_option.ort_logging_level_;
+    log_id_ = onnx_backend_option.log_id_;
+    graph_optimization_level_ = onnx_backend_option.graph_optimization_level_;
+    intra_op_num_threads_ = onnx_backend_option.intra_op_num_threads_;
+    inter_op_num_threads_ = onnx_backend_option.inter_op_num_threads_;
+  }
+  ONNXBackendOption &operator=(const ONNXBackendOption &breeze_deploy_backend_option) {
+    if (this != &breeze_deploy_backend_option) {
+      ort_logging_level_ = breeze_deploy_backend_option.ort_logging_level_;
+      log_id_ = breeze_deploy_backend_option.log_id_;
+      graph_optimization_level_ = breeze_deploy_backend_option.graph_optimization_level_;
+      intra_op_num_threads_ = breeze_deploy_backend_option.intra_op_num_threads_;
+      inter_op_num_threads_ = breeze_deploy_backend_option.inter_op_num_threads_;
+    }
+    return *this;
+  }
 
-  OrtLoggingLevel GetOrtLoggingLevel();
-  const std::string& GetLogID();
-  GraphOptimizationLevel GetGraphOptimizationLevel();
-  int GetIntraOPNumThreads() const;
-  int GetInterOPNumThreads() const;
+  OrtLoggingLevel GetOrtLoggingLevel() {
+    return ort_logging_level_;
+  }
+
+  const std::string &GetLogID() {
+    return log_id_;
+  }
+
+  GraphOptimizationLevel GetGraphOptimizationLevel() {
+    return graph_optimization_level_;
+  }
+
+  int GetIntraOPNumThreads() const {
+    return intra_op_num_threads_;
+  }
+
+  int GetInterOPNumThreads() const {
+    return inter_op_num_threads_;
+  }
 
  private:
   OrtLoggingLevel ort_logging_level_ = OrtLoggingLevel::ORT_LOGGING_LEVEL_WARNING;

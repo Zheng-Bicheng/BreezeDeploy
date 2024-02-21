@@ -14,13 +14,18 @@
 
 #ifndef BREEZE_DEPLOY_MODELS_BREEZE_DEPLOY_TENSOR_H_
 #define BREEZE_DEPLOY_MODELS_BREEZE_DEPLOY_TENSOR_H_
-#include <opencv2/opencv.hpp>
+#include "opencv2/opencv.hpp"
 
 namespace breeze_deploy {
 enum class BreezeDeployTensorDataType {
   UNKNOWN,
   UINT8,
-  FP32
+  FP32,
+  INT8,
+  INT16,
+  INT32,
+  INT64,
+  BOOL
 };
 
 struct BreezeDeployTensorInfo {

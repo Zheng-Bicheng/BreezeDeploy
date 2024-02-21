@@ -17,6 +17,7 @@
 
 #include <chrono>
 #include <string>
+#include "breeze_deploy/core/logger/breeze_deploy_logger.h"
 
 namespace breeze_deploy {
 enum class BreezeDeployTimeType {
@@ -26,7 +27,7 @@ enum class BreezeDeployTimeType {
   Seconds
 };
 
-class BreezeDeployTime {
+class BREEZE_DEPLOY_EXPORT BreezeDeployTime {
  public:
   void Start();
   void End();

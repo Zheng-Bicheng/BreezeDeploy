@@ -36,12 +36,12 @@ sudo apt-get install nasm
 ./vcpkg/vcpkg install --triplet=arm64-cross-compilation spdlog eigen3 opencv4[core,eigen,dnn,jpeg,png] yaml-cpp faiss
 ```
 
-## 
+## 编译
 
 ```bash
-# 普通编译
-cmake .. -DCMAKE_INSTALL_PREFIX=${PWD}/breeze_deploy
+# For amd64-linux
+cmake .. -DVCPKG_TARGET_TRIPLET="x64-linux"  -DENABLE_RKNN_RUNTIME=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${PWD}/breeze_deploy
 
-# 交叉编译
-cmake .. -DVCPKG_TARGET_TRIPLET="arm64-cross-compilation" -DCMAKE_INSTALL_PREFIX="${PWD}/breeze_deploy"
+# For arm64-linux
+cmake .. -DVCPKG_TARGET_TRIPLET="arm64-cross-compilation" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="${PWD}/breeze_deploy"
 ```

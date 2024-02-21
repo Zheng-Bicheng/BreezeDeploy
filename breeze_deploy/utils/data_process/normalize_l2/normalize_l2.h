@@ -15,13 +15,13 @@
 #ifndef BREEZE_DEPLOY_UTILS_DATA_PROCESS_NORMALIZE_L2_NORMALIZE_L2_H_
 #define BREEZE_DEPLOY_UTILS_DATA_PROCESS_NORMALIZE_L2_NORMALIZE_L2_H_
 #include <vector>
-#include <Eigen/Eigen>
+#include "Eigen/Eigen"
 
 namespace breeze_deploy {
 namespace utils {
 namespace data_process {
 template<typename T>
-bool NormalizeL2(std::vector<T> &input_data) {
+BREEZE_DEPLOY_EXPORT bool NormalizeL2(std::vector<T> &input_data) {
   if (input_data.empty()) {
 	return false;
   }

@@ -17,7 +17,7 @@
 #include "breeze_deploy/models/detection/detection_model.h"
 namespace breeze_deploy {
 namespace models {
-class YOLOV5Face : public DetectionModel {
+class BREEZE_DEPLOY_EXPORT YOLOV5Face : public DetectionModel {
  public:
   YOLOV5Face(const std::string &model_path, const std::string &config_file_path)
 	  : DetectionModel(model_path, config_file_path) {}

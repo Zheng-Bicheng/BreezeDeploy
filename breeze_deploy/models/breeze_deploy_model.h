@@ -30,7 +30,7 @@ namespace breeze_deploy {
 namespace models {
 using namespace breeze_deploy::preprocess;
 using namespace breeze_deploy::backend;
-class BreezeDeployModel {
+class BREEZE_DEPLOY_EXPORT BreezeDeployModel {
  public:
   BreezeDeployModel(const std::string &model_path, const std::string &config_file_path);
   virtual ~BreezeDeployModel() = default;

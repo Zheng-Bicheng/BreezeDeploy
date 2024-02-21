@@ -15,12 +15,17 @@
 #ifndef BREEZE_DEPLOY_CORE_BREEZE_DEPLOY_LOGGER_H_
 #define BREEZE_DEPLOY_CORE_BREEZE_DEPLOY_LOGGER_H_
 
+#define FMT_HEADER_ONLY
+#define SPDLOG_HEADER_ONLY
 #define SPDLOG_ACTIVE_LEVEL SPDLOG_LOGGER_TRACE
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_sinks.h"
 
 namespace breeze_deploy {
-class BreezeDeployLogger {
+
+#define BREEZE_DEPLOY_EXPORT __attribute__ ((visibility ("default")))
+
+class BREEZE_DEPLOY_EXPORT BreezeDeployLogger {
  public:
   BreezeDeployLogger();
   ~BreezeDeployLogger();
@@ -31,7 +36,7 @@ class BreezeDeployLogger {
   std::shared_ptr<spdlog::logger> base_logger_;
 };
 
-extern BreezeDeployLogger breeze_deploy_logger;
+BREEZE_DEPLOY_EXPORT extern BreezeDeployLogger breeze_deploy_logger;
 
 #define BREEZE_DEPLOY_LOGGER_INFO(...)                     	\
 {                                                         	\
@@ -68,7 +73,7 @@ extern BreezeDeployLogger breeze_deploy_logger;
 {                                             		\
   if(!(flag)) {                                   	\
     BREEZE_DEPLOY_LOGGER_CRITICAL(__VA_ARGS__)   	\
-	exit(-1)										\
+	exit(-1);										\
   }                                            		\
 }
 #else

@@ -14,32 +14,36 @@
 
 #ifndef BREEZE_DEPLOY_UTILS_DATA_PROCESS_COSINE_SIMILARITY_H_
 #define BREEZE_DEPLOY_UTILS_DATA_PROCESS_COSINE_SIMILARITY_H_
-#include <Eigen/Eigen>
+#include "Eigen/Eigen"
 #include "breeze_deploy/core/result/breeze_deploy_result.h"
 namespace breeze_deploy {
 namespace utils {
 namespace data_process {
 using namespace breeze_deploy::models;
 template<typename T>
-double CosineSimilarity(const std::vector<T> &a, const std::vector<T> &b, bool use_normalize = false) {
+BREEZE_DEPLOY_EXPORT double CosineSimilarity(const std::vector<T> &a,
+                                             const std::vector<T> &b,
+                                             bool use_normalize = false) {
   if ((a.size() != b.size()) && (a.empty()) || (b.empty())) {
-	BREEZE_DEPLOY_LOGGER_ERROR(
-		"The size of Vector A and B must be equal and greater than 0. But the size of vector A is {}, while the size of vector B is also {}.",
-		a.size(),
-		b.size())
-	return 0;
+    BREEZE_DEPLOY_LOGGER_ERROR(
+        "The size of Vector A and B must be equal and greater than 0. But the size of vector A is {}, while the size of vector B is also {}.",
+        a.size(),
+        b.size())
+    return 0;
   }
 
   Eigen::Map<const Eigen::VectorXf> eigen_vector_a(a.data(), static_cast<long>(a.size()));
   Eigen::Map<const Eigen::VectorXf> eigen_vector_b(b.data(), static_cast<long>(b.size()));
   if (use_normalize) {
-	return eigen_vector_a.dot(eigen_vector_b) / (eigen_vector_a.norm() * eigen_vector_b.norm());
+    return eigen_vector_a.dot(eigen_vector_b) / (eigen_vector_a.norm() * eigen_vector_b.norm());
   } else {
-	return eigen_vector_a.dot(eigen_vector_b);
+    return eigen_vector_a.dot(eigen_vector_b);
   }
 }
 
-double CosineSimilarity(const FeatureResult &a, const FeatureResult &b, bool use_normalize = false) {
+BREEZE_DEPLOY_EXPORT double CosineSimilarity(const FeatureResult &a,
+                                             const FeatureResult &b,
+                                             bool use_normalize = false) {
   return CosineSimilarity<float>(a.feature_vector, b.feature_vector, use_normalize);
 }
 }

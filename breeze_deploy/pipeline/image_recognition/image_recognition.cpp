@@ -93,10 +93,6 @@ std::vector<std::vector<float>> ImageRecognition::RecognitionPredict(const std::
   }
   return std::move(temp_feature_vector);
 }
-std::vector<std::vector<float>> ImageRecognition::GetFeature(const std::string &image_path, bool use_detection) {
-  auto input_image = cv::imread(image_path);
-  return GetFeature(input_image, use_detection);
-}
 std::vector<std::vector<float>> ImageRecognition::GetFeature(const cv::Mat &input_image, bool use_detection) {
   std::vector<cv::Mat> rec_image_vector;
   rec_image_vector.emplace_back(input_image);
@@ -154,7 +150,8 @@ bool ImageRecognition::BuildDatabase(const std::string &database_path, bool use_
 	  }
 
 	  // 推理图片获取图片特征
-	  auto feature_vector = GetFeature(image_file_path, use_detection);
+      auto infer_image = cv::imread(image_file_path);
+	  auto feature_vector = GetFeature(infer_image, use_detection);
 	  if (feature_vector.empty()) {
 		BREEZE_DEPLOY_LOGGER_WARN("No target detected in the image.")
 		continue;
