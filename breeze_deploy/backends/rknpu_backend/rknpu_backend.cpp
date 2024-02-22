@@ -114,10 +114,6 @@ bool RKNPUBackend::InitInputOutputAttributes() {
       return false;
     }
 
-    // FastDeploy Only support postprocess when output type is fp32,
-    // so output_attrs_.type needs to be fixed as RKNN_TENSOR_FLOAT32.
-    output_attrs_[i].type = RKNN_TENSOR_FLOAT32;
-
     PrintAttribute(output_attrs_[i]);
 
     // Copy output_attrs_ to input tensor info
@@ -226,6 +222,27 @@ bool RKNPUBackend::Infer(std::vector<BreezeDeployTensor> &input_tensor,
                                 get_type_string(input_rknn_tensor_type),
                                 scale)
       input_attrs_[i].size *= scale;
+      input_attrs_[i].size_with_stride = input_attrs_[i].size;
+    }
+  }
+
+  for (uint32_t i = 0; i < io_num_.n_output; i++) {
+    auto output_bd_tensor_type = BreezeDeployTensorType::FP32;
+    auto output_rknn_tensor_type = BDTensorDataTypeToRKNNTensorType(output_bd_tensor_type);
+    output_attrs_[i].type = output_rknn_tensor_type;
+    if (output_rknn_tensor_type != input_attrs_[i].type) {
+      auto model_rknn_tensor_type = input_attrs_[i].type;
+      auto model_bd_tensor_type = RKNNTensorTypeToBDTensorType(model_rknn_tensor_type);
+      output_attrs_[i].type = output_rknn_tensor_type;
+      auto scale = GetBDTensorTypeSize(output_bd_tensor_type) / GetBDTensorTypeSize(model_bd_tensor_type);
+      BREEZE_DEPLOY_LOGGER_WARN("The output_tensor_type != model_output_type. "
+                                "The output_tensor_type need {}, but model_output[{}].type is {}. "
+                                "The model_output_size need *= scale({}).",
+                                get_type_string(model_rknn_tensor_type),
+                                i,
+                                get_type_string(output_rknn_tensor_type),
+                                scale)
+      output_attrs_[i].size *= scale;
     }
   }
 

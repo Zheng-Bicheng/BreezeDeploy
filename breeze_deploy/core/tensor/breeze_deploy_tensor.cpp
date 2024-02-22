@@ -62,7 +62,7 @@ size_t GetBDTensorTypeSize(BreezeDeployTensorType breeze_deploy_data_type) {
     case BreezeDeployTensorType::BOOL:size = sizeof(bool);
       break;
     case BreezeDeployTensorType::FP16:
-      size = sizeof(float16_t);
+      size = sizeof(cv::float16_t);
       break;
     case BreezeDeployTensorType::UNKNOWN:size = 0;
       break;

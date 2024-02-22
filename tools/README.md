@@ -6,4 +6,8 @@ python tools/onnx2rknn.py --onnx_model_path BreezeDeployModelZoo/classfication/m
 python tools/onnx2rknn.py --onnx_model_path BreezeDeployModelZoo/classfication/models/resnet18.onnx \
                           --config_file_path config/classification/resnet18_template.yaml \
                           --rknn_model_path ${PWD}/resnet18.rknn
+                          
+python tools/onnx2rknn.py --onnx_model_path BreezeDeployModelZoo/classfication/models/ResNet50_vd_QAT.onnx \
+                          --config_file_path config/classification/ResNet50_vd_QAT_template.yaml \
+                          --rknn_model_path ${PWD}/ResNet50_vd_QAT.rknn
 ```
