@@ -20,13 +20,13 @@
 #include "breeze_deploy/backends/breeze_deploy_backend.h"
 #include "rknn_api.h"
 
-
 namespace breeze_deploy {
 namespace backend {
 class RKNPUBackend : public BreezeDeployBackend {
  public:
   RKNPUBackend() = default;
   ~RKNPUBackend() override;
+  std::string BackendName() override { return "RKNPUBackend"; }
   bool Initialize(const BreezeDeployBackendOption &breeze_deploy_backend_option) override;
   bool Infer(std::vector<BreezeDeployTensor> &input_tensor, std::vector<BreezeDeployTensor> &output_tensor) override;
 
@@ -37,13 +37,18 @@ class RKNPUBackend : public BreezeDeployBackend {
 
   rknn_input_output_num io_num_{0, 0};
 
-  rknn_tensor_attr* input_attrs_ = nullptr;
-  rknn_tensor_attr* output_attrs_ = nullptr;
+  rknn_tensor_attr *input_attrs_ = nullptr;
+  rknn_tensor_attr *output_attrs_ = nullptr;
+  bool InitInputOutputAttributes();
+  uint32_t GetAttributeByteSize(const rknn_tensor_attr &attr) const;
+  void PrintAttribute(rknn_tensor_attr &attr);
 
-  std::vector<rknn_tensor_mem*> input_mems_;
-  std::vector<rknn_tensor_mem*> output_mems_;
+  std::vector<rknn_tensor_mem *> input_memories_ = {};
+  std::vector<rknn_tensor_mem *> output_memories_ = {};
+  bool InitInputOutputMemories();
 
-  static BreezeDeployTensorDataType RknnTensorTypeToFDDataType(rknn_tensor_type type);
+  static BreezeDeployTensorType RKNNTensorTypeToBDTensorType(rknn_tensor_type type);
+  static rknn_tensor_type BDTensorDataTypeToRKNNTensorType(BreezeDeployTensorType type);
 };
 }
 }

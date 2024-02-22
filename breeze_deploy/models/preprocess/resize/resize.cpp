@@ -19,6 +19,7 @@ namespace preprocess {
 Resize::Resize(int width, int height)
 	: width_{width}, height_{height} {}
 bool Resize::Run(BreezeDeployMat &breeze_deploy_mat) {
+  BREEZE_DEPLOY_LOGGER_DEBUG("{}::Run Start",FunctionName())
   if (width_ == 0 || height_ == 0) {
 	BREEZE_DEPLOY_LOGGER_ERROR("width_ == 0 || height_ == 0")
 	return false;
@@ -33,6 +34,7 @@ bool Resize::Run(BreezeDeployMat &breeze_deploy_mat) {
   // cv::INTER_LINEAR  291267	269096			0.998771
   // cv::INTER_AREA    max						0.999129
   cv::resize(mat, mat, cv::Size(width_, height_), 0, 0, cv::INTER_NEAREST);
+  BREEZE_DEPLOY_LOGGER_DEBUG("{}::Run End",FunctionName())
   return true;
 }
 }

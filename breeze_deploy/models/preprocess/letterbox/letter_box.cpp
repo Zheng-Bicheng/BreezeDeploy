@@ -21,6 +21,7 @@ LetterBox::LetterBox(int width, int height, std::array<float, 3> scalar)
 
 // Copy form https://flyfish.blog.csdn.net/article/details/130320915
 bool LetterBox::Run(BreezeDeployMat &breeze_deploy_mat) {
+  BREEZE_DEPLOY_LOGGER_DEBUG("{}::Run Start",FunctionName())
   auto &src = breeze_deploy_mat.GetMat();
 
   // Get radio
@@ -40,6 +41,7 @@ bool LetterBox::Run(BreezeDeployMat &breeze_deploy_mat) {
   cv::Rect roi(pad_width_, pad_height_, src.cols, src.rows);
   src.copyTo(output_image(roi));
   src = output_image;
+  BREEZE_DEPLOY_LOGGER_DEBUG("{}::Run End",FunctionName())
   return true;
 }
 }

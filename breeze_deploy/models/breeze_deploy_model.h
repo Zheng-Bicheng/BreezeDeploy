@@ -49,6 +49,7 @@ class BREEZE_DEPLOY_EXPORT BreezeDeployModel {
   virtual bool InitializeBackend(const BreezeDeployBackendOption &breeze_deploy_backend_option);
 
   // Model Preprocess
+  BreezeDeployMat input_mat_;
   std::vector<std::shared_ptr<BreezeDeployPreprocess>> preprocess_functions_{};
   virtual bool Preprocess(const cv::Mat &input_mat) = 0;
 

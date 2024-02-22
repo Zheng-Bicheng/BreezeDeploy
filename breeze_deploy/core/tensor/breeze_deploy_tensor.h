@@ -17,9 +17,10 @@
 #include "opencv2/opencv.hpp"
 
 namespace breeze_deploy {
-enum class BreezeDeployTensorDataType {
+enum class BreezeDeployTensorType {
   UNKNOWN,
   UINT8,
+  FP16,
   FP32,
   INT8,
   INT16,
@@ -27,34 +28,32 @@ enum class BreezeDeployTensorDataType {
   INT64,
   BOOL
 };
+size_t GetBDTensorTypeSize(BreezeDeployTensorType tensor_data_type);
 
 struct BreezeDeployTensorInfo {
   BreezeDeployTensorInfo() = default;
   std::string tensor_name;
   std::vector<int64_t> tensor_shape = {0, 0, 0, 0};
-  BreezeDeployTensorDataType tensor_type = BreezeDeployTensorDataType::FP32;
+  BreezeDeployTensorType tensor_type = BreezeDeployTensorType::FP32;
 };
 
 class BreezeDeployTensor {
  public:
   BreezeDeployTensor();
   void SetTensorData(uint8_t *tensor_data_ptr,
-					 const std::vector<int64_t> &tensor_shape,
-					 BreezeDeployTensorDataType tensor_data_type);
+                     const std::vector<int64_t> &tensor_shape,
+                     BreezeDeployTensorType tensor_data_type);
 
   uint8_t *GetTensorDataPointer();
   const uint8_t *GetConstTensorDataPointer() const;
-
   size_t GetTensorSize() const;
   size_t GetTensorDataByteSize() const;
   const BreezeDeployTensorInfo &GetTensorInfo();
 
-  static size_t GetDataTypeSize(BreezeDeployTensorDataType breeze_deploy_data_type);
-
  private:
   uint8_t *tensor_data_ptr_ = nullptr;
   uint64_t tensor_data_ptr_size_ = 0;
-  BreezeDeployTensorInfo tensor_info_ = {"", {}, BreezeDeployTensorDataType::UNKNOWN};
+  BreezeDeployTensorInfo tensor_info_ = {"", {}, BreezeDeployTensorType::UNKNOWN};
 };
 }
 #endif //BREEZE_DEPLOY_MODELS_BREEZE_DEPLOY_TENSOR_H_

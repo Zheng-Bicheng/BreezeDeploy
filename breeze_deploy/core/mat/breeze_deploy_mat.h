@@ -24,6 +24,7 @@ enum class BreezeDeployMatFormat{
 };
 class BreezeDeployMat {
  public:
+  BreezeDeployMat() = default;
   explicit BreezeDeployMat(const cv::Mat &mat);
 
   cv::Mat &GetMat();
@@ -38,7 +39,7 @@ class BreezeDeployMat {
 
   // Data Type
   size_t GetMatDataByteSize() const;
-  BreezeDeployTensorDataType GetMatDataType();
+  BreezeDeployTensorType GetMatDataType();
 
   // Data Format
   BreezeDeployMatFormat GetMatDataFormat() const;

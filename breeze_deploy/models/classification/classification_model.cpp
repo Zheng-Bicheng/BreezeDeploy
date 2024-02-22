@@ -15,6 +15,8 @@
 #include <fstream>
 #include "breeze_deploy/models/classification/classification_model.h"
 #include "breeze_deploy/utils/data_process/top_k/top_k.h"
+#include "breeze_deploy/utils/data_process/softmax/softmax.h"
+
 namespace breeze_deploy {
 namespace models {
 bool ClassificationModel::InitializeBackend(const BreezeDeployBackendOption &breeze_deploy_backend_option) {
@@ -72,20 +74,20 @@ bool ClassificationModel::Preprocess(const cv::Mat &input_mat) {
 	return false;
   }
 
-  BreezeDeployMat breeze_deploy_mat(input_mat);
+  input_mat_ = BreezeDeployMat(input_mat);
   for (const auto &preprocess_function : preprocess_functions_) {
-	if (!preprocess_function->Run(breeze_deploy_mat)) {
+	if (!preprocess_function->Run(input_mat_)) {
 	  BREEZE_DEPLOY_LOGGER_ERROR("Failed to run preprocess.")
 	  return false;
 	}
   }
 
-  auto tensor_data = breeze_deploy_mat.GetMat().data;
-  auto tensor_data_type = breeze_deploy_mat.GetMatDataType();
-  auto c = breeze_deploy_mat.GetChannel();
-  auto h = breeze_deploy_mat.GetHeight();
-  auto w = breeze_deploy_mat.GetWidth();
-  if (breeze_deploy_mat.GetMatDataFormat() == BreezeDeployMatFormat::CHW) {
+  auto tensor_data = input_mat_.GetMat().data;
+  auto tensor_data_type = input_mat_.GetMatDataType();
+  auto c = input_mat_.GetChannel();
+  auto h = input_mat_.GetHeight();
+  auto w = input_mat_.GetWidth();
+  if (input_mat_.GetMatDataFormat() == BreezeDeployMatFormat::CHW) {
 	input_tensor_vector_[0].SetTensorData(tensor_data, {1, c, h, w}, tensor_data_type);
   } else {
 	input_tensor_vector_[0].SetTensorData(tensor_data, {1, h, w, c}, tensor_data_type);
@@ -95,7 +97,7 @@ bool ClassificationModel::Preprocess(const cv::Mat &input_mat) {
 bool ClassificationModel::Postprocess() {
   // 判断是否需要进行Softmax
   if (need_softmax_) {
-
+    utils::data_process::Softmax(output_tensor_vector_[0]);
   }
   return true;
 }

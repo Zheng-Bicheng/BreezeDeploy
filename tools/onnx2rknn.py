@@ -71,6 +71,7 @@ class RKNNConverter:
         assert LoadONNX_config is not None, "rknn_export must have a node name LoadONNX"
         inputs = LoadONNX_config["inputs"]
         input_size_list = LoadONNX_config["input_size_list"]
+        print(input_size_list)
         input_initial_val = LoadONNX_config["input_initial_val"]
         outputs = LoadONNX_config["outputs"]
         ret = self.rknn.load_onnx(model=self.onnx_model_path, inputs=inputs, input_size_list=input_size_list,

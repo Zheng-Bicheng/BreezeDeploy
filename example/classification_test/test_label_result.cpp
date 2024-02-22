@@ -43,11 +43,15 @@ int main(int argc, char *argv[]) {
   BreezeDeployTime cost;
   cost.Start();
   ClassificationResult result;
-  for (int i = 0; i < 100; ++i) {
-	if (!label_model.Predict(mat, result)) {
-	  std::cout << "模型推理失败" << std::endl;
-	  return 1;
-	}
+//  for (int i = 0; i < 100; ++i) {
+//	if (!label_model.Predict(mat, result)) {
+//	  std::cout << "模型推理失败" << std::endl;
+//	  return 1;
+//	}
+//  }
+  if (!label_model.Predict(mat, result)) {
+    std::cout << "模型推理失败" << std::endl;
+    return 1;
   }
   cost.End();
   cost.PrintInfo("LabelModel", 1.0 / 100, BreezeDeployTimeType::Milliseconds);

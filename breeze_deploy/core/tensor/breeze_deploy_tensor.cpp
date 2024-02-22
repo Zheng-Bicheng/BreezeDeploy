@@ -18,15 +18,15 @@
 namespace breeze_deploy {
 BreezeDeployTensor::BreezeDeployTensor() = default;
 void BreezeDeployTensor::SetTensorData(uint8_t *tensor_data_ptr,
-									   const std::vector<int64_t> &tensor_shape,
-									   BreezeDeployTensorDataType tensor_data_type) {
+                                       const std::vector<int64_t> &tensor_shape,
+                                       BreezeDeployTensorType tensor_data_type) {
   tensor_data_ptr_ = tensor_data_ptr;
   tensor_info_.tensor_shape = tensor_shape;
   tensor_info_.tensor_type = tensor_data_type;
 
   tensor_data_ptr_size_ = 1;
   for (auto shape : tensor_shape) {
-	tensor_data_ptr_size_ *= shape;
+    tensor_data_ptr_size_ *= shape;
   }
 }
 uint8_t *BreezeDeployTensor::GetTensorDataPointer() {
@@ -39,23 +39,33 @@ size_t BreezeDeployTensor::GetTensorSize() const {
   return tensor_data_ptr_size_;
 }
 size_t BreezeDeployTensor::GetTensorDataByteSize() const {
-  return tensor_data_ptr_size_ * GetDataTypeSize(tensor_info_.tensor_type);
+  return tensor_data_ptr_size_ * GetBDTensorTypeSize(tensor_info_.tensor_type);
 }
 const BreezeDeployTensorInfo &BreezeDeployTensor::GetTensorInfo() {
   return tensor_info_;
 }
-size_t BreezeDeployTensor::GetDataTypeSize(BreezeDeployTensorDataType breeze_deploy_data_type) {
+size_t GetBDTensorTypeSize(BreezeDeployTensorType breeze_deploy_data_type) {
   size_t size = 0;
   switch (breeze_deploy_data_type) {
-	case BreezeDeployTensorDataType::UINT8:
-	  size = sizeof(uint8_t);
-	  break;
-	case BreezeDeployTensorDataType::FP32:
-	  size = sizeof(float);
-	  break;
-	case BreezeDeployTensorDataType::UNKNOWN:
-	  size = 0;
-	  break;
+    case BreezeDeployTensorType::UINT8:size = sizeof(uint8_t);
+      break;
+    case BreezeDeployTensorType::FP32:size = sizeof(float);
+      break;
+    case BreezeDeployTensorType::INT8:size = sizeof(int8_t);
+      break;
+    case BreezeDeployTensorType::INT16:size = sizeof(int16_t);
+      break;
+    case BreezeDeployTensorType::INT32:size = sizeof(int32_t);
+      break;
+    case BreezeDeployTensorType::INT64:size = sizeof(int64_t);
+      break;
+    case BreezeDeployTensorType::BOOL:size = sizeof(bool);
+      break;
+    case BreezeDeployTensorType::FP16:
+      size = sizeof(float16_t);
+      break;
+    case BreezeDeployTensorType::UNKNOWN:size = 0;
+      break;
   }
   return size;
 }
