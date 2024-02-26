@@ -2,7 +2,7 @@
 
 **example**目录下存放了BreezeDeploy的例程。为了能够正确的编译测试例程，请确保您在编译BreezeDeploy时打开了BUILD_TEST选项。
 
-# 1 ⬇️ 下载BreezeDeployModelZoo
+# 1⬇️ 下载BreezeDeployModelZoo
 
 由于我们没有一个稳定的CDN，无法给出模型的下载直链，我们将**测试模型**、**测试数据**、**测试标签**等内容整合成了
 **BreezeDeployModelZoo**文件夹。
@@ -10,7 +10,7 @@
 
 > 下载完成后，请将**BreezeDeployModelZoo**目录移动到**install**指定的目录下。
 
-# 🌰 边端测部署能力速览
+# 2🌰 边端测部署能力速览
 
 BreezeDeploy目前已经支持了**通用目标分类**、**通用目标检测**、**人脸检测模型**、**人脸特征提取模型**的部署。
 

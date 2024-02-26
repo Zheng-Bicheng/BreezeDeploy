@@ -19,9 +19,8 @@
 namespace breeze_deploy {
 namespace utils {
 namespace data_process {
-
-template<typename T>
-BREEZE_DEPLOY_EXPORT bool Softmax(T *data, long length) {
+// Softmax不支持int数据类型，仅支持fp数据类型
+BREEZE_DEPLOY_EXPORT bool Softmax(float *data, long length) {
   if (length == 0) {
     BREEZE_DEPLOY_LOGGER_ERROR("The Vector A is empty.")
     return false;
@@ -34,9 +33,8 @@ BREEZE_DEPLOY_EXPORT bool Softmax(T *data, long length) {
   return true;
 }
 
-template<typename T>
-BREEZE_DEPLOY_EXPORT bool Softmax(std::vector<T> &data) {
-  return Softmax(data.data(), data.size());
+BREEZE_DEPLOY_EXPORT bool Softmax(std::vector<float> &data) {
+  return Softmax(data.data(), static_cast<long>(data.size()));
 }
 
 BREEZE_DEPLOY_EXPORT bool Softmax(BreezeDeployTensor &tensor) {
