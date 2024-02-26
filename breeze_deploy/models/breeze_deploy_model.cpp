@@ -63,6 +63,9 @@ bool BreezeDeployModel::ReadPreprocessYAML() {
     } else if (function_name == "BGRToRGB") {
       preprocess_functions_.push_back(std::make_shared<BGRToRGB>());
     } else if (function_name == "Normalize") {
+      if (breeze_deploy_backend_->BackendName() == "RKNPUBackend"){
+        continue;
+      }
       auto &mean_node = preprocess_function_config.begin()->second["mean"];
       auto &std_node = preprocess_function_config.begin()->second["std"];
       if (!mean_node || !std_node) {
@@ -73,6 +76,9 @@ bool BreezeDeployModel::ReadPreprocessYAML() {
       auto std = std_node.as<std::vector<float>>();
       preprocess_functions_.push_back(std::make_shared<Normalize>(mean, std));
     } else if (function_name == "HWCToCHW") {
+      if (breeze_deploy_backend_->BackendName() == "RKNPUBackend"){
+        continue;
+      }
       preprocess_functions_.push_back(std::make_shared<HWCToCHW>());
     } else if (function_name == "LetterBox") {
       // Get LetterBox width
@@ -151,21 +157,18 @@ bool BreezeDeployModel::InitializeBackend(const BreezeDeployBackendOption &breez
   return true;
 }
 bool BreezeDeployModel::Initialize(const BreezeDeployBackendOption &breeze_deploy_backend_option) {
-  // Read preprocess config yaml
+  if (!InitializeBackend(breeze_deploy_backend_option)) {
+    BREEZE_DEPLOY_LOGGER_ERROR("Failed to initialize backend.")
+    return false;
+  }
+
   if (!ReadPreprocessYAML()) {
     BREEZE_DEPLOY_LOGGER_ERROR("Failed to read preprocess function from yaml: {}.", config_file_path_)
     return false;
   }
 
-  // Read postprocess config yaml
   if (!ReadPostprocessYAML()) {
     BREEZE_DEPLOY_LOGGER_ERROR("Failed to read postprocess function from yaml: {}.", config_file_path_)
-    return false;
-  }
-
-  // Copy backend option and set model_path.
-  if (!InitializeBackend(breeze_deploy_backend_option)) {
-    BREEZE_DEPLOY_LOGGER_ERROR("Failed to initialize backend.")
     return false;
   }
   return true;

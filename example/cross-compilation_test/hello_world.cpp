@@ -1,4 +1,4 @@
-// Copyright (c) 2023/12/27 Zheng-Bicheng. All Rights Reserved.
+// Copyright (c) 2024/02/20 Zheng-Bicheng. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,16 +11,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+#include <iostream>
 
-#include "breeze_deploy/models/preprocess/bgr_to_rgb/bgr_to_rgb.h"
-namespace breeze_deploy {
-namespace preprocess {
-bool BGRToRGB::Run(BreezeDeployMat &breeze_deploy_mat) {
-  BREEZE_DEPLOY_LOGGER_DEBUG("{}::Run Start",FunctionName())
-  cv::Mat &opencv_mat = breeze_deploy_mat.GetMat();
-  cv::cvtColor(opencv_mat, opencv_mat, cv::COLOR_BGR2RGB);
-  BREEZE_DEPLOY_LOGGER_DEBUG("{}::Run End",FunctionName())
-  return true;
-}
-}
+int main(int argc, char *argv[]) {
+  std::cout << "Hello World!" << std::endl;
+  return 0;
 }

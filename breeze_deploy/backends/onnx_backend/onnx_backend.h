@@ -30,6 +30,7 @@ class ONNXBackend : public BreezeDeployBackend {
  public:
   ONNXBackend() = default;
   ~ONNXBackend() override = default;
+  std::string BackendName() override { return "ONNXBackend"; }
   bool Initialize(const BreezeDeployBackendOption &breeze_deploy_backend_option) override;
   bool Infer(std::vector<BreezeDeployTensor> &input_tensor, std::vector<BreezeDeployTensor> &output_tensor) override;
 

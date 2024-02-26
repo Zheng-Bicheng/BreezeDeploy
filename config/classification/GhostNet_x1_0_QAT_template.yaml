@@ -20,10 +20,11 @@ rknn_export:
   - Config:
       mean_values: *normalize_mean
       std_values: *normalize_std
-      target_platform: "RK3588"
+      target_platform: "RK3568"
+#      target_platform: "RK3588"
   - LoadONNX:
-      inputs: null
-      input_size_list: null
+      inputs: ["inputs"]
+      input_size_list: [[1,3,224,224]]
       input_initial_val: null
       outputs: null
   - Build:
@@ -37,4 +38,4 @@ rknn_export:
 postprocess:
   # If the Softmax operator is missing from your model's output, the top K elements may not represent confidence.
   # You also need to apply the Softmax operation to the top K elements.
-  - Softmax: true
+  - Softmax: false

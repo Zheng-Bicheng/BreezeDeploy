@@ -44,7 +44,7 @@ BREEZE_DEPLOY_EXPORT double CosineSimilarity(const std::vector<T> &a,
 BREEZE_DEPLOY_EXPORT double CosineSimilarity(const FeatureResult &a,
                                              const FeatureResult &b,
                                              bool use_normalize = false) {
-  return CosineSimilarity<float>(a.feature_vector, b.feature_vector, use_normalize);
+  return CosineSimilarity(a.feature_vector, b.feature_vector, use_normalize);
 }
 }
 }

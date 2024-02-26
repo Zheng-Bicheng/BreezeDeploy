@@ -30,6 +30,7 @@ Normalize::Normalize(const std::vector<float> &mean, const std::vector<float> &s
   }
 }
 bool Normalize::Run(BreezeDeployMat &breeze_deploy_mat) {
+  BREEZE_DEPLOY_LOGGER_DEBUG("{}::Run Start",FunctionName())
   auto &cv_mat = breeze_deploy_mat.GetMat();
   std::vector<cv::Mat> split_im;
   cv::split(cv_mat, split_im);
@@ -37,6 +38,7 @@ bool Normalize::Run(BreezeDeployMat &breeze_deploy_mat) {
 	split_im[c].convertTo(split_im[c], CV_32FC1, alpha_[c], beta_[c]);
   }
   cv::merge(split_im, cv_mat);
+  BREEZE_DEPLOY_LOGGER_DEBUG("{}::Run End",FunctionName())
   return true;
 }
 }
