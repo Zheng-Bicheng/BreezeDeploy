@@ -1,12 +1,12 @@
 # 目标分类Demo
 
-# 1 PaddleClas模型在RKNPU2上部署
-
 PaddleClas模型在RK开发板上部署主要分为以下三步：
 
 * 步骤1：使用PaddleClas训练模型、使用PaddleSlim量化模型、导出为ONNX模型
 * 步骤2：转换为RKNN模型
 * 步骤3：编译并运行代码
+
+# 1 PaddleClas从训练到部署
 
 ## 1.1 获取PaddleClas Paddle模型
 
@@ -97,3 +97,11 @@ export LD_LIBRARY_PATH=${PWD}
                     config/classification/ResNet18_template.yaml \
                     BreezeDeploy_ResNet18/images/COVID001.png
 ```
+
+# 2 部署PaddleClas已有模型
+
+完成中...
+
+# 3 部署PaddleSlim已有模型
+
+完成中...
