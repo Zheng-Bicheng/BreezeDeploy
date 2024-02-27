@@ -39,9 +39,15 @@ sudo apt-get install nasm
 ## 编译
 
 ```bash
-# For amd64-linux
-cmake .. -DVCPKG_TARGET_TRIPLET="x64-linux"  -DENABLE_RKNN_RUNTIME=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${PWD}/breeze_deploy
-
+# For x64-linux
+mkdir build-x64
+cd build-x64
+cmake .. -DVCPKG_TARGET_TRIPLET="x64-linux"  -DENABLE_RKNN_RUNTIME=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${PWD}/breeze_deploy_output
 # For arm64-linux
-cmake .. -DVCPKG_TARGET_TRIPLET="arm64-cross-compilation" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="${PWD}/breeze_deploy"
+mkdir build-arm64
+cd build-arm64
+cmake .. -DVCPKG_TARGET_TRIPLET="arm64-cross-compilation" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="${PWD}/breeze_deploy_output"
+
+make -j8
+make install
 ```

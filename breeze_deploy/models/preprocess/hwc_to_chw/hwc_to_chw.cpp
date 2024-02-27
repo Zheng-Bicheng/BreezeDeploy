@@ -16,7 +16,6 @@
 namespace breeze_deploy {
 namespace preprocess {
 bool HWCToCHW::Run(BreezeDeployMat &breeze_deploy_mat) {
-  BREEZE_DEPLOY_LOGGER_DEBUG("{}::Run Start",FunctionName())
   auto &hwc_mat = breeze_deploy_mat.GetMat();
   auto channel_mat_vector = std::vector<cv::Mat>(3);
   cv::split(hwc_mat, channel_mat_vector);
@@ -27,7 +26,6 @@ bool HWCToCHW::Run(BreezeDeployMat &breeze_deploy_mat) {
 	memcpy(hwc_mat_pointer, channel_data.data(), channel_data.size() * sizeof(float));
   }
   breeze_deploy_mat.SetDataFormat(BreezeDeployMatFormat::CHW);
-  BREEZE_DEPLOY_LOGGER_DEBUG("{}::Run End",FunctionName())
   return true;
 }
 }

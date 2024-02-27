@@ -23,21 +23,21 @@ bool DetectionModel::Preprocess(const cv::Mat &input_mat) {
   }
 
   // Do preprocess
-  BreezeDeployMat breeze_deploy_mat(input_mat);
+  input_mat_ = BreezeDeployMat(input_mat);
   for (const auto &preprocess_function : preprocess_functions_) {
-	if (!preprocess_function->Run(breeze_deploy_mat)) {
+	if (!preprocess_function->Run(input_mat_)) {
 	  BREEZE_DEPLOY_LOGGER_ERROR("Failed to run preprocess.")
 	  return false;
 	}
   }
 
   // Set data to tensor
-  auto tensor_data = breeze_deploy_mat.GetMat().data;
-  auto tensor_data_type = breeze_deploy_mat.GetMatDataType();
-  auto c = breeze_deploy_mat.GetChannel();
-  auto h = breeze_deploy_mat.GetHeight();
-  auto w = breeze_deploy_mat.GetWidth();
-  if (breeze_deploy_mat.GetMatDataFormat() == BreezeDeployMatFormat::CHW) {
+  auto tensor_data = input_mat_.GetMat().data;
+  auto tensor_data_type = input_mat_.GetMatDataType();
+  auto c = input_mat_.GetChannel();
+  auto h = input_mat_.GetHeight();
+  auto w = input_mat_.GetWidth();
+  if (input_mat_.GetMatDataFormat() == BreezeDeployMatFormat::CHW) {
 	input_tensor_vector_[0].SetTensorData(tensor_data, {1, c, h, w}, tensor_data_type);
   } else {
 	input_tensor_vector_[0].SetTensorData(tensor_data, {1, h, w, c}, tensor_data_type);

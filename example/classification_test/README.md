@@ -2,10 +2,11 @@
 
 # 1 PaddleClas模型在RKNPU2上部署
 
-PaddleClas模型转换到RKNN模型主要分为以下两部步：
+PaddleClas模型在RK开发板上部署主要分为以下三步：
 
 * 步骤1：使用PaddleClas训练模型、使用PaddleSlim量化模型、导出为ONNX模型
 * 步骤2：转换为RKNN模型
+* 步骤3：编译并运行代码
 
 ## 1.1 获取PaddleClas Paddle模型
 
@@ -14,7 +15,7 @@ PaddleClas模型转换到RKNN模型主要分为以下两部步：
 ## 1.2 获取RKNN模型
 
 当你跑通步骤1后，你将得到一个**BreezeDeploy_ResNet18**文件夹，请将其拷贝在BreezeDeploy根目录下。
-接下来我们需要编写一个转换和部署脚本文件，你可以参考[resnet18_template.yaml](../../config/classification/resnet18_template.yaml)
+接下来我们需要编写一个转换和部署脚本文件，你可以参考[resnet18_template.yaml](../../config/classification/ResNet18_template.yaml)
 来实现你的转换配置文件。
 
 ```yaml
@@ -57,7 +58,7 @@ rknn_export:
 postprocess:
   # If the Softmax operator is missing from your model's output, the top K elements may not represent confidence.
   # You also need to apply the Softmax operation to the top K elements.
-  - Softmax: true
+  - Softmax: false
 ```
 
 一般来说，你需要检查**preprocess/Normalize**配置参数是否正确以及**postprocess/Softmax**来控制是否在后处理时添加Softmax操作。
@@ -66,7 +67,7 @@ postprocess:
 ```bash
 cd /path/to/BreezeDeploy
 python tools/onnx2rknn.py --onnx_model_path BreezeDeploy_ResNet18/models/inference_int8.onnx \
-                          --config_file_path config/classification/resnet18_template.yaml \
+                          --config_file_path config/classification/ResNet18_template.yaml \
                           --rknn_model_path BreezeDeploy_ResNet18/models/resnet18.rknn
 ```
 
@@ -85,7 +86,7 @@ make install
 
 ## 1.4 运行例程
 
-拷贝**BreezeDeploy_ResNet18**到**/path/to/BreezeDeploy/build/breeze_deploy_output/bin**，并将**breeze_deploy_output**文件夹拷贝至开发板。
+拷贝 **BreezeDeploy_ResNet18** 到 **/path/to/BreezeDeploy/build/breeze_deploy_output/bin** ，并将 **breeze_deploy_output** 文件夹拷贝至开发板。
 
 开发板上执行以下命令:
 
@@ -93,6 +94,6 @@ make install
 cd /path/to/breeze_deploy_output/bin
 export LD_LIBRARY_PATH=${PWD}
 ./test_label_result BreezeDeploy_ResNet18/models/resnet18.rknn \
-                    config/classification/resnet18_template.yaml \
+                    config/classification/ResNet18_template.yaml \
                     BreezeDeploy_ResNet18/images/COVID001.png
 ```
