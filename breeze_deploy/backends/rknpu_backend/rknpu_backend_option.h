@@ -19,15 +19,18 @@ namespace backend {
 class RKNPUBackendOption {
  public:
   RKNPUBackendOption() = default;
-  RKNPUBackendOption(const RKNPUBackendOption &onnx_backend_option) {
+  RKNPUBackendOption(const RKNPUBackendOption &backend_option) {
+    this->only_support_fp32_ = backend_option.only_support_fp32_;
   }
-  RKNPUBackendOption &operator=(const RKNPUBackendOption &breeze_deploy_backend_option) {
-    if (this != &breeze_deploy_backend_option) {
+  RKNPUBackendOption &operator=(const RKNPUBackendOption &backend_option) {
+    if (this != &backend_option) {
+      this->only_support_fp32_ = backend_option.only_support_fp32_;
     }
     return *this;
   }
 
  private:
+  bool only_support_fp32_ = true;
 };
 }
 }

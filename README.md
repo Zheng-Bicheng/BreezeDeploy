@@ -21,8 +21,9 @@ BreezeDeploy是一款用于在RK平台上高效部署AI视觉模型的部署工�
 
 # 📌 稳定版本
 
-BreezeDeploy最新的稳定版本为**release/0.2.0**
-，如果您有固定版本的需求，你可以前往[Release](https://github.com/Zheng-Bicheng/BreezeDeploy/releases)来使用指定的稳定版本。
+~~BreezeDeploy最新的稳定版本为**release/0.2.0**
+，如果您有固定版本的需求，你可以前往[Release](https://github.com/Zheng-Bicheng/BreezeDeploy/releases)
+来使用指定的稳定版本。~~
 
 > ⚠️值得注意的是，BreezeDeploy正在高速迭代中，我们强烈建议您编译最新的**develop**分支的代码以获取更好的使用体验，而不是使用现有的稳定版本。
 

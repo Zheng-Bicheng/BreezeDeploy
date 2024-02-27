@@ -21,8 +21,8 @@ using namespace breeze_deploy::models;
 using cv::imread;
 
 int main(int argc, char *argv[]) {
-  if (argc != 5) {
-	std::cout << "Usage: test_label_result path/to/model /path/to/config_file path/to/image path/to/label" << std::endl;
+  if (argc != 4) {
+	std::cout << "Usage: test_label_result path/to/model /path/to/config_file path/to/image" << std::endl;
 	return -1;
   }
 
@@ -35,20 +35,11 @@ int main(int argc, char *argv[]) {
 	return 1;
   }
 
-  // TODO: Read label
-  std::string label_file_path = argv[4];
-
+  ClassificationResult result;
   std::string image_path = argv[3];
   auto mat = cv::imread(image_path);
   BreezeDeployTime cost;
   cost.Start();
-  ClassificationResult result;
-//  for (int i = 0; i < 100; ++i) {
-//	if (!label_model.Predict(mat, result)) {
-//	  std::cout << "模型推理失败" << std::endl;
-//	  return 1;
-//	}
-//  }
   if (!label_model.Predict(mat, result)) {
     std::cout << "模型推理失败" << std::endl;
     return 1;
