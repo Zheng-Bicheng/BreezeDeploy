@@ -76,7 +76,6 @@ bool SCRFD::Predict(const cv::Mat &input_mat,
   std::vector<float> temp_confidence_vector;
   std::vector<cv::Rect> temp_box_vector;
   std::vector<std::vector<cv::Point>> temp_landmark_vector;
-  unsigned int count = 0;
   // loop each stride
   for (int f = 0; f < fmc; ++f) {
     auto bbox_tensor = output_tensor_vector_.at(f + fmc);
@@ -111,8 +110,8 @@ bool SCRFD::Predict(const cv::Mat &input_mat,
       auto right = (cx + r) * static_cast<float>(current_stride);
       auto bottom = (cy + b) * static_cast<float>(current_stride);
       auto width = right - left;
-      auto height = top - bottom;
-      temp_box_vector.emplace_back(left, top, width, height);
+      auto height = bottom - top;
+      temp_box_vector.emplace_back(left, bottom, width, height);
 
       if (use_kps) {
         auto landmarks_tensor = output_tensor_vector_.at(f + 2 * fmc);
@@ -142,14 +141,18 @@ bool SCRFD::Predict(const cv::Mat &input_mat,
                     confidence_threshold_,
                     nms_threshold_,
                     index_vector);
+
   for (int index : index_vector) {
     result_with_landmark.label_id_vector.emplace_back(0);
     result_with_landmark.rect_vector.emplace_back(temp_box_vector[index]);
     result_with_landmark.confidence_vector.emplace_back(temp_confidence_vector[index]);
-    result_with_landmark.landmarks_vector.emplace_back(temp_landmark_vector[index]);
+    if (use_kps) {
+      result_with_landmark.landmarks_vector.emplace_back(temp_landmark_vector[index]);
+    }
   }
 
   // 恢复box到原坐标
+  BREEZE_DEPLOY_LOGGER_DEBUG("pad_width_ pad_height_ radio_ is [{} {} {}]",pad_width_, pad_height_, radio_)
   for (auto &rect : result_with_landmark.rect_vector) {
     rect.x = static_cast<int>(static_cast<double>(rect.x - pad_width_) / radio_);
     rect.y = static_cast<int>(static_cast<double>(rect.y - pad_height_) / radio_);
@@ -164,7 +167,7 @@ bool SCRFD::Predict(const cv::Mat &input_mat,
       landmark.y = static_cast<int>(static_cast<double>(landmark.y - pad_height_) / radio_);
     }
   }
-  return false;
+  return true;
 }
 }
 }

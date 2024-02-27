@@ -41,6 +41,7 @@ bool LetterBox::Run(BreezeDeployMat &breeze_deploy_mat) {
   cv::Rect roi(pad_width_, pad_height_, src.cols, src.rows);
   src.copyTo(output_image(roi));
   src = output_image;
+  cv::imwrite("letter_box.png", src);
   BREEZE_DEPLOY_LOGGER_DEBUG("{}::Run End",FunctionName())
   return true;
 }
