@@ -111,22 +111,22 @@ bool SCRFD::Predict(const cv::Mat &input_mat,
       auto bottom = (cy + b) * static_cast<float>(current_stride);
       auto width = right - left;
       auto height = bottom - top;
-      temp_box_vector.emplace_back(left, bottom, width, height);
+      temp_box_vector.emplace_back(left, top, width, height);
 
       if (use_kps) {
         auto landmarks_tensor = output_tensor_vector_.at(f + 2 * fmc);
         auto landmarks_ptr = reinterpret_cast<float *>(landmarks_tensor.GetTensorDataPointer());
         // landmarks
+        std::vector<cv::Point> landmark(landmark_num_);
         const float *kps_offsets = landmarks_ptr + i * (landmarks_per_face_ * 2);
         for (unsigned int j = 0; j < landmarks_per_face_ * 2; j += 2) {
           float kps_l = kps_offsets[j];
           float kps_t = kps_offsets[j + 1];
           auto kps_x = (cx + kps_l) * static_cast<float>(current_stride);
           auto kps_y = (cy + kps_t) * static_cast<float>(current_stride);
-          std::vector<cv::Point> landmark(landmark_num_);
           landmark.emplace_back(kps_x, kps_y);
-          temp_landmark_vector.emplace_back(landmark);
         }
+        temp_landmark_vector.emplace_back(landmark);
       }
     }
   }
@@ -152,7 +152,6 @@ bool SCRFD::Predict(const cv::Mat &input_mat,
   }
 
   // 恢复box到原坐标
-  BREEZE_DEPLOY_LOGGER_DEBUG("pad_width_ pad_height_ radio_ is [{} {} {}]",pad_width_, pad_height_, radio_)
   for (auto &rect : result_with_landmark.rect_vector) {
     rect.x = static_cast<int>(static_cast<double>(rect.x - pad_width_) / radio_);
     rect.y = static_cast<int>(static_cast<double>(rect.y - pad_height_) / radio_);

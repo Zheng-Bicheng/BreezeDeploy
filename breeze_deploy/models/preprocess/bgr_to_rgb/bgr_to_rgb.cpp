@@ -16,10 +16,8 @@
 namespace breeze_deploy {
 namespace preprocess {
 bool BGRToRGB::Run(BreezeDeployMat &breeze_deploy_mat) {
-  BREEZE_DEPLOY_LOGGER_DEBUG("{}::Run Start",FunctionName())
   cv::Mat &opencv_mat = breeze_deploy_mat.GetMat();
   cv::cvtColor(opencv_mat, opencv_mat, cv::COLOR_BGR2RGB);
-  BREEZE_DEPLOY_LOGGER_DEBUG("{}::Run End",FunctionName())
   return true;
 }
 }
