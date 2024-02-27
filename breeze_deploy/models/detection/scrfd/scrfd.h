@@ -18,12 +18,29 @@
 #include "breeze_deploy/models/detection/detection_model.h"
 namespace breeze_deploy {
 namespace models {
-class BREEZE_DEPLOY_EXPORT Scrfd : public DetectionModel {
+class BREEZE_DEPLOY_EXPORT SCRFD : public DetectionModel {
  public:
-  Scrfd(const std::string &model_path, const std::string &config_file_path)
-      : DetectionModel(model_path, config_file_path) {}
-  std::string ModelName() override { return "Scrfd"; }
+  SCRFD(const std::string &model_path, const std::string &config_file_path);
+  std::string ModelName() override { return "SCRFD"; }
   bool Predict(const cv::Mat &input_mat, DetectionResult &result_with_landmark) override;
+
+ protected:
+  bool Preprocess(const cv::Mat &input_mat) override;
+
+ private:
+  typedef struct {
+    float cx;
+    float cy;
+  } SCRFDPoint;
+  std::unordered_map<int, std::vector<SCRFDPoint>> center_points_;
+
+  size_t landmarks_per_face_ = 5;
+
+  // Argument for image postprocessing step,
+  // downsample strides (namely, steps) for SCRFD to generate anchors,
+  // will take (8,16,32) as default values.
+  std::vector<int> downsample_strides_ = {8, 16, 32};
+  void GeneratePoints();
 };
 }
 }

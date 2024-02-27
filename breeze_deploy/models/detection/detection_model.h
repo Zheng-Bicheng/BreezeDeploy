@@ -41,14 +41,11 @@ class BREEZE_DEPLOY_EXPORT DetectionModel : public BreezeDeployModel {
   int pad_width_ = 0;
   int pad_height_ = 0;
 
-  // For [DetectionResultWithoutLandmark,DetectionResultWithLandmark]
   float confidence_threshold_ = 0.5;
-
-  // For [DetectionResultWithLandmark]
-  int landmark_num_ = 0;
-
-  // For NMS
   float nms_threshold_ = 0.5;
+
+  // For YOLOV5-Face
+  int landmark_num_ = 0;
 };
 }
 }

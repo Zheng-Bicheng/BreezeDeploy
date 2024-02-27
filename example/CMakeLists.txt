@@ -18,6 +18,10 @@ list(APPEND INSTALL_APP_LIST test_yolov5)
 add_executable(test_yolov5_face detection_test/test_yolov5_face.cpp)
 list(APPEND INSTALL_APP_LIST test_yolov5_face)
 
+# test_scrfd
+add_executable(test_scrfd detection_test/test_scrfd.cpp)
+list(APPEND INSTALL_APP_LIST test_scrfd)
+
 # test_image_recognition
 add_executable(test_image_recognition pipeline_test/test_image_recognition.cpp)
 list(APPEND INSTALL_APP_LIST test_image_recognition)

@@ -33,15 +33,24 @@ struct DetectionResult {
   std::vector<int64_t> label_id_vector;
   std::vector<float> confidence_vector;
   std::vector<cv::Rect> rect_vector;
+
   std::vector<std::vector<cv::Point>> landmarks_vector;
+  size_t landmarks_per_face = 0;
 
   size_t GetSize() const { return label_id_vector.size(); }
   bool Empty() const { return label_id_vector.empty(); }
+  void Reserve(size_t size) {
+    label_id_vector.reserve(size);
+    confidence_vector.reserve(size);
+    rect_vector.reserve(size);
+    landmarks_vector.reserve(size);
+  }
   void Clear() {
 	label_id_vector.clear();
 	confidence_vector.clear();
 	rect_vector.clear();
 	landmarks_vector.clear();
+    landmarks_per_face = 0;
   }
 };
 struct FeatureResult{
