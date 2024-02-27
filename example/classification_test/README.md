@@ -2,10 +2,11 @@
 
 # 1 PaddleClas模型在RKNPU2上部署
 
-PaddleClas模型转换到RKNN模型主要分为以下两部步：
+PaddleClas模型在RK开发板上部署主要分为以下三步：
 
 * 步骤1：使用PaddleClas训练模型、使用PaddleSlim量化模型、导出为ONNX模型
 * 步骤2：转换为RKNN模型
+* 步骤3：编译并运行代码
 
 ## 1.1 获取PaddleClas Paddle模型
 
@@ -57,7 +58,7 @@ rknn_export:
 postprocess:
   # If the Softmax operator is missing from your model's output, the top K elements may not represent confidence.
   # You also need to apply the Softmax operation to the top K elements.
-  - Softmax: true
+  - Softmax: false
 ```
 
 一般来说，你需要检查**preprocess/Normalize**配置参数是否正确以及**postprocess/Softmax**来控制是否在后处理时添加Softmax操作。
@@ -85,7 +86,7 @@ make install
 
 ## 1.4 运行例程
 
-拷贝**BreezeDeploy_ResNet18**到**/path/to/BreezeDeploy/build/breeze_deploy_output/bin**，并将**breeze_deploy_output**文件夹拷贝至开发板。
+拷贝 **BreezeDeploy_ResNet18** 到 **/path/to/BreezeDeploy/build/breeze_deploy_output/bin** ，并将 **breeze_deploy_output** 文件夹拷贝至开发板。
 
 开发板上执行以下命令:
 
