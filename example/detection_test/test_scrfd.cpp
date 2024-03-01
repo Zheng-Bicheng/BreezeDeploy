@@ -40,16 +40,26 @@ int main(int argc, char *argv[]) {
 
   std::string image_path = argv[3];
   auto mat = cv::imread(image_path);
+  DetectionResult result_with_landmark;
+  if (!detect_model.Predict(mat, result_with_landmark)) {
+    std::cout << "模型推理失败" << std::endl;
+    return 1;
+  }
 
   BreezeDeployTime cost;
   cost.Start();
-  DetectionResult result_with_landmark;
   if (!detect_model.Predict(mat, result_with_landmark)) {
     std::cout << "模型推理失败" << std::endl;
     return 1;
   }
   cost.End();
   cost.PrintInfo("SCRFD", 1.0, BreezeDeployTimeType::Milliseconds);
+
+  if (mat.empty()){
+    std::cout << "没有检测出人脸" << std::endl;
+    return -1;
+  }
+
   mat = DetectionModel::Draw(mat, result_with_landmark);
   cv::imwrite("./detect_result.png", mat);
   return 0;

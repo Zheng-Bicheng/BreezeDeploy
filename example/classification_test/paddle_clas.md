@@ -76,10 +76,7 @@ python tools/onnx2rknn.py --onnx_model_path BreezeDeploy_ResNet18/models/inferen
 ```bash
 mkdir build
 cd build
-
-# 交叉编译
 cmake .. -DVCPKG_TARGET_TRIPLET="arm64-cross-compilation" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="${PWD}/breeze_deploy_output"
-
 make -j8
 make install
 ```

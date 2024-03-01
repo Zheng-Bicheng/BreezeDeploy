@@ -212,36 +212,37 @@ bool RKNPUBackend::Infer(std::vector<BreezeDeployTensor> &input_tensor,
     if (input_rknn_tensor_type != input_attrs_[i].type) {
       auto model_rknn_tensor_type = input_attrs_[i].type;
       auto model_bd_tensor_type = RKNNTensorTypeToBDTensorType(model_rknn_tensor_type);
-      input_attrs_[i].type = input_rknn_tensor_type;
       auto scale = GetBDTensorTypeSize(input_bd_tensor_type) / GetBDTensorTypeSize(model_bd_tensor_type);
       BREEZE_DEPLOY_LOGGER_WARN("The input tensor type != model's inputs type. "
-                                "The input_type need {}, but inputs[{}].type is {}. "
-                                "The input_size need *= scale({}).",
+                                "The model's input[{}] type is {}, but input vector[{}] type need {}. "
+                                "The model's input size need *= scale({}).",
+                                i,
                                 get_type_string(model_rknn_tensor_type),
                                 i,
                                 get_type_string(input_rknn_tensor_type),
                                 scale)
+      input_attrs_[i].type = input_rknn_tensor_type;
       input_attrs_[i].size *= scale;
       input_attrs_[i].size_with_stride = input_attrs_[i].size;
     }
   }
 
+  constexpr auto output_bd_tensor_type = BreezeDeployTensorType::FP32;
   for (uint32_t i = 0; i < io_num_.n_output; i++) {
-    auto output_bd_tensor_type = BreezeDeployTensorType::FP32;
     auto output_rknn_tensor_type = BDTensorDataTypeToRKNNTensorType(output_bd_tensor_type);
-    output_attrs_[i].type = output_rknn_tensor_type;
-    if (output_rknn_tensor_type != input_attrs_[i].type) {
-      auto model_rknn_tensor_type = input_attrs_[i].type;
+    if (output_rknn_tensor_type != output_attrs_[i].type) {
+      auto model_rknn_tensor_type = output_attrs_[i].type;
       auto model_bd_tensor_type = RKNNTensorTypeToBDTensorType(model_rknn_tensor_type);
-      output_attrs_[i].type = output_rknn_tensor_type;
       auto scale = GetBDTensorTypeSize(output_bd_tensor_type) / GetBDTensorTypeSize(model_bd_tensor_type);
-      BREEZE_DEPLOY_LOGGER_WARN("The output_tensor_type != model_output_type. "
-                                "The output_tensor_type need {}, but model_output[{}].type is {}. "
+      BREEZE_DEPLOY_LOGGER_WARN("The input tensor type != model's output type. "
+                                "The model's output[{}] type is {}, but output vector[{}] type need {}. "
                                 "The model_output_size need *= scale({}).",
+                                i,
                                 get_type_string(model_rknn_tensor_type),
                                 i,
                                 get_type_string(output_rknn_tensor_type),
                                 scale)
+      output_attrs_[i].type = output_rknn_tensor_type;
       output_attrs_[i].size *= scale;
     }
   }
@@ -253,7 +254,6 @@ bool RKNPUBackend::Infer(std::vector<BreezeDeployTensor> &input_tensor,
     }
   }
 
-  int ret = RKNN_SUCC;
   // Judge whether the input and output size are the same
   if (input_tensor.size() != input_tensor_info_vector_.size()) {
     BREEZE_DEPLOY_LOGGER_ERROR("Size of the inputs({}) should keep same with the inputs of this model({})",
@@ -281,6 +281,7 @@ bool RKNPUBackend::Infer(std::vector<BreezeDeployTensor> &input_tensor,
   }
 
   // run rknn
+  int ret = RKNN_SUCC;
   ret = rknn_run(ctx_, nullptr);
   if (ret != RKNN_SUCC) {
     BREEZE_DEPLOY_LOGGER_ERROR("The function(rknn_run) return failed! code is {}.", ret)
