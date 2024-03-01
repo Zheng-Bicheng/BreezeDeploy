@@ -19,7 +19,7 @@ BreezeDeploy目前已经支持了**通用目标分类**、**通用目标检测**
 | 任务场景   | 操作系统  | RK356X | RK3588 | 例程链接                                                      |
 |--------|-------|--------|--------|-----------------------------------------------------------|
 | 通用分类   | Linux | ✅      | ✅      | [PaddleClas从训练到部署](./classification_test/paddle_clas.md)  |
-| 人脸特征提取 | Linux | ✅      | ✅      | [C++代码](./feature_test)                                   |
+| 人脸特征提取 | Linux | ✅      | ✅      | [InsightFace-ArcFace部署教程](./feature_test/arcface.md)      |
 | 通用检测   | Linux | ✅      | ✅      | [C++代码](./detection_test)                                 |
 | 人脸检测   | Linux | ✅      | ✅      | [InsightFace-SCRFD部署教程](./detection_test/insight_face.md) |
 | 人脸识别系统 | Linux | ✅      | ✅      | [C++代码](./pipeline_test)                                  |
