@@ -25,12 +25,15 @@ using cv::imread;
 
 int main(int argc, char *argv[]) {
   if (argc != 7) {
-	std::cout
-		<< "Usage: test_image_recognition "
-		   "path/to/model_det /path/to/config_det "
-		   "path/to/model_cls /path/to/config_cls "
-		   "path/to/data_base path/to/rec_image" << std::endl;
-	return -1;
+    std::cout
+        << "Usage: test_image_recognition "
+           "/path/to/model_det "
+           "/path/to/config_det "
+           "/path/to/model_cls "
+           "/path/to/config_cls "
+           "/path/to/data_base "
+           "/path/to/rec_image" << std::endl;
+    return -1;
   }
 
   std::string model_det_path = argv[1];
@@ -38,13 +41,13 @@ int main(int argc, char *argv[]) {
   std::string model_cls_path = argv[3];
   std::string config_cls_path = argv[4];
   auto image_recognition = ImageRecognition(std::make_unique<FeatureModel>(model_cls_path, config_cls_path),
-											std::make_unique<YOLOV5Face>(model_det_path, config_det_path)
+                                            std::make_unique<YOLOV5Face>(model_det_path, config_det_path)
   );
 
   if (!image_recognition.Initialize()) {
-	std::cerr << "Initialization of Image Recognition failed. "
-				 "Please check the configuration parameters for the detection model or recognition model." << std::endl;
-	return -1;
+    std::cerr << "Initialization of Image Recognition failed. "
+                 "Please check the configuration parameters for the detection model or recognition model." << std::endl;
+    return -1;
   }
 
   std::string data_base_path = argv[5];
@@ -57,11 +60,11 @@ int main(int argc, char *argv[]) {
 
   auto &classification_results = image_recognition_result.classification_results;
   for (auto &classification_result : classification_results) {
-	for (int k = 0; k < classification_result.topk_label_id_vector.size(); k++) {
-	  printf("label_id: %ld, label_confidence: %f\n",
-			 classification_result.topk_label_id_vector[k],
-			 classification_result.topk_confidence_vector[k]);
-	}
+    for (int k = 0; k < classification_result.topk_label_id_vector.size(); k++) {
+      printf("label_id: %ld, label_confidence: %f\n",
+             classification_result.topk_label_id_vector[k],
+             classification_result.topk_confidence_vector[k]);
+    }
   }
   return 0;
 }
