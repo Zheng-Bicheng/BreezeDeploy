@@ -23,4 +23,3 @@ BreezeDeploy目前已经支持了**通用目标分类**、**通用目标检测**
 | 通用检测   | Linux | ✅      | ✅      | [C++代码](./detection_test)                                 |
 | 人脸检测   | Linux | ✅      | ✅      | [InsightFace-SCRFD部署教程](./detection_test/insight_face.md) |
 | 人脸识别系统 | Linux | ✅      | ✅      | [C++代码](./pipeline_test)                                  |
-
