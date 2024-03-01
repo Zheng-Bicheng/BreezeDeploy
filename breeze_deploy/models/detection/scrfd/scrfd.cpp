@@ -22,9 +22,18 @@ void SCRFD::GeneratePoints() {
   auto input_shape = input_tensor_vector_[0].GetTensorInfo().tensor_shape;
   // 8, 16, 32
   for (auto local_stride : downsample_strides_) {
-    // input_shape data_format is [N C H W].
-    unsigned int num_grid_h = input_shape[2] / local_stride;
-    unsigned int num_grid_w = input_shape[3] / local_stride;
+    unsigned int num_grid_h;
+    unsigned int num_grid_w;
+    if (input_shape[1] == 3) {
+      // input_shape data_format is [N C H W].
+      num_grid_h = input_shape[2] / local_stride;
+      num_grid_w = input_shape[3] / local_stride;
+    } else {
+      // input_shape data_format is [N H W C].
+      num_grid_h = input_shape[1] / local_stride;
+      num_grid_w = input_shape[2] / local_stride;
+    }
+
     for (unsigned int i = 0; i < num_grid_h; ++i) {
       for (unsigned int j = 0; j < num_grid_w; ++j) {
         constexpr size_t num_anchors = 2;
@@ -59,7 +68,10 @@ bool SCRFD::Predict(const cv::Mat &input_mat,
   auto fmc = downsample_strides_.size();
   BREEZE_DEPLOY_LOGGER_ASSERT((fmc == 3 || fmc == 5), "The fmc must be 3 or 5")
 
-  BreezeDeployModel::Predict(input_mat);
+  if (!BreezeDeployModel::Predict(input_mat)) {
+    BREEZE_DEPLOY_LOGGER_ERROR("Failed to preprocess input mat.")
+    return false;
+  }
 
   // Only support when batch is 1.
   auto output_batch = output_tensor_vector_[0].GetTensorInfo().tensor_shape[0];
