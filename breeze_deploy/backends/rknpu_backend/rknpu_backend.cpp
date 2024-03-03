@@ -27,18 +27,18 @@ RKNPUBackend::~RKNPUBackend() {
     free(output_attrs_);
   }
 
-  for (uint32_t i = 0; i < io_num_.n_input; i++) {
-    if (input_memories_[i] == nullptr) {
+  for (auto & input_memory : input_memories_) {
+    if (input_memory == nullptr) {
       continue;
     }
-    rknn_destroy_mem(ctx_, input_memories_[i]);
+    rknn_destroy_mem(ctx_, input_memory);
   }
 
-  for (uint32_t i = 0; i < io_num_.n_output; i++) {
-    if (output_memories_[i] == nullptr) {
+  for (auto & output_memory : output_memories_) {
+    if (output_memory == nullptr) {
       continue;
     }
-    rknn_destroy_mem(ctx_, output_memories_[i]);
+    rknn_destroy_mem(ctx_, output_memory);
   }
 }
 
