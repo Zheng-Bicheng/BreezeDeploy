@@ -8,6 +8,8 @@ set(CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")
 set(VCPKG_INSTALLED_ROOT "${VCPKG_ROOT}/installed/${VCPKG_TARGET_TRIPLET}")
 set(VCPKG_INCLUDE_ROOT "${VCPKG_INSTALLED_ROOT}/include")
 set(VCPKG_LIBRARY_ROOT "${VCPKG_INSTALLED_ROOT}/lib")
+set(VCPKG_SHARE_ROOT "${VCPKG_INSTALLED_ROOT}/share")
+set(VCPKG_TOOLS_ROOT "${VCPKG_INSTALLED_ROOT}/tools")
 
 PROJECT(breeze_deploy
         VERSION 0.0.1
@@ -59,6 +61,8 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/config DESTINATION bin)
 # 安装Vcpkg第三方库到third_party/vcpkg目录(全为静态库，因此只需要拷贝头文件)
 install(DIRECTORY ${VCPKG_INCLUDE_ROOT} DESTINATION third_party/vcpkg)
 install(DIRECTORY ${VCPKG_LIBRARY_ROOT} DESTINATION third_party/vcpkg)
+install(DIRECTORY ${VCPKG_SHARE_ROOT} DESTINATION third_party/vcpkg)
+install(DIRECTORY ${VCPKG_TOOLS_ROOT} DESTINATION third_party/vcpkg)
 
 add_subdirectory(breeze_deploy)
 

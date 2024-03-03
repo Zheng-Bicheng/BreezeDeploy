@@ -24,8 +24,8 @@ struct ClassificationResult {
   size_t GetSize() const { return topk_label_id_vector.size(); }
   bool Empty() const { return topk_label_id_vector.empty(); }
   void Clear() {
-	topk_label_id_vector.clear();
-	topk_confidence_vector.clear();
+    topk_label_id_vector.clear();
+    topk_confidence_vector.clear();
   }
 };
 struct DetectionResult {
@@ -46,14 +46,32 @@ struct DetectionResult {
     landmarks_vector.reserve(size);
   }
   void Clear() {
-	label_id_vector.clear();
-	confidence_vector.clear();
-	rect_vector.clear();
-	landmarks_vector.clear();
+    label_id_vector.clear();
+    confidence_vector.clear();
+    rect_vector.clear();
+    landmarks_vector.clear();
     landmarks_per_face = 0;
   }
+  DetectionResult GetMaxConfidenceResult() {
+    if (confidence_vector.empty()) {
+      return {};
+    }
+
+    auto max_it = std::max_element(confidence_vector.begin(), confidence_vector.end());
+    auto max_index = std::distance(confidence_vector.begin(), max_it);
+
+    DetectionResult detection_result;
+    detection_result.confidence_vector = {this->confidence_vector[max_index]};
+    detection_result.label_id_vector = {this->label_id_vector[max_index]};
+    detection_result.rect_vector = {this->rect_vector[max_index]};
+    detection_result.landmarks_per_face = {this->landmarks_per_face};
+    if (!this->landmarks_vector.empty()) {
+      detection_result.landmarks_vector = this->landmarks_vector;
+    }
+    return std::move(detection_result);
+  }
 };
-struct FeatureResult{
+struct FeatureResult {
   std::vector<float> feature_vector;
   size_t GetFeatureLength() const { return feature_vector.size(); }
 };
@@ -67,8 +85,8 @@ struct ImageRecognitionResult {
   size_t GetSize() const { return detection_result.label_id_vector.size(); }
   bool Empty() const { return detection_result.label_id_vector.empty(); }
   void Clear() {
-	detection_result.Clear();
-	classification_results.clear();
+    detection_result.Clear();
+    classification_results.clear();
   }
 };
 }

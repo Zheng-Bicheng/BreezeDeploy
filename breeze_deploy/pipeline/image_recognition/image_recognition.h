@@ -29,26 +29,24 @@ class BREEZE_DEPLOY_EXPORT ImageRecognition {
 							std::unique_ptr<DetectionModel> detection_model = nullptr);
   bool Initialize(const BreezeDeployBackendOption &rec_option = BreezeDeployBackendOption(),
 				  const BreezeDeployBackendOption &det_option = BreezeDeployBackendOption());
-  bool BuildDatabase(const std::string &database_path, bool use_detection = true);
+  bool CreateIndex();
+  bool DeleteIndex();
+  bool AddToDatabase(const cv::Mat& input_mat, int64_t image_index, bool use_detection = true);
   bool Predict(const cv::Mat &image,
 			   ImageRecognitionResult &image_recognition_result,
 			   size_t k = 1,
 			   bool use_detection = true);
 
  private:
-  std::unique_ptr<DetectionModel> detection_model_;
-  std::unique_ptr<FeatureModel> recognition_model_;
-  std::unique_ptr<BreezeDeployIndex> index_system_;
+  std::unique_ptr<DetectionModel> detection_model_ = nullptr;
+  std::unique_ptr<FeatureModel> recognition_model_ = nullptr;
+  std::unique_ptr<BreezeDeployIndex> index_system_ = nullptr;
 
   size_t feature_vector_length_ = 0;
 
   // 用于获取数据库文件夹
-  std::vector<std::string> GetDatabaseFolders(const std::string &database_path);
-  std::vector<std::string> GetDatabaseFiles(const std::string &database_folder_path);
-  std::vector<cv::Mat> DetectionPredict(const cv::Mat &input_image);
-  std::vector<cv::Mat> DetectionPredict(const cv::Mat &input_image, DetectionResult &detection_result);
+  bool DetectionPredict(const cv::Mat &input_image, DetectionResult &detection_result);
   std::vector<std::vector<float>> RecognitionPredict(const std::vector<cv::Mat> &input_image_vector);
-  std::vector<std::vector<float>> GetFeature(const cv::Mat &input_image, bool use_detection);
 };
 }
 }
