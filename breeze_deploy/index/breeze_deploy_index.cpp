@@ -32,6 +32,11 @@ BreezeDeployIndex::BreezeDeployIndex(int feature_length,
   index_index_map_ = faiss::IndexIDMap(faiss_index_.get());
 }
 bool BreezeDeployIndex::AddFeature(const std::vector<float> &feature, const std::vector<int64_t> &label_id) {
+  if (faiss_index_ == nullptr){
+    BREEZE_DEPLOY_LOGGER_ERROR("faiss_index_ == nullptr.")
+    return false;
+  }
+
   if (feature.empty()) {
 	BREEZE_DEPLOY_LOGGER_ERROR("The feature is empty.")
 	return false;

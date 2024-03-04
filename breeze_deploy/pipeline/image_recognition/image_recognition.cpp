@@ -84,6 +84,12 @@ bool ImageRecognition::DetectionPredict(const cv::Mat &input_image, DetectionRes
 }
 
 bool ImageRecognition::AddToDatabase(const cv::Mat &input_mat, int64_t image_index, bool use_detection) {
+  if (index_system_ == nullptr){
+    BREEZE_DEPLOY_LOGGER_ERROR(
+        "BreezeDeployIndex has not been created yet. Please use CreateIndex() before using DeleteIndex().")
+    return false;
+  }
+
   FeatureResult feature_result;
   if (use_detection) {
     DetectionResult detection_result;
@@ -135,6 +141,12 @@ bool ImageRecognition::Predict(const cv::Mat &image,
                                ImageRecognitionResult &image_recognition_result,
                                size_t k,
                                bool use_detection) {
+  if (index_system_ == nullptr){
+    BREEZE_DEPLOY_LOGGER_ERROR(
+        "BreezeDeployIndex has not been created yet. Please use CreateIndex() before using DeleteIndex().")
+    return false;
+  }
+
   if (image.empty()) {
     BREEZE_DEPLOY_LOGGER_ERROR("The input image is empty.");
     return false;

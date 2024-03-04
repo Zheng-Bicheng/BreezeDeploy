@@ -24,23 +24,26 @@ cp ArcFace_Model/model/ms1mv3_arcface_r18.rknn Face_Model/model
 cp SCRFD_Model/model/scrfd_500m_shape640x640.rknn Face_Model/model
 ```
 
-将你准备好的，想要用于识别的图片放到Face_Model/image目录下，注意每一个人的图片需要放在一个文件夹内。
-我这里使用了[AI Studio-人脸识别](https://aistudio.baidu.com/datasetdetail/94187)，解压后，我的image目录结构如下:
-
-```text
-image/
-├── dilireba
-├── jiangwen
-├── lipeiyu
-├── pengyuyan
-├── zhangziyi
-└── zhaoliying
-```
-
-然后我将 **ArcFace_Model/image/pengyuyan/20181206161053.png** 移动到 **ArcFace_Model/image** 作为检测的人脸。
+将你准备好的，想要用于识别的图片放到Face_Model/image目录下。
 
 ```bash
-mv ArcFace_Model/image/pengyuyan/20181206161053.png ArcFace_Model/image
+wget https://bj.bcebos.com/paddlehub/fastdeploy/rknpu2/face_demo.zip
+unzip face_demo.zip
+cp face_0.jpg Face_Model/image
+cp face_1.jpg Face_Model/image
+cp face_2.jpg Face_Model/image
+```
+
+```text
+Face_Model/
+├── image
+│   ├── face_0.jpg
+│   ├── face_1.jpg
+│   └── face_2.jpg
+└── model
+    ├── ms1mv3_arcface_r18.rknn
+    └── scrfd_500m_shape640x640.rknn
+
 ```
 
 
@@ -60,10 +63,20 @@ make install
 
 ```bash
 export LD_LIBRARY_PATH=${PWD}
+# For ONNX
+./test_image_recognition  Face_Model/model/scrfd_500m_shape640x640.onnx \
+                          config/detection/scrfd_template.yaml \
+                          Face_Model/model/ms1mv3_arcface_r18.onnx \
+                          config/feature/arcface_template.yaml \
+                          Face_Model/image/face_0.jpg \
+                          Face_Model/image/face_2.jpg \
+                          Face_Model/image/face_1.jpg
+# For RKNN
 ./test_image_recognition  Face_Model/model/scrfd_500m_shape640x640.rknn \
                           config/detection/scrfd_template.yaml \
                           Face_Model/model/ms1mv3_arcface_r18.rknn \
                           config/feature/arcface_template.yaml \
-                          Face_Model/image \
-                          Face_Model/image/20181206161053.png
+                          Face_Model/image/face_0.jpg \
+                          Face_Model/image/face_2.jpg \
+                          Face_Model/image/face_1.jpg
 ```

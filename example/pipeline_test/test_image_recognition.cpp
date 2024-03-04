@@ -24,15 +24,16 @@ using namespace breeze_deploy::models;
 using cv::imread;
 
 int main(int argc, char *argv[]) {
-  if (argc != 7) {
-    std::cout
-        << "Usage: test_image_recognition "
-           "/path/to/model_det "
-           "/path/to/config_det "
-           "/path/to/model_cls "
-           "/path/to/config_cls "
-           "/path/to/data_base "
-           "/path/to/rec_image" << std::endl;
+  if (argc != 8) {
+    std::cout << "Usage: test_image_recognition "
+                 "/path/to/model_det "
+                 "/path/to/config_det "
+                 "/path/to/model_cls "
+                 "/path/to/config_cls "
+                 "/path/to/data_base_image_0"
+                 "/path/to/data_base_image_1"
+                 "/path/to/infer_image"
+              << std::endl;
     return -1;
   }
   std::string model_det_path = argv[1];
@@ -49,14 +50,20 @@ int main(int argc, char *argv[]) {
     return -1;
   }
 
-#if 0
-  std::string data_base_path = argv[5];
-  image_recognition.BuildDatabase(data_base_path, false);
+  image_recognition.CreateIndex();
 
-  std::string image_path = argv[6];
-  auto mat = cv::imread(image_path);
+  std::string data_base_image_path = argv[5];
+  auto data_base_image = cv::imread(data_base_image_path);
+  image_recognition.AddToDatabase(data_base_image, 0, true);
+
+  data_base_image_path = argv[6];
+  data_base_image = cv::imread(data_base_image_path);
+  image_recognition.AddToDatabase(data_base_image, 1, true);
+
+  std::string infer_image_path = argv[7];
+  auto infer_image = cv::imread(infer_image_path);
   ImageRecognitionResult image_recognition_result;
-  image_recognition.Predict(mat, image_recognition_result, 1, false);
+  image_recognition.Predict(infer_image, image_recognition_result, 1, true);
 
   auto &classification_results = image_recognition_result.classification_results;
   for (auto &classification_result : classification_results) {
@@ -66,6 +73,5 @@ int main(int argc, char *argv[]) {
              classification_result.topk_confidence_vector[k]);
     }
   }
-#endif
   return 0;
 }
