@@ -84,7 +84,7 @@ bool ImageRecognition::DetectionPredict(const cv::Mat &input_image, DetectionRes
 }
 
 bool ImageRecognition::AddToDatabase(const cv::Mat &input_mat, int64_t image_index, bool use_detection) {
-  if (index_system_ == nullptr){
+  if (index_system_ == nullptr) {
     BREEZE_DEPLOY_LOGGER_ERROR(
         "BreezeDeployIndex has not been created yet. Please use CreateIndex() before using DeleteIndex().")
     return false;
@@ -141,7 +141,7 @@ bool ImageRecognition::Predict(const cv::Mat &image,
                                ImageRecognitionResult &image_recognition_result,
                                size_t k,
                                bool use_detection) {
-  if (index_system_ == nullptr){
+  if (index_system_ == nullptr) {
     BREEZE_DEPLOY_LOGGER_ERROR(
         "BreezeDeployIndex has not been created yet. Please use CreateIndex() before using DeleteIndex().")
     return false;
@@ -181,6 +181,10 @@ bool ImageRecognition::Predict(const cv::Mat &image,
                                k,
                                topk_confidence_vector,
                                topk_label_id_vector);
+    if (topk_label_id_vector[0] == -1) {
+      BREEZE_DEPLOY_LOGGER_WARN("No matching face found in the database.")
+      image_recognition_result.Clear();
+    }
   }
   return true;
 }

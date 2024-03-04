@@ -12,8 +12,8 @@ set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE
 target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE -fvisibility=hidden)
 
 find_package(OpenBLAS REQUIRED)
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE -Wl,--whole-archive -Wl,-Bsymbolic ${FAISS_LIBRARIES} OpenBLAS::OpenBLAS ${SPDLOG_LIBRARIES} ${EIGEN_LIBRARIES} ${YAML_CPP_LIBRARIES})
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE -Wl,--no-whole-archive -Wl,-Bsymbolic ${OPENCV_LIBRARIES})
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE -Wl,--whole-archive -Wl,-Bsymbolic ${FAISS_LIBRARIES} OpenBLAS::OpenBLAS)
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE -Wl,--no-whole-archive -Wl,-Bsymbolic ${OPENCV_LIBRARIES} ${SPDLOG_LIBRARIES} ${EIGEN_LIBRARIES} ${YAML_CPP_LIBRARIES})
 # 安装头文件
 install(DIRECTORY ${BREEZE_DEPLOY_SOURCE_DIRECTORY}
         DESTINATION ${CMAKE_INSTALL_PREFIX}/include
