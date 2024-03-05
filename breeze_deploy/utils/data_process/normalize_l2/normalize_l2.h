@@ -20,17 +20,13 @@
 namespace breeze_deploy {
 namespace utils {
 namespace data_process {
-template<typename T>
-BREEZE_DEPLOY_EXPORT bool NormalizeL2(std::vector<T> &input_data) {
+BREEZE_DEPLOY_EXPORT bool NormalizeL2(std::vector<float> &input_data) {
   if (input_data.empty()) {
 	return false;
   }
   // 将std::vector<float> 转换为 Eigen::Map
-  Eigen::Map<Eigen::VectorXf> eigen_vector(input_data.data(), input_data.size());
-  // 计算L2范数
-  float l2_norm = eigen_vector.norm();
-  // 归一化
-  eigen_vector /= l2_norm;
+  Eigen::Map<Eigen::VectorXf> eigen_vector(input_data.data(), static_cast<long>(input_data.size()));
+  eigen_vector.normalize();
   return true;
 }
 }

@@ -82,8 +82,8 @@ struct ImageRecognitionResult {
   // 一个DetectionResult内有多个目标，每个目标都有一个ClassificationResult结果
   std::vector<ClassificationResult> classification_results;
 
-  size_t GetSize() const { return detection_result.label_id_vector.size(); }
-  bool Empty() const { return detection_result.label_id_vector.empty(); }
+  size_t GetSize() const { return detection_result.GetSize(); }
+  bool Empty() const { return detection_result.Empty(); }
   void Clear() {
     detection_result.Clear();
     classification_results.clear();

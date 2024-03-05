@@ -54,9 +54,14 @@ if (ENABLE_RKNN_RUNTIME)
     install(DIRECTORY ${RKNN_RUNTIME_INCLUDE_DIRS} DESTINATION third_party/rknpu2_runtime)
 endif ()
 
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/BreezeDeployConfig.cmake.in BreezeDeployConfig.cmake @ONLY)
+
 # 安装配置文件
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/config DESTINATION .)
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/config DESTINATION bin)
+
+# Copy BreezeDeployConfig.cmake
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/BreezeDeployConfig.cmake DESTINATION .)
 
 # 安装Vcpkg第三方库到third_party/vcpkg目录(全为静态库，因此只需要拷贝头文件)
 install(DIRECTORY ${VCPKG_INCLUDE_ROOT} DESTINATION third_party/vcpkg)
