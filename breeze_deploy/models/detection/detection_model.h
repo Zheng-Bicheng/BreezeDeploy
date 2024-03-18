@@ -34,18 +34,15 @@ class BREEZE_DEPLOY_EXPORT DetectionModel : public BreezeDeployModel {
   bool ReadPostprocessYAML() override;
   bool Postprocess() override;
 
-  // For [Resize,LetterBox]
-  double radio_ = 0.0;
 
-  // For [LetterBox]
-  int pad_width_ = 0;
-  int pad_height_ = 0;
+  double radio_ = 0.0;  // For [Resize,LetterBox]
+  int pad_width_ = 0;  // For [LetterBox]
+  int pad_height_ = 0;  // For [LetterBox]
+
+  int landmark_num_ = 0;  // For YOLOV5-Face
 
   float confidence_threshold_ = 0.5;
   float nms_threshold_ = 0.5;
-
-  // For YOLOV5-Face
-  int landmark_num_ = 0;
 };
 }
 }

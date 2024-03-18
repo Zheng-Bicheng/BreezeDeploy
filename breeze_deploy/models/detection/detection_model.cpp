@@ -18,7 +18,7 @@ namespace breeze_deploy {
 namespace models {
 bool DetectionModel::Preprocess(const cv::Mat &input_mat) {
   if (input_mat.empty()) {
-	BREEZE_DEPLOY_LOGGER_ERROR("input_mat is empty.")
+	BDLOGGER_ERROR("input_mat is empty.")
 	return false;
   }
 
@@ -26,7 +26,7 @@ bool DetectionModel::Preprocess(const cv::Mat &input_mat) {
   input_mat_ = BreezeDeployMat(input_mat);
   for (const auto &preprocess_function : preprocess_functions_) {
 	if (!preprocess_function->Run(input_mat_)) {
-	  BREEZE_DEPLOY_LOGGER_ERROR("Failed to run preprocess.")
+	  BDLOGGER_ERROR("Failed to run preprocess.")
 	  return false;
 	}
   }
@@ -59,7 +59,7 @@ bool DetectionModel::ReadPostprocessYAML() {
   try {
 	yaml_config = YAML::LoadFile(config_file_path_);
   } catch (YAML::BadFile &e) {
-	BREEZE_DEPLOY_LOGGER_ERROR("Failed to load yaml file: {}.", config_file_path_)
+	BDLOGGER_ERROR("Failed to load yaml file: {}.", config_file_path_)
 	return false;
   }
 
@@ -71,12 +71,12 @@ bool DetectionModel::ReadPostprocessYAML() {
 	if (function_name == "landmark_num") {
 	  auto &landmark_num_node = postprocess_function_config.begin()->second;
 	  if (!landmark_num_node) {
-		BREEZE_DEPLOY_LOGGER_ERROR("The function(landmark_num) must have a landmark_num element.")
+		BDLOGGER_ERROR("The function(landmark_num) must have a landmark_num element.")
 		return false;
 	  }
 	  landmark_num_ = landmark_num_node.as<int>();
 	} else {
-	  BREEZE_DEPLOY_LOGGER_ERROR("The postprocess name only supports [landmark_num], "
+	  BDLOGGER_ERROR("The postprocess name only supports [landmark_num], "
 								 "but now it is called {}.", function_name)
 	  return false;
 	}

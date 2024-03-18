@@ -20,7 +20,7 @@ namespace models {
 bool FeatureModel::InitializeBackend(const BreezeDeployBackendOption &breeze_deploy_backend_option) {
   auto result_init = BreezeDeployModel::InitializeBackend(breeze_deploy_backend_option);
   if (!result_init) {
-	BREEZE_DEPLOY_LOGGER_ERROR("Failed to initialize the backend. "
+	BDLOGGER_ERROR("Failed to initialize the backend. "
 							   "Please check if the backend configuration parameters are correct.");
 	return false;
   }
@@ -28,7 +28,7 @@ bool FeatureModel::InitializeBackend(const BreezeDeployBackendOption &breeze_dep
   auto input_tensor_size = breeze_deploy_backend_->GetInputTensorSize();
   auto output_tensor_size = breeze_deploy_backend_->GetOutputTensorSize();
   if ((input_tensor_size != 1) || (output_tensor_size != 1)) {
-	BREEZE_DEPLOY_LOGGER_ERROR(
+	BDLOGGER_ERROR(
 		"The classification model only supports input and output tensor with a size of 1. "
 		"However, the input tensor is of size {}, and the output tensor is of size {}.",
 		input_tensor_size,
@@ -42,7 +42,7 @@ bool FeatureModel::ReadPostprocessYAML() {
   try {
 	yaml_config = YAML::LoadFile(config_file_path_);
   } catch (YAML::BadFile &e) {
-	BREEZE_DEPLOY_LOGGER_ERROR("Failed to load yaml file: {}.", config_file_path_)
+	BDLOGGER_ERROR("Failed to load yaml file: {}.", config_file_path_)
 	return false;
   }
 
@@ -54,19 +54,19 @@ bool FeatureModel::ReadPostprocessYAML() {
 	if (function_name == "Softmax") {
 	  auto &need_node = postprocess_function_config.begin()->second;
 	  if (!need_node) {
-		BREEZE_DEPLOY_LOGGER_ERROR("The function(TopK) must have a value.")
+		BDLOGGER_ERROR("The function(TopK) must have a value.")
 		return false;
 	  }
 	  need_softmax_ = need_node.as<bool>();
 	} else if (function_name == "NormalizeL2") {
 	  auto &need_node = postprocess_function_config.begin()->second;
 	  if (!need_node) {
-		BREEZE_DEPLOY_LOGGER_ERROR("The function(NormalizeL2) must have a value.")
+		BDLOGGER_ERROR("The function(NormalizeL2) must have a value.")
 		return false;
 	  }
 	  need_normalize_l2_ = need_node.as<bool>();
 	} else {
-	  BREEZE_DEPLOY_LOGGER_ERROR("The postprocess name only supports [NormalizeL2, Softmax], "
+	  BDLOGGER_ERROR("The postprocess name only supports [NormalizeL2, Softmax], "
 								 "but now it is called {}.", function_name)
 	  return false;
 	}
@@ -75,14 +75,14 @@ bool FeatureModel::ReadPostprocessYAML() {
 }
 bool FeatureModel::Preprocess(const cv::Mat &input_mat) {
   if (input_mat.empty()) {
-	BREEZE_DEPLOY_LOGGER_ERROR("input_mat is empty.")
+	BDLOGGER_ERROR("input_mat is empty.")
 	return false;
   }
 
   BreezeDeployMat breeze_deploy_mat(input_mat);
   for (const auto &preprocess_function : preprocess_functions_) {
 	if (!preprocess_function->Run(breeze_deploy_mat)) {
-	  BREEZE_DEPLOY_LOGGER_ERROR("Failed to run preprocess.")
+	  BDLOGGER_ERROR("Failed to run preprocess.")
 	  return false;
 	}
   }
@@ -124,7 +124,7 @@ bool FeatureModel::Predict(const cv::Mat &input_mat, FeatureResult &label_result
 }
 size_t FeatureModel::GetFeatureLength() {
   if (breeze_deploy_backend_ == nullptr) {
-	BREEZE_DEPLOY_LOGGER_ERROR("This model uses a null pointer for the inference backend. "
+	BDLOGGER_ERROR("This model uses a null pointer for the inference backend. "
 							   "Please check if the model backend has been initialized.")
 	return false;
   }

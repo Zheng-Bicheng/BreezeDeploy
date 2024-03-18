@@ -61,21 +61,21 @@ bool SCRFD::Predict(const cv::Mat &input_mat,
                     DetectionResult &result_with_landmark) {
   // output tensor size must be in [9,6,10,15]
   auto tensor_size = output_tensor_vector_.size();
-  BREEZE_DEPLOY_LOGGER_ASSERT((tensor_size == 9 || tensor_size == 6 || tensor_size == 9 || tensor_size == 15),
-                              "The default number of output tensor must in [6, 9, 10, 15].")
+  BDLOGGER_ASSERT((tensor_size == 9 || tensor_size == 6 || tensor_size == 9 || tensor_size == 15),
+                  "The default number of output tensor must in [6, 9, 10, 15].")
 
   // number of downsample_strides_
   auto fmc = downsample_strides_.size();
-  BREEZE_DEPLOY_LOGGER_ASSERT((fmc == 3 || fmc == 5), "The fmc must be 3 or 5")
+  BDLOGGER_ASSERT((fmc == 3 || fmc == 5), "The fmc must be 3 or 5")
 
   if (!BreezeDeployModel::Predict(input_mat)) {
-    BREEZE_DEPLOY_LOGGER_ERROR("Failed to preprocess input mat.")
+    BDLOGGER_ERROR("Failed to preprocess input mat.")
     return false;
   }
 
   // Only support when batch is 1.
   auto output_batch = output_tensor_vector_[0].GetTensorInfo().tensor_shape[0];
-  BREEZE_DEPLOY_LOGGER_ASSERT((output_batch == 1), "Only support batch =1 now.")
+  BDLOGGER_ASSERT((output_batch == 1), "Only support batch =1 now.")
 
   result_with_landmark.Clear();
 

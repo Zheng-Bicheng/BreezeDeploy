@@ -20,13 +20,14 @@
 
 namespace breeze_deploy {
 namespace backend {
-struct ONNXTensorInfo {
-  std::string name;
-  std::vector<int64_t> shape = {0, 0, 0, 0};
-  ONNXTensorElementDataType type = ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT;
-};
 
 class ONNXBackend : public BreezeDeployBackend {
+  struct ONNXTensorInfo {
+    std::string name;
+    std::vector<int64_t> shape = {0, 0, 0, 0};
+    ONNXTensorElementDataType type = ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT;
+  };
+
  public:
   ONNXBackend() = default;
   ~ONNXBackend() override = default;
@@ -39,15 +40,17 @@ class ONNXBackend : public BreezeDeployBackend {
   Ort::SessionOptions session_options_{};
   Ort::Session session_{nullptr};
 
-  std::vector<ONNXTensorInfo> onnx_input_tensor_info_vector_{};
-  std::vector<const char *> input_node_vector_{};
+  std::vector<ONNXTensorInfo> onnx_input_tensor_info_{};
+  std::vector<const char *> onnx_input_nodes_{};
   void SetInputTensorInfo();
 
-  std::vector<ONNXTensorInfo> onnx_output_tensor_info_vector_{};
-  std::vector<const char *> output_node_vector_{};
+  std::vector<ONNXTensorInfo> onnx_output_tensor_info_{};
+  std::vector<const char *> onnx_output_nodes_{};
   void SetOutputTensorInfo();
 
   std::vector<Ort::Value> output_tensors_{};
+
+  static BreezeDeployTensorType ONNXTypeToBDType(ONNXTensorElementDataType type);
 };
 }
 }

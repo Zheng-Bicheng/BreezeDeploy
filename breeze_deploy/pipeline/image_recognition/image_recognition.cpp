@@ -22,14 +22,14 @@ namespace models {
 ImageRecognition::ImageRecognition(std::unique_ptr<FeatureModel> recognition_model,
                                    std::unique_ptr<DetectionModel> detection_model)
     : detection_model_{std::move(detection_model)}, recognition_model_{std::move(recognition_model)} {
-  BREEZE_DEPLOY_LOGGER_ASSERT(recognition_model == nullptr,
-                              "The feature extraction model must exist, but the current feature extraction model is empty.")
+  BDLOGGER_ASSERT(recognition_model == nullptr,
+                  "The feature extraction model must exist, but the current feature extraction model is empty.")
 }
 
 bool ImageRecognition::Initialize(const breeze_deploy::backend::BreezeDeployBackendOption &rec_option,
                                   const breeze_deploy::backend::BreezeDeployBackendOption &det_option) {
   if (!recognition_model_->Initialize(rec_option)) {
-    BREEZE_DEPLOY_LOGGER_ERROR("Initialization of the recognition model failed. "
+    BDLOGGER_ERROR("Initialization of the recognition model failed. "
                                "Please check the configuration parameters of the recognition model.")
     return false;
   }
@@ -37,7 +37,7 @@ bool ImageRecognition::Initialize(const breeze_deploy::backend::BreezeDeployBack
 
   if (detection_model_ != nullptr) {
     if (!detection_model_->Initialize(det_option)) {
-      BREEZE_DEPLOY_LOGGER_ERROR("Initialization of the detection model failed. "
+      BDLOGGER_ERROR("Initialization of the detection model failed. "
                                  "Please check the configuration parameters of the detection model.")
       return false;
     }
@@ -47,7 +47,7 @@ bool ImageRecognition::Initialize(const breeze_deploy::backend::BreezeDeployBack
 
 bool ImageRecognition::CreateIndex() {
   if (index_system_ != nullptr) {
-    BREEZE_DEPLOY_LOGGER_ERROR(
+    BDLOGGER_ERROR(
         "The BreezeDeployIndex has already been created. Please use DeleteIndex() before using CreateIndex().")
     return false;
   }
@@ -57,7 +57,7 @@ bool ImageRecognition::CreateIndex() {
 
 bool ImageRecognition::DeleteIndex() {
   if (index_system_ == nullptr) {
-    BREEZE_DEPLOY_LOGGER_ERROR(
+    BDLOGGER_ERROR(
         "BreezeDeployIndex has not been created yet. Please use CreateIndex() before using DeleteIndex().")
     return false;
   }
@@ -67,17 +67,17 @@ bool ImageRecognition::DeleteIndex() {
 
 bool ImageRecognition::DetectionPredict(const cv::Mat &input_image, DetectionResult &detection_result) {
   if (detection_model_ == nullptr) {
-    BREEZE_DEPLOY_LOGGER_ERROR("The input image is empty.")
+    BDLOGGER_ERROR("The input image is empty.")
     return false;
   }
 
   if (input_image.empty()) {
-    BREEZE_DEPLOY_LOGGER_ERROR("The input image is empty.")
+    BDLOGGER_ERROR("The input image is empty.")
     return false;
   }
 
   if (!detection_model_->Predict(input_image, detection_result)) {
-    BREEZE_DEPLOY_LOGGER_ERROR("During the prediction process, an error occurred in the detection model.")
+    BDLOGGER_ERROR("During the prediction process, an error occurred in the detection model.")
     return false;
   }
   return true;
@@ -85,7 +85,7 @@ bool ImageRecognition::DetectionPredict(const cv::Mat &input_image, DetectionRes
 
 bool ImageRecognition::AddToDatabase(const cv::Mat &input_mat, int64_t image_index, bool use_detection) {
   if (index_system_ == nullptr) {
-    BREEZE_DEPLOY_LOGGER_ERROR(
+    BDLOGGER_ERROR(
         "BreezeDeployIndex has not been created yet. Please use CreateIndex() before using DeleteIndex().")
     return false;
   }
@@ -94,7 +94,7 @@ bool ImageRecognition::AddToDatabase(const cv::Mat &input_mat, int64_t image_ind
   if (use_detection) {
     DetectionResult detection_result;
     if (!DetectionPredict(input_mat, detection_result)) {
-      BREEZE_DEPLOY_LOGGER_ERROR("During the prediction process, an error occurred in the detection model.")
+      BDLOGGER_ERROR("During the prediction process, an error occurred in the detection model.")
       return false;
     }
 
@@ -106,18 +106,18 @@ bool ImageRecognition::AddToDatabase(const cv::Mat &input_mat, int64_t image_ind
     auto max_result = detection_result.GetMaxConfidenceResult();
     auto infer_image = utils::image_process::CropImage(input_mat, max_result.rect_vector[0]);
     if (!recognition_model_->Predict(infer_image, feature_result)) {
-      BREEZE_DEPLOY_LOGGER_ERROR("During the prediction process, an error occurred in the recognition model.")
+      BDLOGGER_ERROR("During the prediction process, an error occurred in the recognition model.")
       return false;
     }
   } else {
     if (!recognition_model_->Predict(input_mat, feature_result)) {
-      BREEZE_DEPLOY_LOGGER_ERROR("During the prediction process, an error occurred in the recognition model.")
+      BDLOGGER_ERROR("During the prediction process, an error occurred in the recognition model.")
       return false;
     }
   }
 
   if (!index_system_->AddFeature(feature_result.feature_vector, {image_index})) {
-    BREEZE_DEPLOY_LOGGER_ERROR("Adding features to the feature retrieval system failed.")
+    BDLOGGER_ERROR("Adding features to the feature retrieval system failed.")
     return false;
   }
   return true;
@@ -129,7 +129,7 @@ std::vector<std::vector<float>> ImageRecognition::RecognitionPredict(const std::
   for (const auto &input_image : input_image_vector) {
     FeatureResult feature_result;
     if (!recognition_model_->Predict(input_image, feature_result)) {
-      BREEZE_DEPLOY_LOGGER_ERROR("Image feature extraction model prediction failure.")
+      BDLOGGER_ERROR("Image feature extraction model prediction failure.")
       continue;
     }
     temp_feature_vector.emplace_back(feature_result.feature_vector);
@@ -142,13 +142,13 @@ bool ImageRecognition::Predict(const cv::Mat &image,
                                size_t k,
                                bool use_detection) {
   if (index_system_ == nullptr) {
-    BREEZE_DEPLOY_LOGGER_ERROR(
+    BDLOGGER_ERROR(
         "BreezeDeployIndex has not been created yet. Please use CreateIndex() before using DeleteIndex().")
     return false;
   }
 
   if (image.empty()) {
-    BREEZE_DEPLOY_LOGGER_ERROR("The input image is empty.");
+    BDLOGGER_ERROR("The input image is empty.");
     return false;
   }
 
@@ -156,7 +156,7 @@ bool ImageRecognition::Predict(const cv::Mat &image,
   auto &detection_result = image_recognition_result.detection_result;
   if (use_detection) {
     if (!DetectionPredict(image, detection_result)) {
-      BREEZE_DEPLOY_LOGGER_ERROR("During the prediction process, an error occurred in the detection model.")
+      BDLOGGER_ERROR("During the prediction process, an error occurred in the detection model.")
       return false;
     }
 
