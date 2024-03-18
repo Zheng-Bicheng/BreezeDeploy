@@ -25,8 +25,8 @@ class BREEZE_DEPLOY_EXPORT PaddleDetection : public DetectionModel {
   bool Predict(const cv::Mat &input_mat, DetectionResult &result_with_landmark) override;
 
  private:
-  bool ProcessWithoutNMS(DetectionResult &detection);
-  bool ProcessWithNMS(DetectionResult &detection);
+  bool ProcessWithoutNMS(DetectionResult &result);
+  bool ProcessWithNMS(DetectionResult &result);
 };
 }
 }

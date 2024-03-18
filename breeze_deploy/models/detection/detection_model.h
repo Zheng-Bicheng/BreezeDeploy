@@ -30,19 +30,19 @@ class BREEZE_DEPLOY_EXPORT DetectionModel : public BreezeDeployModel {
   static cv::Mat Draw(const cv::Mat &mat, const DetectionResult &detection_results);
 
  protected:
-  bool Preprocess(const cv::Mat &input_mat) override;
   bool ReadPostprocessYAML() override;
-  bool Postprocess() override;
 
-
+  // For Preprocess
   double radio_ = 0.0;  // For [Resize,LetterBox]
   int pad_width_ = 0;  // For [LetterBox]
   int pad_height_ = 0;  // For [LetterBox]
+  bool Preprocess(const cv::Mat &input_mat) override;
 
+  // For Postprocess
   int landmark_num_ = 0;  // For YOLOV5-Face
-
   float confidence_threshold_ = 0.5;
   float nms_threshold_ = 0.5;
+  bool Postprocess() override;
 };
 }
 }
