@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "breeze_deploy/models/detection/paddle_detection/paddle_detetcion.h"
+#include "breeze_deploy/models/detection/paddle_detection/paddle_detection.h"
 namespace breeze_deploy {
 namespace models {
 PaddleDetection::PaddleDetection(const std::string &model_path, const std::string &config_file_path)

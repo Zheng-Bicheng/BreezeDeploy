@@ -32,8 +32,10 @@
 *.app
 
 # For VSCode
-build
 .idea
+.vscode
 BreezeDeployModelZoo
+build
 build-x86
+build-amd64
 build-arm64

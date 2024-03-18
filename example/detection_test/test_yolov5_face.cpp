@@ -50,6 +50,13 @@ int main(int argc, char *argv[]) {
   }
   cost.End();
   cost.PrintInfo("YOLOV5Face", 1.0, BreezeDeployTimeType::Milliseconds);
+
+  if (mat.empty())
+  {
+    std::cout << "未检测出图片" << std::endl;
+	  return 1;
+  }
+  
   mat = DetectionModel::Draw(mat, result_with_landmark);
   cv::imwrite("./detect_result.png", mat);
   return 0;
