@@ -54,14 +54,27 @@ bool PaddleDetection::ProcessWithNMS(DetectionResult &result) {
   std::vector<long> temp_class_id_vector;
 
   auto total_label_num = tensor_scores.GetTensorInfo().tensor_shape[1];
+  BDLOGGER_DEBUG("total_label_num is {}", total_label_num)
   auto total_box_num = tensor_scores.GetTensorInfo().tensor_shape[2];
+  BDLOGGER_DEBUG("total_box_num is {}", total_box_num)
+
+  float max_score_temp = 0;
+  for (size_t i = 0; i < 2 * 2100; i++)
+  {
+    if (tensor_data_scores[i] > max_score_temp) {
+      max_score_temp = tensor_data_scores[i];
+    }
+  }
+  BDLOGGER_DEBUG("max_score_temp is {}",max_score_temp)
+  
+
   for (int i = 0; i < total_box_num; ++i) {
     auto score_pointer_start = tensor_data_scores + i;
     auto score_pointer_end = score_pointer_start + (total_label_num - 1) * total_box_num;
 
     long max_label_index;
     float max_label_score = 0;
-    for (auto score_pointer = score_pointer_start; score_pointer < score_pointer_end; score_pointer += total_box_num) {
+    for (auto score_pointer = score_pointer_start; score_pointer <= score_pointer_end; score_pointer += total_box_num) {
       if (*score_pointer > max_label_score) {
         max_label_index = (score_pointer - score_pointer_start) / total_box_num;
         max_label_score = *score_pointer;
@@ -69,6 +82,7 @@ bool PaddleDetection::ProcessWithNMS(DetectionResult &result) {
     }
 
     if (max_label_score <= confidence_threshold_) {
+      // BDLOGGER_DEBUG("max_label_score is {}", max_label_score)
       continue;
     }
 
@@ -81,7 +95,8 @@ bool PaddleDetection::ProcessWithNMS(DetectionResult &result) {
                                  boxes_pointer[3] - boxes_pointer[1]);
   }
 
-  if (temp_box_vector.empty()){
+  if (temp_box_vector.empty()) {
+    BDLOGGER_DEBUG("No target detected");
     return true;
   }
 

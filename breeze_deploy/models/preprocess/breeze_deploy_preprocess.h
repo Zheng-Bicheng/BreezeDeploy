@@ -31,7 +31,7 @@ class BreezeDeployPreprocess {
 
  protected:
   // For resize
-  double radio_ = 0.0;
+  double radio_ = 1;
 
   // For padding
   int pad_width_ = 0;

@@ -20,12 +20,12 @@ Resize::Resize(int width, int height)
 	: width_{width}, height_{height} {}
 bool Resize::Run(BreezeDeployMat &breeze_deploy_mat) {
   if (width_ == 0 || height_ == 0) {
-	BDLOGGER_ERROR("width_ == 0 || height_ == 0")
-	return false;
+	  BDLOGGER_ERROR("width_ == 0 || height_ == 0")
+	  return false;
   }
 
   if (width_ == breeze_deploy_mat.GetWidth() && height_ == breeze_deploy_mat.GetHeight()) {
-	return true;
+	  return true;
   }
   auto &mat = breeze_deploy_mat.GetMat();
   // cv::INTER_NEAREST 214911 	204187 	223560 	0.989138

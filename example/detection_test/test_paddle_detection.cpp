@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
 	return 1;
   }
 
-  detect_model.SetConfidenceThreshold(0.5);
+  detect_model.SetConfidenceThreshold(0.4);
   detect_model.SetNMSThreshold(0.5);
 
   std::string image_path = argv[3];
@@ -45,19 +45,18 @@ int main(int argc, char *argv[]) {
   cost.Start();
   DetectionResult result;
   if (!detect_model.Predict(mat, result)) {
-	std::cout << "模型推理失败" << std::endl;
-	return 1;
+    std::cout << "模型推理失败" << std::endl;
+    return 1;
   }
   cost.End();
   cost.PrintInfo("PaddleDetection", 1.0, BreezeDeployTimeType::Milliseconds);
+  mat = DetectionModel::Draw(mat, result);
 
   if (mat.empty())
   {
     std::cout << "未检测出图片" << std::endl;
 	  return 1;
   }
-
-  mat = DetectionModel::Draw(mat, result);
   cv::imwrite("./detect_result.png", mat);
   return 0;
 }

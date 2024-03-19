@@ -44,7 +44,7 @@ BREEZE_DEPLOY_EXPORT extern BreezeDeployLogger breeze_deploy_logger;
   SPDLOG_LOGGER_INFO(get_logger, __VA_ARGS__);            	\
 }
 
-#define BREEZE_DEPLOY_LOGGER_DEBUG(...)                     \
+#define BDLOGGER_DEBUG(...)                     \
 {                                                         	\
   auto get_logger = breeze_deploy_logger.GetLogger(); 		\
   SPDLOG_LOGGER_DEBUG(get_logger, __VA_ARGS__);           	\
@@ -77,7 +77,7 @@ BREEZE_DEPLOY_EXPORT extern BreezeDeployLogger breeze_deploy_logger;
   }                                            		\
 }
 #else
-#define BREEZE_DEPLOY_LOGGER_ASSERT(flag, ...) 		\
+#define BDLOGGER_ASSERT(flag, ...) 		\
 {                                             		\
   if(!(flag)) {                                   	\
     BREEZE_DEPLOY_LOGGER_CRITICAL(__VA_ARGS__)   	\

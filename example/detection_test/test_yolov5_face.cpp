@@ -45,19 +45,18 @@ int main(int argc, char *argv[]) {
   cost.Start();
   DetectionResult result_with_landmark;
   if (!detect_model.Predict(mat, result_with_landmark)) {
-	std::cout << "模型推理失败" << std::endl;
-	return 1;
+    std::cout << "模型推理失败" << std::endl;
+    return 1;
   }
   cost.End();
   cost.PrintInfo("YOLOV5Face", 1.0, BreezeDeployTimeType::Milliseconds);
+  mat = DetectionModel::Draw(mat, result_with_landmark);
 
   if (mat.empty())
   {
     std::cout << "未检测出图片" << std::endl;
 	  return 1;
   }
-  
-  mat = DetectionModel::Draw(mat, result_with_landmark);
   cv::imwrite("./detect_result.png", mat);
   return 0;
 }

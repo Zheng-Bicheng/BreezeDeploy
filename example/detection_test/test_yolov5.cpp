@@ -45,19 +45,18 @@ int main(int argc, char *argv[]) {
   cost.Start();
   DetectionResult result;
   if (!detect_model.Predict(mat, result)) {
-	std::cout << "模型推理失败" << std::endl;
-	return 1;
+    std::cout << "模型推理失败" << std::endl;
+    return 1;
   }
   cost.End();
   cost.PrintInfo("YOLOV5", 1.0, BreezeDeployTimeType::Milliseconds);
+  mat = DetectionModel::Draw(mat, result);
 
   if (mat.empty())
   {
     std::cout << "未检测出图片" << std::endl;
 	  return 1;
   }
-  
-  mat = DetectionModel::Draw(mat, result);
   cv::imwrite("./detect_result.png", mat);
   return 0;
 }
