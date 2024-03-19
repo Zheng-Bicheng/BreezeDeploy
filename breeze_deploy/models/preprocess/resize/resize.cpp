@@ -28,6 +28,10 @@ bool Resize::Run(BreezeDeployMat &breeze_deploy_mat) {
 	  return true;
   }
   auto &mat = breeze_deploy_mat.GetMat();
+  auto mat_height = breeze_deploy_mat.GetHeight();
+  auto mat_width = breeze_deploy_mat.GetWidth();
+  radio_width_height_ = {static_cast<double>(width_) / mat_width, static_cast<double>(height_) / mat_height};
+
   // cv::INTER_NEAREST 214911 	204187 	223560 	0.989138
   // cv::INTER_CUBIC   586599					0.998558
   // cv::INTER_LINEAR  291267	269096			0.998771

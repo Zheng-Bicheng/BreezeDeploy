@@ -19,7 +19,7 @@ namespace image_process {
 std::vector<cv::Mat> CropImage(const cv::Mat &original_image,
 							   const DetectionResult &detection_result,
 							   const std::string &save_path) {
-  auto &rect_vector = detection_result.rect_vector;
+  auto &rect_vector = detection_result.rects;
   if (rect_vector.empty()) {
 	return {};
   }

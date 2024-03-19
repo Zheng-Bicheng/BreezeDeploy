@@ -104,7 +104,7 @@ bool ImageRecognition::AddToDatabase(const cv::Mat &input_mat, int64_t image_ind
     }
 
     auto max_result = detection_result.GetMaxConfidenceResult();
-    auto infer_image = utils::image_process::CropImage(input_mat, max_result.rect_vector[0]);
+    auto infer_image = utils::image_process::CropImage(input_mat, max_result.rects[0]);
     if (!recognition_model_->Predict(infer_image, feature_result)) {
       BDLOGGER_ERROR("During the prediction process, an error occurred in the recognition model.")
       return false;

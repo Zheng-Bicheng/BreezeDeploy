@@ -33,9 +33,8 @@ class BREEZE_DEPLOY_EXPORT DetectionModel : public BreezeDeployModel {
   bool ReadPostprocessYAML() override;
 
   // For Preprocess
-  double radio_ = 0.0;  // For [Resize,LetterBox]
-  int pad_width_ = 0;  // For [LetterBox]
-  int pad_height_ = 0;  // For [LetterBox]
+  std::vector<double> radio_width_height_ = {1 ,1};  // For [Resize, LetterBox]
+  std::vector<int> pad_width_height_ = {0 ,0};  // For [Resize, LetterBox]
   bool Preprocess(const cv::Mat &input_mat) override;
 
   // For Postprocess

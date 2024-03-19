@@ -16,15 +16,15 @@
 
 namespace breeze_deploy {
 namespace models {
-bool YOLOV5Face::Predict(const cv::Mat &input_mat, DetectionResult &result_with_landmark) {
+bool YOLOV5Face::Predict(const cv::Mat &input_mat, DetectionResult &result) {
   BreezeDeployModel::Predict(input_mat);
-  result_with_landmark.Clear();
+  result.Clear();
   auto output_data = reinterpret_cast<const float *>(output_tensor_vector_[0].GetTensorDataPointer());
   auto output_shape = output_tensor_vector_[0].GetTensorInfo().tensor_shape;  // output_shape is [1,25200,16]
-  std::vector<float> temp_confidence_vector;
-  std::vector<cv::Rect> temp_box_vector;
-  std::vector<long> temp_class_id_vector;
-  std::vector<std::vector<cv::Point>> temp_landmark_vector;
+  std::vector<float> temp_confidences;
+  std::vector<cv::Rect> temp_boxes;
+  std::vector<long> temp_class_ids;
+  std::vector<std::vector<cv::Point>> temp_landmarks;
   // 解析出原始数据
   for (size_t i = 0; i < output_shape[1]; ++i) {
 	// [x1,y1,w1,h1,landmark_x1,landmark_y1,....,label_confidence]
@@ -46,18 +46,18 @@ bool YOLOV5Face::Predict(const cv::Mat &input_mat, DetectionResult &result_with_
 	if (max_label_score <= confidence_threshold_) {
 	  continue;
 	}
-	temp_confidence_vector.emplace_back(max_label_score);
+	temp_confidences.emplace_back(max_label_score);
 
 	// Get label_name_ id
 	auto label_id = max_label_score_pointer - label_score_pointer;
-	temp_class_id_vector.emplace_back(label_id);
+	temp_class_ids.emplace_back(label_id);
 
 	// Get landmark
 	std::vector<cv::Point> landmark(landmark_num_);
 	for (int j = 0; j < landmark_num_; ++j) {
 	  landmark.emplace_back(landmark_score_pointer[2 * j], landmark_score_pointer[2 * j + 1]);
 	}
-	temp_landmark_vector.emplace_back(landmark);
+	temp_landmarks.emplace_back(landmark);
 
 	// Get box
 	auto box_pointer = output_data + skip;
@@ -65,35 +65,35 @@ bool YOLOV5Face::Predict(const cv::Mat &input_mat, DetectionResult &result_with_
 	auto top = static_cast<int>((box_pointer[1] - (box_pointer[3] / 2.0f)));
 	auto width = box_pointer[2];
 	auto height = box_pointer[3];
-	temp_box_vector.emplace_back(left, top, width, height);
+	temp_boxes.emplace_back(left, top, width, height);
   }
 
   std::vector<int> index_vector;
-  cv::dnn::NMSBoxes(temp_box_vector,
-					temp_confidence_vector,
-					confidence_threshold_,
-					nms_threshold_,
-					index_vector);
+  cv::dnn::NMSBoxes(temp_boxes,
+                    temp_confidences,
+                    confidence_threshold_,
+                    nms_threshold_,
+                    index_vector);
   for (int index : index_vector) {
-	result_with_landmark.label_id_vector.emplace_back(temp_class_id_vector[index]);
-	result_with_landmark.rect_vector.emplace_back(temp_box_vector[index]);
-	result_with_landmark.confidence_vector.emplace_back(temp_confidence_vector[index]);
-	result_with_landmark.landmarks_vector.emplace_back(temp_landmark_vector[index]);
+	result.label_ids.emplace_back(temp_class_ids[index]);
+	result.rects.emplace_back(temp_boxes[index]);
+	result.confidences.emplace_back(temp_confidences[index]);
+	result.landmarks.emplace_back(temp_landmarks[index]);
   }
 
   // 恢复box到原坐标
-  for (auto &rect : result_with_landmark.rect_vector) {
-	rect.x = static_cast<int>(static_cast<double>(rect.x - pad_width_) / radio_);
-	rect.y = static_cast<int>(static_cast<double>(rect.y - pad_height_) / radio_);
-	rect.width = static_cast<int>(static_cast<double>(rect.width) / radio_);
-	rect.height = static_cast<int>(static_cast<double>(rect.height) / radio_);
+  for (auto &rect : result.rects) {
+	rect.x = static_cast<int>(static_cast<double>(rect.x - pad_width_height_[0]) / radio_width_height_[0]);
+	rect.y = static_cast<int>(static_cast<double>(rect.y - pad_width_height_[1]) / radio_width_height_[1]);
+	rect.width = static_cast<int>(static_cast<double>(rect.width) / pad_width_height_[0]);
+	rect.height = static_cast<int>(static_cast<double>(rect.height) / radio_width_height_[1]);
   }
 
   // 恢复landmark到原坐标
-  for (auto &landmarks : result_with_landmark.landmarks_vector) {
+  for (auto &landmarks : result.landmarks) {
 	for (auto &landmark : landmarks) {
-	  landmark.x = static_cast<int>(static_cast<double>(landmark.x - pad_width_) / radio_);
-	  landmark.y = static_cast<int>(static_cast<double>(landmark.y - pad_height_) / radio_);
+	  landmark.x = static_cast<int>(static_cast<double>(landmark.x - pad_width_height_[0]) / pad_width_height_[0]);
+	  landmark.y = static_cast<int>(static_cast<double>(landmark.y - pad_width_height_[1]) / radio_width_height_[1]);
 	}
   }
   return true;

@@ -30,43 +30,43 @@ struct ClassificationResult {
 };
 struct DetectionResult {
   DetectionResult() = default;
-  std::vector<int64_t> label_id_vector;
-  std::vector<float> confidence_vector;
-  std::vector<cv::Rect> rect_vector;
+  std::vector<int64_t> label_ids;
+  std::vector<float> confidences;
+  std::vector<cv::Rect> rects;
 
-  std::vector<std::vector<cv::Point>> landmarks_vector;
+  std::vector<std::vector<cv::Point>> landmarks;
   size_t landmarks_per_face = 0;
 
-  size_t GetSize() const { return label_id_vector.size(); }
-  bool Empty() const { return label_id_vector.empty(); }
+  size_t GetSize() const { return label_ids.size(); }
+  bool Empty() const { return label_ids.empty(); }
   void Reserve(size_t size) {
-    label_id_vector.reserve(size);
-    confidence_vector.reserve(size);
-    rect_vector.reserve(size);
-    landmarks_vector.reserve(size);
+    label_ids.reserve(size);
+    confidences.reserve(size);
+    rects.reserve(size);
+    landmarks.reserve(size);
   }
   void Clear() {
-    label_id_vector.clear();
-    confidence_vector.clear();
-    rect_vector.clear();
-    landmarks_vector.clear();
+    label_ids.clear();
+    confidences.clear();
+    rects.clear();
+    landmarks.clear();
     landmarks_per_face = 0;
   }
   DetectionResult GetMaxConfidenceResult() {
-    if (confidence_vector.empty()) {
+    if (confidences.empty()) {
       return {};
     }
 
-    auto max_it = std::max_element(confidence_vector.begin(), confidence_vector.end());
-    auto max_index = std::distance(confidence_vector.begin(), max_it);
+    auto max_it = std::max_element(confidences.begin(), confidences.end());
+    auto max_index = std::distance(confidences.begin(), max_it);
 
     DetectionResult detection_result;
-    detection_result.confidence_vector = {this->confidence_vector[max_index]};
-    detection_result.label_id_vector = {this->label_id_vector[max_index]};
-    detection_result.rect_vector = {this->rect_vector[max_index]};
+    detection_result.confidences = {this->confidences[max_index]};
+    detection_result.label_ids = {this->label_ids[max_index]};
+    detection_result.rects = {this->rects[max_index]};
     detection_result.landmarks_per_face = {this->landmarks_per_face};
-    if (!this->landmarks_vector.empty()) {
-      detection_result.landmarks_vector = this->landmarks_vector;
+    if (!this->landmarks.empty()) {
+      detection_result.landmarks = this->landmarks;
     }
     return std::move(detection_result);
   }

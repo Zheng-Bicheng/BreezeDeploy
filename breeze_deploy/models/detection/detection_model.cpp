@@ -45,12 +45,10 @@ bool DetectionModel::Preprocess(const cv::Mat &input_mat) {
 
   // Get resize radio and pad height/width.
   for (const auto &preprocess_function : preprocess_functions_) {
-	if (preprocess_function->FunctionName() != "LetterBox") {
-	  continue;
+	if (preprocess_function->FunctionName() == "LetterBox" || preprocess_function->FunctionName() == "Resize") {
+      pad_width_height_ = preprocess_function->GetPadWH();
+      radio_width_height_ = preprocess_function->GetRadioWH();
 	}
-	pad_height_ = preprocess_function->GetPadHeight();
-	pad_width_ = preprocess_function->GetPadWidth();
-	radio_ = preprocess_function->GetRadio();
   }
   return true;
 }
@@ -92,16 +90,16 @@ cv::Mat DetectionModel::Draw(const cv::Mat &mat, const DetectionResult &detectio
   }
 
   for (int i = 0; i < detection_result.GetSize(); ++i) {
-	auto rect_vector = detection_result.rect_vector[i];
+	auto rect_vector = detection_result.rects[i];
 	cv::rectangle(mat, rect_vector, cv::Scalar(0, 0, 255), 1);
   }
 
-  if (detection_result.landmarks_vector.empty()) {
+  if (detection_result.landmarks.empty()) {
 	return mat;
   }
 
   for (int i = 0; i < detection_result.GetSize(); ++i) {
-	auto landmarks_vector = detection_result.landmarks_vector[i];
+	auto landmarks_vector = detection_result.landmarks[i];
 	for (const auto &landmark : landmarks_vector) {
 	  cv::circle(mat, landmark, 1, cv::Scalar(0, 0, 255), 1);
 	}

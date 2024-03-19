@@ -49,24 +49,19 @@ bool PaddleDetection::ProcessWithNMS(DetectionResult &result) {
   auto &tensor_scores = output_tensor_vector_[scores_index];
   auto *tensor_data_scores = reinterpret_cast<const float *>(tensor_scores.GetConstTensorDataPointer());
 
-  std::vector<float> temp_confidence_vector;
-  std::vector<cv::Rect> temp_box_vector;
-  std::vector<long> temp_class_id_vector;
+  std::vector<float> temp_confidences;
+  std::vector<cv::Rect> temp_boxes;
+  std::vector<long> temp_class_ids;
 
   auto total_label_num = tensor_scores.GetTensorInfo().tensor_shape[1];
-  BDLOGGER_DEBUG("total_label_num is {}", total_label_num)
   auto total_box_num = tensor_scores.GetTensorInfo().tensor_shape[2];
-  BDLOGGER_DEBUG("total_box_num is {}", total_box_num)
 
   float max_score_temp = 0;
-  for (size_t i = 0; i < 2 * 2100; i++)
-  {
+  for (size_t i = 0; i < 2 * 2100; i++) {
     if (tensor_data_scores[i] > max_score_temp) {
       max_score_temp = tensor_data_scores[i];
     }
   }
-  BDLOGGER_DEBUG("max_score_temp is {}",max_score_temp)
-  
 
   for (int i = 0; i < total_box_num; ++i) {
     auto score_pointer_start = tensor_data_scores + i;
@@ -82,43 +77,42 @@ bool PaddleDetection::ProcessWithNMS(DetectionResult &result) {
     }
 
     if (max_label_score <= confidence_threshold_) {
-      // BDLOGGER_DEBUG("max_label_score is {}", max_label_score)
       continue;
     }
 
-    temp_confidence_vector.emplace_back(max_label_score);
-    temp_class_id_vector.emplace_back(max_label_index);
+    temp_confidences.emplace_back(max_label_score);
+    temp_class_ids.emplace_back(max_label_index);
     auto *boxes_pointer = tensor_data_boxes + 4 * i;
-    temp_box_vector.emplace_back(boxes_pointer[0],
-                                 boxes_pointer[1],
-                                 boxes_pointer[2] - boxes_pointer[0],
-                                 boxes_pointer[3] - boxes_pointer[1]);
+    temp_boxes.emplace_back(boxes_pointer[0],
+                            boxes_pointer[1],
+                            boxes_pointer[2] - boxes_pointer[0],
+                            boxes_pointer[3] - boxes_pointer[1]);
   }
 
-  if (temp_box_vector.empty()) {
+  if (temp_boxes.empty()) {
     BDLOGGER_DEBUG("No target detected");
     return true;
   }
 
   std::vector<int> index_vector;
-  cv::dnn::NMSBoxes(temp_box_vector,
-                    temp_confidence_vector,
+  cv::dnn::NMSBoxes(temp_boxes,
+                    temp_confidences,
                     confidence_threshold_,
                     nms_threshold_,
                     index_vector);
 
   for (int index : index_vector) {
-    result.label_id_vector.emplace_back(temp_class_id_vector[index]);
-    result.rect_vector.emplace_back(temp_box_vector[index]);
-    result.confidence_vector.emplace_back(temp_confidence_vector[index]);
+    result.label_ids.emplace_back(temp_class_ids[index]);
+    result.rects.emplace_back(temp_boxes[index]);
+    result.confidences.emplace_back(temp_confidences[index]);
   }
 
   // 恢复box到原坐标
-  for (auto &rect : result.rect_vector) {
-    rect.x = static_cast<int>(static_cast<double>(rect.x - pad_width_) / radio_);
-    rect.y = static_cast<int>(static_cast<double>(rect.y - pad_height_) / radio_);
-    rect.width = static_cast<int>(static_cast<double>(rect.width) / radio_);
-    rect.height = static_cast<int>(static_cast<double>(rect.height) / radio_);
+  for (auto &rect : result.rects) {
+    rect.x = static_cast<int>(static_cast<double>(rect.x - pad_width_height_[0]) / radio_width_height_[0]);
+    rect.y = static_cast<int>(static_cast<double>(rect.y - pad_width_height_[1]) / radio_width_height_[1]);
+    rect.width = static_cast<int>(static_cast<double>(rect.width) / radio_width_height_[0]);
+    rect.height = static_cast<int>(static_cast<double>(rect.height) / radio_width_height_[1]);
   }
   return true;
 }
