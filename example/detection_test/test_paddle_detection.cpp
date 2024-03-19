@@ -15,7 +15,7 @@
 #include <iostream>
 #include <string>
 #include "breeze_deploy/core/time/breeze_deploy_time.h"
-#include "breeze_deploy/models/detection/yolov5/yolov_5.h"
+#include "breeze_deploy/models/detection/paddle_detection/paddle_detection.h"
 
 using namespace breeze_deploy;
 using namespace breeze_deploy::models;
@@ -23,19 +23,19 @@ using cv::imread;
 
 int main(int argc, char *argv[]) {
   if (argc != 4) {
-	std::cout << "Usage: test_yolov5 path/to/model /path/to/config_file path/to/image" << std::endl;
+	std::cout << "Usage: test_paddle_detection path/to/model /path/to/config_file path/to/image" << std::endl;
 	return -1;
   }
 
   std::string model_path = argv[1];
   std::string config_path = argv[2];
-  YOLOV5 detect_model(model_path, config_path);
+  PaddleDetection detect_model(model_path, config_path);
   if (!detect_model.Initialize()) {
 	std::cout << "模型初始化失败" << std::endl;
 	return 1;
   }
 
-  detect_model.SetConfidenceThreshold(0.5);
+  detect_model.SetConfidenceThreshold(0.4);
   detect_model.SetNMSThreshold(0.5);
 
   std::string image_path = argv[3];
@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
     return 1;
   }
   cost.End();
-  cost.PrintInfo("YOLOV5", 1.0, BreezeDeployTimeType::Milliseconds);
+  cost.PrintInfo("PaddleDetection", 1.0, BreezeDeployTimeType::Milliseconds);
   mat = DetectionModel::Draw(mat, result);
 
   if (mat.empty())

@@ -22,7 +22,7 @@ class BREEZE_DEPLOY_EXPORT SCRFD : public DetectionModel {
  public:
   SCRFD(const std::string &model_path, const std::string &config_file_path);
   std::string ModelName() override { return "SCRFD"; }
-  bool Predict(const cv::Mat &input_mat, DetectionResult &result_with_landmark) override;
+  bool Predict(const cv::Mat &input_mat, DetectionResult &result) override;
 
  protected:
   bool Preprocess(const cv::Mat &input_mat) override;

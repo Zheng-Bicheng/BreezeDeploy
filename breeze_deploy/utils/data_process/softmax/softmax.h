@@ -22,7 +22,7 @@ namespace data_process {
 // Softmax不支持int数据类型，仅支持fp数据类型
 BREEZE_DEPLOY_EXPORT bool Softmax(float *data, long length) {
   if (length == 0) {
-    BREEZE_DEPLOY_LOGGER_ERROR("The Vector A is empty.")
+    BDLOGGER_ERROR("The Vector A is empty.")
     return false;
   }
   Eigen::Map<Eigen::VectorXf> eigen_vector_a(data, length);

@@ -18,7 +18,7 @@ namespace breeze_deploy {
 namespace models {
 bool DetectionModel::Preprocess(const cv::Mat &input_mat) {
   if (input_mat.empty()) {
-	BREEZE_DEPLOY_LOGGER_ERROR("input_mat is empty.")
+	BDLOGGER_ERROR("input_mat is empty.")
 	return false;
   }
 
@@ -26,7 +26,7 @@ bool DetectionModel::Preprocess(const cv::Mat &input_mat) {
   input_mat_ = BreezeDeployMat(input_mat);
   for (const auto &preprocess_function : preprocess_functions_) {
 	if (!preprocess_function->Run(input_mat_)) {
-	  BREEZE_DEPLOY_LOGGER_ERROR("Failed to run preprocess.")
+	  BDLOGGER_ERROR("Failed to run preprocess.")
 	  return false;
 	}
   }
@@ -45,12 +45,10 @@ bool DetectionModel::Preprocess(const cv::Mat &input_mat) {
 
   // Get resize radio and pad height/width.
   for (const auto &preprocess_function : preprocess_functions_) {
-	if (preprocess_function->FunctionName() != "LetterBox") {
-	  continue;
+	if (preprocess_function->FunctionName() == "LetterBox" || preprocess_function->FunctionName() == "Resize") {
+      pad_width_height_ = preprocess_function->GetPadWH();
+      radio_width_height_ = preprocess_function->GetRadioWH();
 	}
-	pad_height_ = preprocess_function->GetPadHeight();
-	pad_width_ = preprocess_function->GetPadWidth();
-	radio_ = preprocess_function->GetRadio();
   }
   return true;
 }
@@ -59,7 +57,7 @@ bool DetectionModel::ReadPostprocessYAML() {
   try {
 	yaml_config = YAML::LoadFile(config_file_path_);
   } catch (YAML::BadFile &e) {
-	BREEZE_DEPLOY_LOGGER_ERROR("Failed to load yaml file: {}.", config_file_path_)
+	BDLOGGER_ERROR("Failed to load yaml file: {}.", config_file_path_)
 	return false;
   }
 
@@ -71,12 +69,12 @@ bool DetectionModel::ReadPostprocessYAML() {
 	if (function_name == "landmark_num") {
 	  auto &landmark_num_node = postprocess_function_config.begin()->second;
 	  if (!landmark_num_node) {
-		BREEZE_DEPLOY_LOGGER_ERROR("The function(landmark_num) must have a landmark_num element.")
+		BDLOGGER_ERROR("The function(landmark_num) must have a landmark_num element.")
 		return false;
 	  }
 	  landmark_num_ = landmark_num_node.as<int>();
 	} else {
-	  BREEZE_DEPLOY_LOGGER_ERROR("The postprocess name only supports [landmark_num], "
+	  BDLOGGER_ERROR("The postprocess name only supports [landmark_num], "
 								 "but now it is called {}.", function_name)
 	  return false;
 	}
@@ -92,16 +90,16 @@ cv::Mat DetectionModel::Draw(const cv::Mat &mat, const DetectionResult &detectio
   }
 
   for (int i = 0; i < detection_result.GetSize(); ++i) {
-	auto rect_vector = detection_result.rect_vector[i];
+	auto rect_vector = detection_result.rects[i];
 	cv::rectangle(mat, rect_vector, cv::Scalar(0, 0, 255), 1);
   }
 
-  if (detection_result.landmarks_vector.empty()) {
+  if (detection_result.landmarks.empty()) {
 	return mat;
   }
 
   for (int i = 0; i < detection_result.GetSize(); ++i) {
-	auto landmarks_vector = detection_result.landmarks_vector[i];
+	auto landmarks_vector = detection_result.landmarks[i];
 	for (const auto &landmark : landmarks_vector) {
 	  cv::circle(mat, landmark, 1, cv::Scalar(0, 0, 255), 1);
 	}

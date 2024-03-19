@@ -22,7 +22,7 @@ class BREEZE_DEPLOY_EXPORT YOLOV5Face : public DetectionModel {
   YOLOV5Face(const std::string &model_path, const std::string &config_file_path)
 	  : DetectionModel(model_path, config_file_path) {}
   std::string ModelName() override { return "YOLOV5Face"; }
-  bool Predict(const cv::Mat &input_mat, DetectionResult &result_with_landmark) override;
+  bool Predict(const cv::Mat &input_mat, DetectionResult &result) override;
 };
 }
 }

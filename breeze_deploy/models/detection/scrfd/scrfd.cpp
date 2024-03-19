@@ -58,35 +58,35 @@ bool SCRFD::Preprocess(const cv::Mat &input_mat) {
 }
 
 bool SCRFD::Predict(const cv::Mat &input_mat,
-                    DetectionResult &result_with_landmark) {
+                    DetectionResult &result) {
   // output tensor size must be in [9,6,10,15]
   auto tensor_size = output_tensor_vector_.size();
-  BREEZE_DEPLOY_LOGGER_ASSERT((tensor_size == 9 || tensor_size == 6 || tensor_size == 9 || tensor_size == 15),
-                              "The default number of output tensor must in [6, 9, 10, 15].")
+  BDLOGGER_ASSERT((tensor_size == 9 || tensor_size == 6 || tensor_size == 9 || tensor_size == 15),
+                  "The default number of output tensor must in [6, 9, 10, 15].")
 
   // number of downsample_strides_
   auto fmc = downsample_strides_.size();
-  BREEZE_DEPLOY_LOGGER_ASSERT((fmc == 3 || fmc == 5), "The fmc must be 3 or 5")
+  BDLOGGER_ASSERT((fmc == 3 || fmc == 5), "The fmc must be 3 or 5")
 
   if (!BreezeDeployModel::Predict(input_mat)) {
-    BREEZE_DEPLOY_LOGGER_ERROR("Failed to preprocess input mat.")
+    BDLOGGER_ERROR("Failed to preprocess input mat.")
     return false;
   }
 
   // Only support when batch is 1.
   auto output_batch = output_tensor_vector_[0].GetTensorInfo().tensor_shape[0];
-  BREEZE_DEPLOY_LOGGER_ASSERT((output_batch == 1), "Only support batch =1 now.")
+  BDLOGGER_ASSERT((output_batch == 1), "Only support batch =1 now.")
 
-  result_with_landmark.Clear();
+  result.Clear();
 
   // must be setup landmarks_per_face_ before reserve
   auto use_kps = (output_tensor_vector_.size() == 9);
   if (use_kps) {
-    result_with_landmark.landmarks_per_face = landmarks_per_face_;
+    result.landmarks_per_face = landmarks_per_face_;
   }
 
-  std::vector<float> temp_confidence_vector;
-  std::vector<cv::Rect> temp_box_vector;
+  std::vector<float> temp_confidences;
+  std::vector<cv::Rect> temp_boxes;
   std::vector<std::vector<cv::Point>> temp_landmark_vector;
   // loop each stride
   for (int f = 0; f < fmc; ++f) {
@@ -106,7 +106,7 @@ bool SCRFD::Predict(const cv::Mat &input_mat,
         continue;  // filter
       }
 
-      temp_confidence_vector.emplace_back(cls_conf);
+      temp_confidences.emplace_back(cls_conf);
 
       // Get box
       auto &point = stride_points.at(i);
@@ -123,7 +123,7 @@ bool SCRFD::Predict(const cv::Mat &input_mat,
       auto bottom = (cy + b) * static_cast<float>(current_stride);
       auto width = right - left;
       auto height = bottom - top;
-      temp_box_vector.emplace_back(left, top, width, height);
+      temp_boxes.emplace_back(left, top, width, height);
 
       if (use_kps) {
         auto landmarks_tensor = output_tensor_vector_.at(f + 2 * fmc);
@@ -143,39 +143,39 @@ bool SCRFD::Predict(const cv::Mat &input_mat,
     }
   }
 
-  if (temp_confidence_vector.empty()) {
+  if (temp_confidences.empty()) {
     return true;
   }
 
   std::vector<int> index_vector;
-  cv::dnn::NMSBoxes(temp_box_vector,
-                    temp_confidence_vector,
+  cv::dnn::NMSBoxes(temp_boxes,
+                    temp_confidences,
                     confidence_threshold_,
                     nms_threshold_,
                     index_vector);
 
   for (int index : index_vector) {
-    result_with_landmark.label_id_vector.emplace_back(0);
-    result_with_landmark.rect_vector.emplace_back(temp_box_vector[index]);
-    result_with_landmark.confidence_vector.emplace_back(temp_confidence_vector[index]);
+    result.label_ids.emplace_back(0);
+    result.rects.emplace_back(temp_boxes[index]);
+    result.confidences.emplace_back(temp_confidences[index]);
     if (use_kps) {
-      result_with_landmark.landmarks_vector.emplace_back(temp_landmark_vector[index]);
+      result.landmarks.emplace_back(temp_landmark_vector[index]);
     }
   }
 
   // 恢复box到原坐标
-  for (auto &rect : result_with_landmark.rect_vector) {
-    rect.x = static_cast<int>(static_cast<double>(rect.x - pad_width_) / radio_);
-    rect.y = static_cast<int>(static_cast<double>(rect.y - pad_height_) / radio_);
-    rect.width = static_cast<int>(static_cast<double>(rect.width) / radio_);
-    rect.height = static_cast<int>(static_cast<double>(rect.height) / radio_);
+  for (auto &rect : result.rects) {
+    rect.x = static_cast<int>(static_cast<double>(rect.x - pad_width_height_[0]) / radio_width_height_[0]);
+    rect.y = static_cast<int>(static_cast<double>(rect.y - pad_width_height_[1]) / radio_width_height_[1]);
+    rect.width = static_cast<int>(static_cast<double>(rect.width) / pad_width_height_[0]);
+    rect.height = static_cast<int>(static_cast<double>(rect.height) / radio_width_height_[1]);
   }
 
   // 恢复landmark到原坐标
-  for (auto &landmarks : result_with_landmark.landmarks_vector) {
+  for (auto &landmarks : result.landmarks) {
     for (auto &landmark : landmarks) {
-      landmark.x = static_cast<int>(static_cast<double>(landmark.x - pad_width_) / radio_);
-      landmark.y = static_cast<int>(static_cast<double>(landmark.y - pad_height_) / radio_);
+      landmark.x = static_cast<int>(static_cast<double>(landmark.x - pad_width_height_[0]) / pad_width_height_[0]);
+      landmark.y = static_cast<int>(static_cast<double>(landmark.y - pad_width_height_[1]) / radio_width_height_[1]);
     }
   }
   return true;

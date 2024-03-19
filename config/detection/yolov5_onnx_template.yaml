@@ -1,7 +1,7 @@
 # Before starting the inference, we need to preprocess the input data.
 # Assuming our input data is of shape [h, w, c], the following parameters are its preprocessing parameters.
 preprocess:
-  # Resize the image to [1, 224, 224].
+  # Resize the image to [1, 640, 640].
   - LetterBox:
       width: 640
       height: 640

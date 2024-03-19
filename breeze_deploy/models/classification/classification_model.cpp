@@ -22,7 +22,7 @@ namespace models {
 bool ClassificationModel::InitializeBackend(const BreezeDeployBackendOption &breeze_deploy_backend_option) {
   auto result_init = BreezeDeployModel::InitializeBackend(breeze_deploy_backend_option);
   if (!result_init) {
-	BREEZE_DEPLOY_LOGGER_ERROR("Failed to initialize the backend. "
+	BDLOGGER_ERROR("Failed to initialize the backend. "
 							   "Please check if the backend configuration parameters are correct.");
 	return false;
   }
@@ -30,7 +30,7 @@ bool ClassificationModel::InitializeBackend(const BreezeDeployBackendOption &bre
   auto input_tensor_size = breeze_deploy_backend_->GetInputTensorSize();
   auto output_tensor_size = breeze_deploy_backend_->GetOutputTensorSize();
   if ((input_tensor_size != 1) || (output_tensor_size != 1)) {
-	BREEZE_DEPLOY_LOGGER_ERROR(
+	BDLOGGER_ERROR(
 		"The classification model only supports input and output tensor with a size of 1. "
 		"However, the input tensor is of size {}, and the output tensor is of size {}.",
 		input_tensor_size,
@@ -44,7 +44,7 @@ bool ClassificationModel::ReadPostprocessYAML() {
   try {
 	yaml_config = YAML::LoadFile(config_file_path_);
   } catch (YAML::BadFile &e) {
-	BREEZE_DEPLOY_LOGGER_ERROR("Failed to load yaml file: {}.", config_file_path_)
+	BDLOGGER_ERROR("Failed to load yaml file: {}.", config_file_path_)
 	return false;
   }
 
@@ -56,12 +56,12 @@ bool ClassificationModel::ReadPostprocessYAML() {
 	if (function_name == "Softmax") {
 	  auto &need_node = postprocess_function_config.begin()->second;
 	  if (!need_node) {
-		BREEZE_DEPLOY_LOGGER_ERROR("The function(TopK) must have a need(bool) node.")
+		BDLOGGER_ERROR("The function(TopK) must have a need(bool) node.")
 		return false;
 	  }
 	  need_softmax_ = need_node.as<bool>();
 	} else {
-	  BREEZE_DEPLOY_LOGGER_ERROR("The postprocess name only supports [Softmax], "
+	  BDLOGGER_ERROR("The postprocess name only supports [Softmax], "
 								 "but now it is called {}.", function_name)
 	  return false;
 	}
@@ -70,14 +70,14 @@ bool ClassificationModel::ReadPostprocessYAML() {
 }
 bool ClassificationModel::Preprocess(const cv::Mat &input_mat) {
   if (input_mat.empty()) {
-	BREEZE_DEPLOY_LOGGER_ERROR("input_mat is empty.")
+	BDLOGGER_ERROR("input_mat is empty.")
 	return false;
   }
 
   input_mat_ = BreezeDeployMat(input_mat);
   for (const auto &preprocess_function : preprocess_functions_) {
 	if (!preprocess_function->Run(input_mat_)) {
-	  BREEZE_DEPLOY_LOGGER_ERROR("Failed to run preprocess.")
+	  BDLOGGER_ERROR("Failed to run preprocess.")
 	  return false;
 	}
   }

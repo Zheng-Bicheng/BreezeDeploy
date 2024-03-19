@@ -26,31 +26,31 @@ BreezeDeployIndex::BreezeDeployIndex(int feature_length,
   auto index_description = description.c_str();
   auto index_metric = static_cast<faiss::MetricType>(metric);
   auto faiss_index_pointer_ = faiss::index_factory(feature_length, index_description, index_metric);
-  BREEZE_DEPLOY_LOGGER_ASSERT(faiss_index_pointer_ != nullptr, "Failed to create BreezeDeployIndex. "
+  BDLOGGER_ASSERT(faiss_index_pointer_ != nullptr, "Failed to create BreezeDeployIndex. "
 															   "Please check if the description and BreezeDeployIndexMetricType are set correctly.")
   faiss_index_ = std::unique_ptr<faiss::Index>(faiss_index_pointer_);
   index_index_map_ = faiss::IndexIDMap(faiss_index_.get());
 }
 bool BreezeDeployIndex::AddFeature(const std::vector<float> &feature, const std::vector<int64_t> &label_id) {
   if (faiss_index_ == nullptr){
-    BREEZE_DEPLOY_LOGGER_ERROR("faiss_index_ == nullptr.")
+    BDLOGGER_ERROR("faiss_index_ == nullptr.")
     return false;
   }
 
   if (feature.empty()) {
-	BREEZE_DEPLOY_LOGGER_ERROR("The feature is empty.")
+	BDLOGGER_ERROR("The feature is empty.")
 	return false;
   }
 
   auto feature_size = feature.size();
   if (feature_size % feature_length_ != 0) {
-	BREEZE_DEPLOY_LOGGER_ERROR("The size of input feature is error.")
+	BDLOGGER_ERROR("The size of input feature is error.")
 	return false;
   }
 
   auto n = static_cast<int64_t>(feature_size / feature_length_);
   if (n != label_id.size()) {
-	BREEZE_DEPLOY_LOGGER_ERROR("The size of input label_id != n.")
+	BDLOGGER_ERROR("The size of input label_id != n.")
 	return false;
   }
 
@@ -63,7 +63,7 @@ bool BreezeDeployIndex::SearchIndex(const std::vector<float> &feature,
 									std::vector<int64_t> &topk_label_id) {
   auto feature_size = feature.size();
   if (feature_size % feature_length_ != 0) {
-	BREEZE_DEPLOY_LOGGER_ERROR("The size of input feature is error.")
+	BDLOGGER_ERROR("The size of input feature is error.")
 	return false;
   }
 

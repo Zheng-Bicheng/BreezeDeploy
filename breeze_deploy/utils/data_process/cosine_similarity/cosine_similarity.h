@@ -25,7 +25,7 @@ BREEZE_DEPLOY_EXPORT double CosineSimilarity(const std::vector<T> &a,
                                              const std::vector<T> &b,
                                              bool use_normalize = false) {
   if ((a.size() != b.size()) && (a.empty()) || (b.empty())) {
-    BREEZE_DEPLOY_LOGGER_ERROR(
+    BDLOGGER_ERROR(
         "The size of Vector A and B must be equal and greater than 0. But the size of vector A is {}, while the size of vector B is also {}.",
         a.size(),
         b.size())

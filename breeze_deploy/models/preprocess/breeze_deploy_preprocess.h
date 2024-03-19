@@ -25,17 +25,15 @@ class BreezeDeployPreprocess {
  public:
   virtual std::string FunctionName() = 0;
   virtual bool Run(BreezeDeployMat &breeze_deploy_mat) = 0;
-  double GetRadio() { return radio_; }
-  int GetPadWidth() { return pad_width_; }
-  int GetPadHeight() { return pad_height_; }
+  std::vector<double> GetRadioWH() { return radio_width_height_; }
+  std::vector<int> GetPadWH() { return pad_width_height_; }
 
  protected:
   // For resize
-  double radio_ = 0.0;
+  std::vector<double> radio_width_height_ = {1 ,1};
 
   // For padding
-  int pad_width_ = 0;
-  int pad_height_ = 0;
+  std::vector<int> pad_width_height_ = {0 ,0};
 };
 }
 }
