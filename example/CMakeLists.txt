@@ -30,6 +30,10 @@ list(APPEND INSTALL_APP_LIST test_scrfd)
 add_executable(test_image_recognition pipeline_test/test_image_recognition.cpp)
 list(APPEND INSTALL_APP_LIST test_image_recognition)
 
+# test_segmentation_test
+add_executable(test_segmentation segmentation_test/test_segmentation.cpp)
+list(APPEND INSTALL_APP_LIST test_segmentation)
+
 # link and include
 foreach(test_project ${INSTALL_APP_LIST})
     target_include_directories(${test_project} PRIVATE ${RUNTIME_INCLUDE_DIRS})
