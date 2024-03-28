@@ -20,7 +20,7 @@
 namespace breeze_deploy {
 namespace models {
 bool ClassificationModel::InitializeBackend(const BreezeDeployBackendOption &breeze_deploy_backend_option) {
-  auto result_init = BreezeDeployModel::InitializeBackend(breeze_deploy_backend_option);
+  auto result_init = BDModel::InitializeBackend(breeze_deploy_backend_option);
   if (!result_init) {
 	BDLOGGER_ERROR("Failed to initialize the backend. "
 							   "Please check if the backend configuration parameters are correct.");
@@ -105,7 +105,7 @@ bool ClassificationModel::Predict(const cv::Mat &input_mat,
 								  ClassificationResult &classification_result,
 								  size_t k,
 								  float min_confidence) {
-  auto result_predict = BreezeDeployModel::Predict(input_mat);
+  auto result_predict = BDModel::Predict(input_mat);
   if (!result_predict) {
 	return false;
   }

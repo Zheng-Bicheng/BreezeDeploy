@@ -90,7 +90,6 @@ bool PaddleDetection::ProcessWithNMS(DetectionResult &result) {
   }
 
   if (temp_boxes.empty()) {
-    BDLOGGER_DEBUG("No target detected");
     return true;
   }
 
@@ -118,7 +117,7 @@ bool PaddleDetection::ProcessWithNMS(DetectionResult &result) {
 }
 
 bool PaddleDetection::Predict(const cv::Mat &input_mat, DetectionResult &result) {
-  if (!BreezeDeployModel::Predict(input_mat)) {
+  if (!BDModel::Predict(input_mat)) {
     return false;
   }
 

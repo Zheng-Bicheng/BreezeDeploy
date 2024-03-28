@@ -30,10 +30,10 @@ namespace breeze_deploy {
 namespace models {
 using namespace breeze_deploy::preprocess;
 using namespace breeze_deploy::backend;
-class BREEZE_DEPLOY_EXPORT BreezeDeployModel {
+class BREEZE_DEPLOY_EXPORT BDModel {
  public:
-  BreezeDeployModel(const std::string &model_path, const std::string &config_file_path);
-  virtual ~BreezeDeployModel() = default;
+  BDModel(const std::string &model_path, const std::string &config_file_path);
+  virtual ~BDModel() = default;
   bool Initialize(const BreezeDeployBackendOption &breeze_deploy_backend_option = BreezeDeployBackendOption());
   virtual std::string ModelName() { return "BreezeDeployModel"; }
 

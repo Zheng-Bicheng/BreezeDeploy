@@ -21,11 +21,11 @@
 
 namespace breeze_deploy {
 namespace models {
-BreezeDeployModel::BreezeDeployModel(const std::string &model_path, const std::string &config_file_path) {
+BDModel::BDModel(const std::string &model_path, const std::string &config_file_path) {
   model_path_ = model_path;
   config_file_path_ = config_file_path;
 }
-bool BreezeDeployModel::ReadPreprocessYAML() {
+bool BDModel::ReadPreprocessYAML() {
   preprocess_functions_.clear();
   YAML::Node yaml_config;
   try {
@@ -117,7 +117,7 @@ bool BreezeDeployModel::ReadPreprocessYAML() {
   }
   return true;
 }
-bool BreezeDeployModel::InitializeBackend(const BreezeDeployBackendOption &breeze_deploy_backend_option) {
+bool BDModel::InitializeBackend(const BreezeDeployBackendOption &breeze_deploy_backend_option) {
   breeze_deploy_backend_option_ = breeze_deploy_backend_option;
   breeze_deploy_backend_option_.SetModelPath(model_path_);
 
@@ -156,7 +156,7 @@ bool BreezeDeployModel::InitializeBackend(const BreezeDeployBackendOption &breez
   }
   return true;
 }
-bool BreezeDeployModel::Initialize(const BreezeDeployBackendOption &breeze_deploy_backend_option) {
+bool BDModel::Initialize(const BreezeDeployBackendOption &breeze_deploy_backend_option) {
   if (!InitializeBackend(breeze_deploy_backend_option)) {
     BDLOGGER_ERROR("Failed to initialize backend.")
     return false;
@@ -173,7 +173,7 @@ bool BreezeDeployModel::Initialize(const BreezeDeployBackendOption &breeze_deplo
   }
   return true;
 }
-bool BreezeDeployModel::Infer() {
+bool BDModel::Infer() {
   if (breeze_deploy_backend_ == nullptr) {
     BDLOGGER_ERROR("This model uses a null pointer for the inference backend. "
                                "Please check if the model backend has been initialized.")
@@ -181,7 +181,7 @@ bool BreezeDeployModel::Infer() {
   }
   return breeze_deploy_backend_->Infer(input_tensor_vector_, output_tensor_vector_);
 }
-bool BreezeDeployModel::Predict(const cv::Mat &input_mat) {
+bool BDModel::Predict(const cv::Mat &input_mat) {
   if (!Preprocess(input_mat)) {
     return false;
   }

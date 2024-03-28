@@ -50,7 +50,7 @@ class ONNXBackend : public BreezeDeployBackend {
 
   std::vector<Ort::Value> output_tensors_{};
 
-  static BreezeDeployTensorType ONNXTypeToBDType(ONNXTensorElementDataType type);
+  static BDTensorType ONNXTypeToBDType(ONNXTensorElementDataType type);
 };
 }
 }

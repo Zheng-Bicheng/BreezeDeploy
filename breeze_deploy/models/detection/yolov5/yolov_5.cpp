@@ -16,7 +16,7 @@
 namespace breeze_deploy {
 namespace models {
 bool YOLOV5::Predict(const cv::Mat &input_mat, DetectionResult &result) {
-  if(!BreezeDeployModel::Predict(input_mat))
+  if(!BDModel::Predict(input_mat))
   {
 	return false;
   }

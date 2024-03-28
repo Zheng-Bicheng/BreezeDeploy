@@ -68,7 +68,7 @@ bool SCRFD::Predict(const cv::Mat &input_mat,
   auto fmc = downsample_strides_.size();
   BDLOGGER_ASSERT((fmc == 3 || fmc == 5), "The fmc must be 3 or 5")
 
-  if (!BreezeDeployModel::Predict(input_mat)) {
+  if (!BDModel::Predict(input_mat)) {
     BDLOGGER_ERROR("Failed to preprocess input mat.")
     return false;
   }

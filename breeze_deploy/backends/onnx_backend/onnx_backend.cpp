@@ -76,7 +76,7 @@ bool ONNXBackend::Infer(std::vector<BreezeDeployTensor> &input_tensor, std::vect
 	auto tensor_data = reinterpret_cast<uint8_t *>(output_tensors_[i].GetTensorMutableData<float>());
 	auto tensor_type_and_shape_info = output_tensors_[i].GetTensorTypeAndShapeInfo();
 	auto output_shape = tensor_type_and_shape_info.GetShape();
-	auto tensor_data_type = BreezeDeployTensorType::FP32;
+	auto tensor_data_type = BDTensorType::FP32;
 	output_tensor[i].SetTensorData(tensor_data, output_shape, tensor_data_type);
   }
   return true;
@@ -153,30 +153,30 @@ void ONNXBackend::SetOutputTensorInfo() {
   }
 }
 
-BreezeDeployTensorType ONNXBackend::ONNXTypeToBDType(ONNXTensorElementDataType type) {
+BDTensorType ONNXBackend::ONNXTypeToBDType(ONNXTensorElementDataType type) {
   if (type == ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT16) {
-    return BreezeDeployTensorType::FP16;
+    return BDTensorType::FP16;
   }
   if (type == ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT) {
-    return BreezeDeployTensorType::FP32;
+    return BDTensorType::FP32;
   }
   if (type == ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT8) {
-    return BreezeDeployTensorType::INT8;
+    return BDTensorType::INT8;
   }
   if (type == ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT16) {
-    return BreezeDeployTensorType::INT16;
+    return BDTensorType::INT16;
   }
   if (type == ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT32) {
-    return BreezeDeployTensorType::INT32;
+    return BDTensorType::INT32;
   }
   if (type == ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT8) {
-    return BreezeDeployTensorType::UINT8;
+    return BDTensorType::UINT8;
   }
   if (type == ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_BOOL) {
-    return BreezeDeployTensorType::BOOL;
+    return BDTensorType::BOOL;
   }
   BDLOGGER_ERROR("BreezeDeployTensorType don't support this type.")
-  return BreezeDeployTensorType::UNKNOWN;
+  return BDTensorType::UNKNOWN;
 }
 }
 }

@@ -39,7 +39,7 @@ class BreezeDeployMat {
 
   // Data Type
   size_t GetMatDataByteSize() const;
-  BreezeDeployTensorType GetMatDataType();
+  BDTensorType GetMatDataType();
 
   // Data Format
   BreezeDeployMatFormat GetMatDataFormat() const;

@@ -18,7 +18,7 @@
 namespace breeze_deploy {
 namespace models {
 bool FeatureModel::InitializeBackend(const BreezeDeployBackendOption &breeze_deploy_backend_option) {
-  auto result_init = BreezeDeployModel::InitializeBackend(breeze_deploy_backend_option);
+  auto result_init = BDModel::InitializeBackend(breeze_deploy_backend_option);
   if (!result_init) {
 	BDLOGGER_ERROR("Failed to initialize the backend. "
 							   "Please check if the backend configuration parameters are correct.");
@@ -107,7 +107,7 @@ bool FeatureModel::Postprocess() {
   return true;
 }
 bool FeatureModel::Predict(const cv::Mat &input_mat, FeatureResult &label_result) {
-  auto result_predict = BreezeDeployModel::Predict(input_mat);
+  auto result_predict = BDModel::Predict(input_mat);
   if (!result_predict) {
 	return false;
   }

@@ -19,10 +19,10 @@
 #include "breeze_deploy/core/result/breeze_deploy_result.h"
 namespace breeze_deploy {
 namespace models {
-class BREEZE_DEPLOY_EXPORT DetectionModel : public BreezeDeployModel {
+class BREEZE_DEPLOY_EXPORT DetectionModel : public BDModel {
  public:
   DetectionModel(const std::string &model_path, const std::string &config_file_path)
-	  : BreezeDeployModel(model_path, config_file_path) {}
+	  : BDModel(model_path, config_file_path) {}
   std::string ModelName() override { return "DetectionModel"; }
   void SetConfidenceThreshold(float confidence_threshold) { confidence_threshold_ = confidence_threshold; }
   void SetNMSThreshold(float nms_threshold) { nms_threshold_ = nms_threshold; }

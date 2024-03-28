@@ -38,14 +38,14 @@ size_t BreezeDeployMat::GetMatDataByteSize() const {
   auto totalSize = totalElements * elementSize;
   return totalSize;
 }
-BreezeDeployTensorType BreezeDeployMat::GetMatDataType() {
+BDTensorType BreezeDeployMat::GetMatDataType() {
   auto mat_data_type = GetMatType();
   switch (mat_data_type) {
-    case CV_8UC3:return BreezeDeployTensorType::UINT8;
-    case CV_32FC3:return BreezeDeployTensorType::FP32;
+    case CV_8UC3:return BDTensorType::UINT8;
+    case CV_32FC3:return BDTensorType::FP32;
     default: BDLOGGER_ERROR("BreezeDeployMat only support CV_8UC3/CV_32FC3, but type is {}.",
                             cv::typeToString(mat_data_type))
-      return BreezeDeployTensorType::UNKNOWN;
+      return BDTensorType::UNKNOWN;
   }
 }
 int BreezeDeployMat::GetMatType() {

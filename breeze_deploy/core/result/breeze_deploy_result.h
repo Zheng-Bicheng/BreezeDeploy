@@ -71,6 +71,22 @@ struct DetectionResult {
     return std::move(detection_result);
   }
 };
+struct SegmentationResult {
+  SegmentationResult() = default;
+  std::vector<uint8_t> label_map;
+  std::vector<float> score_map;
+
+  size_t GetSize() const { return label_map.size(); }
+  bool Empty() const { return label_map.empty(); }
+  void Reserve(size_t size) {
+    label_map.reserve(size);
+    score_map.reserve(size);
+  }
+  void Clear() {
+    label_map.clear();
+    score_map.clear();
+  }
+};
 struct FeatureResult {
   std::vector<float> feature_vector;
   size_t GetFeatureLength() const { return feature_vector.size(); }

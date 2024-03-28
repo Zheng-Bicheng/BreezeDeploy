@@ -17,7 +17,7 @@
 namespace breeze_deploy {
 namespace models {
 bool YOLOV5Face::Predict(const cv::Mat &input_mat, DetectionResult &result) {
-  BreezeDeployModel::Predict(input_mat);
+  BDModel::Predict(input_mat);
   result.Clear();
   auto output_data = reinterpret_cast<const float *>(output_tensor_vector_[0].GetTensorDataPointer());
   auto output_shape = output_tensor_vector_[0].GetTensorInfo().tensor_shape;  // output_shape is [1,25200,16]

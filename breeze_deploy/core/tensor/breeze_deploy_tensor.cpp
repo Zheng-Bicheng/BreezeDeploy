@@ -19,7 +19,7 @@ namespace breeze_deploy {
 BreezeDeployTensor::BreezeDeployTensor() = default;
 void BreezeDeployTensor::SetTensorData(uint8_t *tensor_data_ptr,
                                        const std::vector<int64_t> &tensor_shape,
-                                       BreezeDeployTensorType tensor_data_type) {
+                                       BDTensorType tensor_data_type) {
   tensor_data_ptr_ = tensor_data_ptr;
   tensor_info_.tensor_shape = tensor_shape;
   tensor_info_.tensor_type = tensor_data_type;
@@ -44,27 +44,27 @@ size_t BreezeDeployTensor::GetTensorDataByteSize() const {
 const BreezeDeployTensorInfo &BreezeDeployTensor::GetTensorInfo() {
   return tensor_info_;
 }
-size_t GetBDTensorTypeSize(BreezeDeployTensorType breeze_deploy_data_type) {
+size_t GetBDTensorTypeSize(BDTensorType breeze_deploy_data_type) {
   size_t size = 0;
   switch (breeze_deploy_data_type) {
-    case BreezeDeployTensorType::UINT8:size = sizeof(uint8_t);
+    case BDTensorType::UINT8:size = sizeof(uint8_t);
       break;
-    case BreezeDeployTensorType::FP32:size = sizeof(float);
+    case BDTensorType::FP32:size = sizeof(float);
       break;
-    case BreezeDeployTensorType::INT8:size = sizeof(int8_t);
+    case BDTensorType::INT8:size = sizeof(int8_t);
       break;
-    case BreezeDeployTensorType::INT16:size = sizeof(int16_t);
+    case BDTensorType::INT16:size = sizeof(int16_t);
       break;
-    case BreezeDeployTensorType::INT32:size = sizeof(int32_t);
+    case BDTensorType::INT32:size = sizeof(int32_t);
       break;
-    case BreezeDeployTensorType::INT64:size = sizeof(int64_t);
+    case BDTensorType::INT64:size = sizeof(int64_t);
       break;
-    case BreezeDeployTensorType::BOOL:size = sizeof(bool);
+    case BDTensorType::BOOL:size = sizeof(bool);
       break;
-    case BreezeDeployTensorType::FP16:
+    case BDTensorType::FP16:
       size = sizeof(cv::float16_t);
       break;
-    case BreezeDeployTensorType::UNKNOWN:size = 0;
+    case BDTensorType::UNKNOWN:size = 0;
       break;
   }
   return size;
