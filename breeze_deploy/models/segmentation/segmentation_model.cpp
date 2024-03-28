@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "breeze_deploy/models/segmentation/segmentation_model.h"
+#include "breeze_deploy/utils/data_process/generate_color_map/generate_color_map.h"
 
 namespace breeze_deploy {
 namespace models {
@@ -61,6 +62,8 @@ bool SegmentationModel::ProcessWithArgmax(SegmentationResult &segmentation_resul
   auto infer_width = output_tensor_shape[2];
   auto infer_chw = infer_height * infer_width;
   segmentation_result.Reserve(infer_chw);
+  segmentation_result.height = static_cast<int>(infer_height);
+  segmentation_result.width = static_cast<int>(infer_width);
 
   auto output_tensor_data = output_tensor.GetConstTensorDataPointer();
   auto &output_tensor_type = output_tensor.GetTensorInfo().tensor_type;
@@ -106,8 +109,36 @@ bool SegmentationModel::Predict(const cv::Mat &input_mat,
 
   return ProcessWithArgmax(segmentation_result);
 }
-cv::Mat SegmentationModel::Draw(const cv::Mat &mat, const SegmentationResult &segmentation_result) {
-  return mat;
+cv::Mat SegmentationModel::Draw(const cv::Mat &mat,
+                                const SegmentationResult &segmentation_result,
+                                float weight) {
+  // Use the native c++ version without any optimization.
+  auto color_map = utils::data_process::GenerateColorMap(1000);
+  int height = segmentation_result.height;
+  int width = segmentation_result.width;
+  BDLOGGER_DEBUG("0")
+  auto vis_img = cv::Mat(height, width, CV_8UC3);
+  BDLOGGER_DEBUG("0")
+
+  size_t index = 0;
+  for (int i = 0; i < height; i++) {
+    for (int j = 0; j < width; j++) {
+      int category_id = segmentation_result.label_map[index++];
+      if (category_id == 0) {
+        vis_img.at<cv::Vec3b>(i, j)[0] = mat.at<cv::Vec3b>(i, j)[0];
+        vis_img.at<cv::Vec3b>(i, j)[1] = mat.at<cv::Vec3b>(i, j)[1];
+        vis_img.at<cv::Vec3b>(i, j)[2] = mat.at<cv::Vec3b>(i, j)[2];
+      } else {
+        vis_img.at<cv::Vec3b>(i, j)[0] = color_map[3 * category_id + 0];
+        vis_img.at<cv::Vec3b>(i, j)[1] = color_map[3 * category_id + 1];
+        vis_img.at<cv::Vec3b>(i, j)[2] = color_map[3 * category_id + 2];
+      }
+    }
+  }
+  BDLOGGER_DEBUG("0")
+  cv::addWeighted(mat, 1.0 - weight, vis_img, weight, 0, vis_img);
+  BDLOGGER_DEBUG("0")
+  return vis_img;
 }
 }
 }

@@ -37,23 +37,24 @@ int main(int argc, char *argv[]) {
 
   std::string image_path = argv[3];
   auto mat = cv::imread(image_path);
+  cv::resize(mat,mat,cv::Size(320, 180));
 
   BreezeDeployTime cost;
-//  cost.Start();
+  cost.Start();
   SegmentationResult result;
   if (!segmentation_model.Predict(mat, result)) {
     std::cout << "模型推理失败" << std::endl;
     return 1;
   }
-//  cost.End();
-//  cost.PrintInfo("PaddleDetection", 1.0, BreezeDeployTimeType::Milliseconds);
-//  mat = DetectionModel::Draw(mat, result);
+  cost.End();
+  cost.PrintInfo("Segmentation", 1.0, BreezeDeployTimeType::Milliseconds);
+  mat = SegmentationModel::Draw(mat, result);
 
-//  if (mat.empty())
-//  {
-//    std::cout << "未检测出图片" << std::endl;
-//    return 1;
-//  }
-//  cv::imwrite("./detect_result.png", mat);
+  if (mat.empty())
+  {
+    std::cout << "未检测出图片" << std::endl;
+    return 1;
+  }
+  cv::imwrite("./seg_result.png", mat);
   return 0;
 }

@@ -22,21 +22,20 @@ namespace models {
 class BREEZE_DEPLOY_EXPORT SegmentationModel : public BDModel {
  public:
   SegmentationModel(const std::string &model_path, const std::string &config_file_path)
-	  : BDModel(model_path, config_file_path) {}
+      : BDModel(model_path, config_file_path) {}
   std::string ModelName() override { return "SegmentationModel"; }
   bool Predict(const cv::Mat &input_mat, SegmentationResult &segmentation_result);
-  static cv::Mat Draw(const cv::Mat &mat, const SegmentationResult &segmentation_result);
+  static cv::Mat Draw(const cv::Mat &mat, const SegmentationResult &segmentation_result, float weight = 0.5);
 
  protected:
   // For Preprocess
-  std::vector<double> radio_width_height_ = {1 ,1};  // For [Resize, LetterBox]
-  std::vector<int> pad_width_height_ = {0 ,0};  // For [Resize, LetterBox]
+  std::vector<double> radio_width_height_ = {1, 1};  // For [Resize, LetterBox]
+  std::vector<int> pad_width_height_ = {0, 0};  // For [Resize, LetterBox]
   bool Preprocess(const cv::Mat &input_mat) override;
 
   // For Postprocess
   bool ReadPostprocessYAML() override;
   bool Postprocess() override;
-
 
   bool ProcessWithArgmax(SegmentationResult &segmentation_result);
 };

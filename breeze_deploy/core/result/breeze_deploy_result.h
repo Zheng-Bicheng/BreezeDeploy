@@ -75,16 +75,22 @@ struct SegmentationResult {
   SegmentationResult() = default;
   std::vector<uint8_t> label_map;
   std::vector<float> score_map;
+  int height;
+  int width;
 
   size_t GetSize() const { return label_map.size(); }
   bool Empty() const { return label_map.empty(); }
   void Reserve(size_t size) {
     label_map.reserve(size);
     score_map.reserve(size);
+    height = 0;
+    width = 0;
   }
   void Clear() {
     label_map.clear();
     score_map.clear();
+    height = 0;
+    width = 0;
   }
 };
 struct FeatureResult {

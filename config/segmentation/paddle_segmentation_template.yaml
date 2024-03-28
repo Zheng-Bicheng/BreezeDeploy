@@ -3,8 +3,8 @@
 preprocess:
   # Resize the image to [3, 256, 144].
   - Resize:
-      width: 256
-      height: 144
+      width: 320
+      height: 180
   # Perform color channel transformation, converting RGB colors to BGR.
   - BGRToRGB:
   # Perform normalization operation.
